@@ -1,44 +1,48 @@
 # georgepuma.dev
 
-Mi presencia profesional en la web: [georgepuma.dev](https://georgepuma.dev).
+Mi página personal: [georgepuma.dev](https://georgepuma.dev).
 
-Este repositorio es, deliberadamente, parte del portafolio. El sitio afirma
-cosas sobre cómo trabajo; el código debe poder respaldarlas.
+Este repo es público a propósito. El sitio afirma cosas sobre cómo trabajo,
+así que el código tiene que poder respaldarlas.
 
-## Principios
+## Cómo está hecho
 
-- **Evidencia sobre adjetivos.** Cada métrica del sitio lleva su fuente de
-  verificación al lado. El componente central se llama `Evidence` por algo.
-- **Complejidad justa.** Sitio estático (SSG), contenido tipado en el repo,
-  sin CMS, sin base de datos. El "CMS" es git.
-- **La calidad como feature visible.** El CI corre lint, typecheck, build y
-  tests de accesibilidad (axe, WCAG 2.1 AA) sobre cada página — el mismo
-  estándar que fue requisito contractual en mi último proyecto.
+Next.js 16 con App Router, todo prerenderizado como HTML estático. React 19,
+TypeScript en modo strict, Tailwind CSS v4. i18n con next-intl: español por
+defecto sin prefijo, `/en` preparado para cuando escriba la versión en inglés.
+Desplegado en Vercel, dominio y correo en Cloudflare.
 
-## Stack
+No hay CMS ni base de datos. El contenido vive tipado en `src/content/site.ts`
+y se edita con un commit — para un sitio que cambia unas pocas veces al año,
+cualquier cosa más es mantenimiento sin retorno.
 
-Next.js 16 (App Router, SSG) · React 19 · TypeScript strict ·
-Tailwind CSS v4 · next-intl (es por defecto, en preparado) ·
-Playwright + axe-core · Vercel.
+Las fuentes (Archivo e IBM Plex Mono) van auto-hospedadas con Fontsource:
+cero peticiones a terceros en runtime.
+
+El CI corre lint, typecheck, build y tests de accesibilidad con axe
+(WCAG 2.1 AA) sobre cada página. Ese estándar fue requisito contractual en mi
+último proyecto; me pareció justo aplicármelo a mí mismo.
+
+Y sí: este sitio se construyó con el mismo flujo de desarrollo asistido por IA
+que describe su sección [/ia](https://georgepuma.dev/#ia). Sería raro que no.
 
 ## Desarrollo
 
 ```bash
-npm install
-npm run dev        # http://localhost:3000
-npm run lint
-npm run typecheck
-npm run build
-npm run test:a11y  # requiere build previo
+pnpm install
+pnpm dev        # http://localhost:3000
+pnpm lint
+pnpm typecheck
+pnpm build
+pnpm test:a11y  # requiere build previo
 ```
 
 ## Estructura
 
 ```
 src/
-├── app/[locale]/          Rutas (es por defecto sin prefijo, /en preparado)
-│   ├── page.tsx           Home de una página: hero → proyectos → IA →
-│   │                      experiencia → stack → contacto
+├── app/[locale]/          Rutas (es sin prefijo, /en preparado)
+│   ├── page.tsx           Home: hero → proyectos → ia → experiencia → stack → contacto
 │   └── proyectos/         Casos de estudio con página propia
 ├── components/            Evidence, SectionHeading
 ├── content/site.ts        Todo el contenido, tipado
@@ -47,5 +51,5 @@ src/
 
 ## Licencia
 
-El código es MIT. El contenido (textos, casos de estudio) es © George Miguel
-Puma Salcedo — puedes leerlo, no republicarlo.
+El código es [MIT](./LICENSE). Los textos y casos de estudio son míos
+(© George Miguel Puma Salcedo): puedes leerlos, no republicarlos.
