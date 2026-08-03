@@ -1,0 +1,57 @@
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+import { hasLocale, NextIntlClientProvider } from "next-intl";
+import { setRequestLocale } from "next-intl/server";
+import { routing } from "@/i18n/routing";
+import { identity } from "@/content/site";
+import "@fontsource-variable/archivo/wdth.css";
+import "@fontsource/ibm-plex-mono/400.css";
+import "@fontsource/ibm-plex-mono/500.css";
+import "../globals.css";
+
+export const metadata: Metadata = {
+  metadataBase: new URL("https://georgepuma.dev"),
+  title: {
+    default: `${identity.name} — ${identity.title}`,
+    template: `%s — ${identity.name}`,
+  },
+  description:
+    "Full Stack Developer — React, Next.js, TypeScript. Cinco años construyendo productos web empresariales, con flujos de desarrollo asistidos por IA.",
+  openGraph: {
+    type: "website",
+    locale: "es_PE",
+    siteName: "georgepuma.dev",
+  },
+};
+
+export function generateStaticParams() {
+  return routing.locales.map((locale) => ({ locale }));
+}
+
+export default async function LocaleLayout({
+  children,
+  params,
+}: {
+  children: React.ReactNode;
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  if (!hasLocale(routing.locales, locale)) {
+    notFound();
+  }
+  setRequestLocale(locale);
+
+  return (
+    <html lang={locale}>
+      <body className="font-sans antialiased">
+        <a
+          href="#contenido"
+          className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:bg-white focus:px-4 focus:py-2"
+        >
+          Saltar al contenido
+        </a>
+        <NextIntlClientProvider>{children}</NextIntlClientProvider>
+      </body>
+    </html>
+  );
+}

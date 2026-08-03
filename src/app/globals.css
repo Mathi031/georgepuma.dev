@@ -1,0 +1,82 @@
+@import "tailwindcss";
+
+@theme {
+  --color-paper: #f7f7f5;
+  --color-ink: #16181d;
+  --color-muted: #575c63;
+  --color-line: #e4e3df;
+  --color-copper: #9c4a21;
+
+  --font-sans: "Archivo Variable", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+body {
+  background: var(--color-paper);
+  color: var(--color-ink);
+}
+
+/* Titulares: Archivo con eje de anchura expandido */
+.display {
+  font-variation-settings: "wdth" 122;
+  letter-spacing: -0.02em;
+}
+
+.display-md {
+  font-variation-settings: "wdth" 110;
+  letter-spacing: -0.01em;
+}
+
+/* Ficha de evidencia: corchetes de calibración (variante 1c).
+   Este dispositivo vive SOLO aquí — un dispositivo, un significado. */
+.evidence {
+  position: relative;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 7px;
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  line-height: 1;
+  padding: 9px 13px;
+}
+.evidence::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 8px;
+  height: 8px;
+  border-top: 1px solid var(--color-copper);
+  border-left: 1px solid var(--color-copper);
+}
+.evidence::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 8px;
+  height: 8px;
+  border-bottom: 1px solid var(--color-copper);
+  border-right: 1px solid var(--color-copper);
+}
+
+::selection {
+  background: var(--color-copper);
+  color: var(--color-paper);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-copper);
+  outline-offset: 3px;
+  border-radius: 1px;
+}
