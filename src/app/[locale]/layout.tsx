@@ -22,6 +22,14 @@ export const metadata: Metadata = {
     locale: "es_PE",
     siteName: "georgepuma.dev",
   },
+  // Sin `images` aquí ni en openGraph: Next solo aplica la imagen de convención
+  // de archivo (opengraph-image.tsx) si el metadata no declara `images` propio.
+  twitter: {
+    card: "summary_large_image",
+    title: `${identity.name} — ${identity.title}`,
+    description:
+      "Full Stack Developer — React, Next.js, TypeScript. Cinco años construyendo productos web empresariales, con flujos de desarrollo asistidos por IA.",
+  },
 };
 
 export function generateStaticParams() {
