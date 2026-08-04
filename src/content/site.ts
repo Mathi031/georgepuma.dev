@@ -32,6 +32,7 @@ export const identity = {
   location: "Arequipa, Perú · GMT-5 · remoto",
   email: "george@georgepuma.dev",
   github: "https://github.com/Mathi031",
+  repo: "https://github.com/Mathi031/georgepuma.dev",
   linkedin: "https://www.linkedin.com/in/mathi031/",
   cvUrl: "/cv-george-puma.pdf", // TODO: subir el PDF a /public
 };

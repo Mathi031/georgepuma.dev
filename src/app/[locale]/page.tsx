@@ -238,7 +238,7 @@ export default async function HomePage({
           <p>
             Next.js · TypeScript · Vercel ·{" "}
             <a
-              href="https://github.com/Mathi031"
+              href={identity.repo}
               rel="noopener"
               className="underline underline-offset-4 transition-colors hover:text-copper"
             >
