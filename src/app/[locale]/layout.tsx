@@ -11,28 +11,38 @@ import "@fontsource/ibm-plex-mono/400.css";
 import "@fontsource/ibm-plex-mono/500.css";
 import "../globals.css";
 
-export const metadata: Metadata = {
-  metadataBase: new URL("https://georgepuma.dev"),
-  title: {
-    default: `${identity.name} — ${identity.title}`,
-    template: `%s — ${identity.name}`,
-  },
-  description:
-    "Full Stack Developer — React, Next.js, TypeScript. Cinco años construyendo productos web empresariales, con flujos de desarrollo asistidos por IA.",
-  openGraph: {
-    type: "website",
-    locale: "es_PE",
-    siteName: "georgepuma.dev",
-  },
-  // Sin `images` aquí ni en openGraph: Next solo aplica la imagen de convención
-  // de archivo (opengraph-image.tsx) si el metadata no declara `images` propio.
-  twitter: {
-    card: "summary_large_image",
-    title: `${identity.name} — ${identity.title}`,
-    description:
-      "Full Stack Developer — React, Next.js, TypeScript. Cinco años construyendo productos web empresariales, con flujos de desarrollo asistidos por IA.",
-  },
-};
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const { ui } = content[hasLocale(routing.locales, locale) ? locale : routing.defaultLocale];
+  return {
+    metadataBase: new URL("https://georgepuma.dev"),
+    title: {
+      default: `${identity.name} — ${identity.title}`,
+      template: `%s — ${identity.name}`,
+    },
+    description: ui.meta.description,
+    alternates: {
+      canonical: locale === "en" ? "/en" : "/",
+      languages: { es: "/", en: "/en", "x-default": "/" },
+    },
+    openGraph: {
+      type: "website",
+      locale: ui.meta.ogLocale,
+      siteName: "georgepuma.dev",
+    },
+    // Sin `images` aquí ni en openGraph: Next solo aplica la imagen de convención
+    // de archivo (opengraph-image.tsx) si el metadata no declara `images` propio.
+    twitter: {
+      card: "summary_large_image",
+      title: `${identity.name} — ${identity.title}`,
+      description: ui.meta.description,
+    },
+  };
+}
 
 export default async function LocaleLayout({
   children,

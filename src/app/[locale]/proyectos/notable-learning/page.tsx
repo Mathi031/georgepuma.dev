@@ -3,16 +3,32 @@ import { setRequestLocale } from "next-intl/server";
 import { Evidence } from "@/components/Evidence";
 import { LocaleSwitcher } from "@/components/LocaleSwitcher";
 import { content as site, type Locale } from "@/content/site";
-import { Link } from "@/i18n/navigation";
+import { getPathname, Link } from "@/i18n/navigation";
 import { caseStudy as caseEs } from "@/content/notable-learning.es";
 import { caseStudy as caseEn } from "@/content/notable-learning.en";
 
 const content: Record<Locale, typeof caseEs> = { es: caseEs, en: caseEn };
 
-export const metadata: Metadata = {
-  title: caseEs.meta.title,
-  description: caseEs.meta.description,
-};
+const pathnameKey = "/proyectos/notable-learning" as const;
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const c = content[locale as Locale];
+  const es = getPathname({ locale: "es", href: pathnameKey });
+  const en = getPathname({ locale: "en", href: pathnameKey });
+  return {
+    title: c.meta.title,
+    description: c.meta.description,
+    alternates: {
+      canonical: locale === "en" ? en : es,
+      languages: { es, en, "x-default": es },
+    },
+  };
+}
 
 const h2 = "display-md text-[clamp(21px,3vw,25px)] font-semibold";
 const body = "text-[16px] leading-[1.75] text-muted max-w-[65ch]";

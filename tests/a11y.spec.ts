@@ -5,7 +5,12 @@ import { expect, test } from "@playwright/test";
  * El sitio afirma "WCAG 2.1 AA como requisito contractual" en mi último
  * proyecto. Este test aplica el mismo estándar al propio sitio.
  */
-const pages = ["/", "/proyectos/notable-learning"];
+const pages = [
+  "/",
+  "/proyectos/notable-learning",
+  "/en",
+  "/en/projects/notable-learning",
+];
 
 for (const path of pages) {
   test(`accesibilidad sin violaciones en ${path}`, async ({ page }) => {
