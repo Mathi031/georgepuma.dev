@@ -5,7 +5,7 @@ import { Analytics } from "@vercel/analytics/next";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { setRequestLocale } from "next-intl/server";
 import { routing } from "@/i18n/routing";
-import { identity } from "@/content/site";
+import { content, identity, type Locale } from "@/content/site";
 import "@fontsource-variable/archivo/wdth.css";
 import "@fontsource/ibm-plex-mono/400.css";
 import "@fontsource/ibm-plex-mono/500.css";
@@ -57,7 +57,7 @@ export default async function LocaleLayout({
           href="#contenido"
           className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:bg-paper focus:text-ink focus:px-4 focus:py-2"
         >
-          Saltar al contenido
+          {content[locale as Locale].ui.skipLink}
         </a>
         <NextIntlClientProvider>{children}</NextIntlClientProvider>
         <Analytics />

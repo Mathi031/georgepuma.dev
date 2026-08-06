@@ -2,7 +2,7 @@ import Link from "next/link";
 import { setRequestLocale } from "next-intl/server";
 import { Evidence } from "@/components/Evidence";
 import { SectionHeading } from "@/components/SectionHeading";
-import { aiWorkflow, experience, hero, identity, projects, stack } from "@/content/site";
+import { content, identity, type Locale } from "@/content/site";
 
 const container = "mx-auto max-w-[880px] px-5 sm:px-9";
 const sectionGap = "pt-24 sm:pt-32";
@@ -14,13 +14,14 @@ export default async function HomePage({
 }) {
   const { locale } = await params;
   setRequestLocale(locale);
+  const { ui, hero, projects, experience, stack, aiWorkflow } = content[locale as Locale];
 
   return (
     <>
       <header className={`${container} flex flex-wrap items-baseline justify-between gap-x-5 gap-y-2 pt-6`}>
         <p className="font-mono text-[13px] font-medium">georgepuma.dev</p>
-        <nav aria-label="Secciones" className="flex flex-wrap gap-x-4 gap-y-2 font-mono text-[12.5px]">
-          {["proyectos", "ia", "experiencia", "stack", "contacto"].map((s) => (
+        <nav aria-label={ui.sectionsAria} className="flex flex-wrap gap-x-4 gap-y-2 font-mono text-[12.5px]">
+          {Object.values(ui.sections).map((s) => (
             <a key={s} href={`#${s}`} className="text-muted transition-colors hover:text-copper">
               /{s}
             </a>
@@ -33,8 +34,8 @@ export default async function HomePage({
         <section className={`${container} pt-16 sm:pt-24`}>
           <p className="mb-6 font-mono text-[12.5px] tracking-[0.03em] text-muted">
             {identity.fullName} <span aria-hidden="true" className="text-copper">·</span>{" "}
-            Arequipa, Perú <span aria-hidden="true" className="text-copper">·</span> GMT-5{" "}
-            <span aria-hidden="true" className="text-copper">·</span> remoto
+            {ui.metaLine[0]} <span aria-hidden="true" className="text-copper">·</span> {ui.metaLine[1]}{" "}
+            <span aria-hidden="true" className="text-copper">·</span> {ui.metaLine[2]}
           </p>
           <h1 className="display max-w-[17ch] text-balance text-[clamp(36px,5.6vw,56px)] font-bold leading-[1.04]">
             {hero.headline.replace(/\.$/, "")}
@@ -47,24 +48,24 @@ export default async function HomePage({
             <strong className="font-medium text-ink">{hero.positioning.lead}</strong>{" "}
             {hero.positioning.rest}
           </p>
-          <ul className="mt-7 flex flex-wrap gap-2.5" aria-label="Evidencia verificable">
+          <ul className="mt-7 flex flex-wrap gap-2.5" aria-label={ui.evidenceAria}>
             {hero.evidence.map((e) => (
               <li key={e.value}>
                 <Evidence value={e.value} source={e.source} />
               </li>
             ))}
           </ul>
-          <nav aria-label="Enlaces principales" className="mt-8 flex flex-wrap items-center gap-x-5 gap-y-3">
+          <nav aria-label={ui.linksAria} className="mt-8 flex flex-wrap items-center gap-x-5 gap-y-3">
             <a
               href={`mailto:${identity.email}`}
               className="bg-ink px-5 py-2.5 font-mono text-[13.5px] font-medium text-paper transition-colors hover:bg-copper"
             >
-              Escríbeme
+              {ui.writeMe}
             </a>
             {[
               { href: identity.github, label: "GitHub ↗" },
               { href: identity.linkedin, label: "LinkedIn ↗" },
-              { href: identity.cvUrl, label: "CV en PDF ↓" },
+              { href: identity.cvUrl, label: ui.cvLabel },
             ].map((l) => (
               <a
                 key={l.label}
@@ -79,8 +80,8 @@ export default async function HomePage({
         </section>
 
         {/* ── Proyectos ──────────────────────────────────────── */}
-        <section aria-labelledby="proyectos" className={`${container} ${sectionGap} scroll-mt-6`} id="proyectos">
-          <SectionHeading id="proyectos-h" label="proyectos" />
+        <section aria-labelledby={ui.sections.projects} className={`${container} ${sectionGap} scroll-mt-6`} id={ui.sections.projects}>
+          <SectionHeading id={`${ui.sections.projects}-h`} label={ui.sections.projects} />
           <ul>
             {projects.map((p, i) => (
               <li key={p.slug} className={`border-line py-9 ${i > 0 ? "border-t" : ""}`}>
@@ -117,8 +118,8 @@ export default async function HomePage({
         </section>
 
         {/* ── IA ─────────────────────────────────────────────── */}
-        <section aria-labelledby="ia" className={`${container} ${sectionGap} scroll-mt-6`} id="ia">
-          <SectionHeading id="ia-h" label="ia" />
+        <section aria-labelledby={ui.sections.ai} className={`${container} ${sectionGap} scroll-mt-6`} id={ui.sections.ai}>
+          <SectionHeading id={`${ui.sections.ai}-h`} label={ui.sections.ai} />
           <div className="max-w-[65ch] space-y-5 text-[15.5px] leading-[1.75]">
             <p>
               <strong className="font-medium">{aiWorkflow.intro.lead}</strong>{" "}
@@ -138,7 +139,7 @@ export default async function HomePage({
 
           <div className="mt-10 sm:mt-12">
             <p className="mb-3.5 font-mono text-[11.5px] tracking-[0.04em] text-muted">
-              pipeline · revisor de PRs
+              {ui.pipelineKicker}
             </p>
             <p className="flex flex-wrap items-center gap-x-2.5 gap-y-2 font-mono text-[12px]">
               {aiWorkflow.pipeline.map((step, i) => (
@@ -167,8 +168,8 @@ export default async function HomePage({
         </section>
 
         {/* ── Experiencia ────────────────────────────────────── */}
-        <section aria-labelledby="experiencia" className={`${container} ${sectionGap} scroll-mt-6`} id="experiencia">
-          <SectionHeading id="experiencia-h" label="experiencia" />
+        <section aria-labelledby={ui.sections.experience} className={`${container} ${sectionGap} scroll-mt-6`} id={ui.sections.experience}>
+          <SectionHeading id={`${ui.sections.experience}-h`} label={ui.sections.experience} />
           <ol>
             {experience.map((job, i) => (
               <li
@@ -193,8 +194,8 @@ export default async function HomePage({
         </section>
 
         {/* ── Stack ──────────────────────────────────────────── */}
-        <section aria-labelledby="stack" className={`${container} ${sectionGap} scroll-mt-6`} id="stack">
-          <SectionHeading id="stack-h" label="stack" />
+        <section aria-labelledby={ui.sections.stack} className={`${container} ${sectionGap} scroll-mt-6`} id={ui.sections.stack}>
+          <SectionHeading id={`${ui.sections.stack}-h`} label={ui.sections.stack} />
           <dl>
             {[stack.primary, stack.solid, stack.growing].map((group, i) => (
               <div
@@ -209,11 +210,10 @@ export default async function HomePage({
         </section>
 
         {/* ── Contacto ───────────────────────────────────────── */}
-        <section aria-labelledby="contacto" className={`${container} ${sectionGap} scroll-mt-6 pb-20 sm:pb-24`} id="contacto">
-          <SectionHeading id="contacto-h" label="contacto" />
+        <section aria-labelledby={ui.sections.contact} className={`${container} ${sectionGap} scroll-mt-6 pb-20 sm:pb-24`} id={ui.sections.contact}>
+          <SectionHeading id={`${ui.sections.contact}-h`} label={ui.sections.contact} />
           <p className="mb-7 max-w-[55ch] text-[16.5px] leading-[1.7] text-muted">
-            Busco roles full stack o frontend, de preferencia remotos. Si crees que encajo
-            en tu equipo, escríbeme — respondo siempre.
+            {ui.contact}
           </p>
           <a
             href={`mailto:${identity.email}`}
@@ -236,7 +236,7 @@ export default async function HomePage({
               rel="noopener"
               className="underline underline-offset-4 transition-colors hover:text-copper"
             >
-              código fuente
+              {ui.footerSource}
             </a>
           </p>
         </div>
