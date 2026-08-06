@@ -40,8 +40,10 @@ export const identity = {
 export const hero = {
   headline: "Construyo productos web que llegan a producción.",
   thesis: "Y puedo demostrarlo.",
-  positioning:
-    "Full Stack Developer — React, Next.js, TypeScript. Cinco años construyendo productos empresariales: EdTech, e-commerce, ERP y facturación electrónica. Diseño flujos de desarrollo asistidos por IA y los trato como lo que son: ingeniería.",
+  positioning: {
+    lead: "Full Stack Developer — React, Next.js, TypeScript.",
+    rest: "Cinco años construyendo productos empresariales: EdTech, e-commerce, ERP y facturación electrónica. Diseño flujos de desarrollo asistidos por IA y los trato como lo que son: ingeniería.",
+  },
   evidence: [
     { value: "500+ escuelas", source: "LMS en producción" },
     { value: "LCP < 2 s", source: "medido en 4G" },
@@ -204,8 +206,10 @@ export const stack = {
 };
 
 export const aiWorkflow = {
-  intro:
-    "No uso IA como autocompletado: diseño sistemas con ella. Mi flujo principal es Claude Code — subagentes especializados, servidores MCP y comandos propios — y trato la configuración de agentes como lo que es: ingeniería, con sus reglas, sus casos borde y su mantenimiento.",
+  intro: {
+    lead: "No uso IA como autocompletado: diseño sistemas con ella.",
+    rest: "Mi flujo principal es Claude Code — subagentes especializados, servidores MCP y comandos propios — y trato la configuración de agentes como lo que es: ingeniería, con sus reglas, sus casos borde y su mantenimiento.",
+  },
   highlight:
     "El ejemplo que mejor lo muestra: un revisor automatizado de PRs para Notable Learning. Validaba que cada rama correspondiera a un ticket real de Linear, cargaba las convenciones del proyecto desde un repo de contexto, invocaba subagentes según lo que tocaba el diff (seguridad, tests, arquitectura) y revisaba en dos etapas: primero verificaba si los comentarios bloqueantes anteriores estaban realmente resueltos, citando archivo y línea; después hacía su propia revisión con criterios del proyecto — aislamiento multi-tenant, roles con enums, validación Zod, cero PII en logs. Todo en un único comentario consolidado, con severidades y fixes sugeridos.",
   honestyIntro:

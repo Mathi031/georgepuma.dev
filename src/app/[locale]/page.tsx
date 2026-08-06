@@ -44,12 +44,8 @@ export default async function HomePage({
             </span>
           </h1>
           <p className="mt-6 max-w-[54ch] text-[16.5px] leading-[1.7] text-muted">
-            <strong className="font-medium text-ink">
-              Full Stack Developer — React, Next.js, TypeScript.
-            </strong>{" "}
-            Cinco años construyendo productos empresariales: EdTech, e-commerce, ERP y
-            facturación electrónica. Diseño flujos de desarrollo asistidos por IA y los
-            trato como lo que son: ingeniería.
+            <strong className="font-medium text-ink">{hero.positioning.lead}</strong>{" "}
+            {hero.positioning.rest}
           </p>
           <ul className="mt-7 flex flex-wrap gap-2.5" aria-label="Evidencia verificable">
             {hero.evidence.map((e) => (
@@ -125,10 +121,8 @@ export default async function HomePage({
           <SectionHeading id="ia-h" label="ia" />
           <div className="max-w-[65ch] space-y-5 text-[15.5px] leading-[1.75]">
             <p>
-              <strong className="font-medium">No uso IA como autocompletado: diseño sistemas con ella.</strong>{" "}
-              Mi flujo principal es Claude Code — subagentes especializados, servidores MCP y
-              comandos propios — y trato la configuración de agentes como lo que es:
-              ingeniería, con sus reglas, sus casos borde y su mantenimiento.
+              <strong className="font-medium">{aiWorkflow.intro.lead}</strong>{" "}
+              {aiWorkflow.intro.rest}
             </p>
             <p className="text-muted">{aiWorkflow.highlight}</p>
             <p className="text-muted">{aiWorkflow.honestyIntro}</p>
