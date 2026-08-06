@@ -11,6 +11,12 @@ export default defineConfig({
   use: {
     baseURL: `http://localhost:${port}`,
   },
+  // El mismo spec corre en ambos esquemas: axe valida color-contrast contra
+  // los colores computados reales de cada paleta.
+  projects: [
+    { name: "light", use: { colorScheme: "light" } },
+    { name: "dark", use: { colorScheme: "dark" } },
+  ],
   webServer: {
     command: "pnpm start",
     url: `http://localhost:${port}`,

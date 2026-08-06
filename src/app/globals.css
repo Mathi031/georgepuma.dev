@@ -11,6 +11,24 @@
   --font-mono: "IBM Plex Mono", ui-monospace, monospace;
 }
 
+/* Paleta oscura: mismos tokens semánticos, redefinidos según el esquema del
+   sistema (sin toggle manual). Los ratios AA están verificados por par en
+   tests/a11y.spec.ts (project "dark"). El cobre se aclara: #9c4a21 no llega
+   a 4.5:1 sobre fondo oscuro. */
+:root {
+  color-scheme: light dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-paper: #1a1815;
+    --color-ink: #eceae6;
+    --color-muted: #a8a49d;
+    --color-line: #3a362f;
+    --color-copper: #d97b4a;
+  }
+}
+
 html {
   scroll-behavior: smooth;
 }
