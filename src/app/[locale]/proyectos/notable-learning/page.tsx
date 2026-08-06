@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { setRequestLocale } from "next-intl/server";
 import { Evidence } from "@/components/Evidence";
-import type { Locale } from "@/content/site";
+import { LocaleSwitcher } from "@/components/LocaleSwitcher";
+import { content as site, type Locale } from "@/content/site";
+import { Link } from "@/i18n/navigation";
 import { caseStudy as caseEs } from "@/content/notable-learning.es";
 import { caseStudy as caseEn } from "@/content/notable-learning.en";
 
@@ -32,10 +33,17 @@ export default async function NotableLearningPage({
         <Link href="/" className="font-mono text-[13px] font-medium no-underline transition-colors hover:text-copper">
           <span aria-hidden="true" className="text-copper">←</span> georgepuma.dev
         </Link>
-        <p className="font-mono text-[12.5px] text-muted">
-          <span aria-hidden="true" className="text-copper">/</span>{c.pathSegments[0]}
-          <span aria-hidden="true" className="text-copper">/</span>{c.pathSegments[1]}
-        </p>
+        <div className="flex flex-wrap items-baseline gap-x-5 gap-y-2">
+          <p className="font-mono text-[12.5px] text-muted">
+            <span aria-hidden="true" className="text-copper">/</span>{c.pathSegments[0]}
+            <span aria-hidden="true" className="text-copper">/</span>{c.pathSegments[1]}
+          </p>
+          <LocaleSwitcher
+            locale={locale as Locale}
+            href="/proyectos/notable-learning"
+            aria={site[locale as Locale].ui.langAria}
+          />
+        </div>
       </header>
 
       <main id="contenido">
@@ -127,12 +135,13 @@ export default async function NotableLearningPage({
           <section className={sectionGap} aria-labelledby={c.close.id}>
             <h2 id={c.close.id} className={h2}>{c.close.heading}</h2>
             <p className={`mt-4 mb-7 ${body}`}>{c.close.body}</p>
-            <Link
+            {/* href con prefijo de locale hardcodeado en el contenido; <a> plano. */}
+            <a
               href={c.close.backHref}
               className="font-mono text-[13.5px] font-medium underline decoration-line underline-offset-[5px] transition-colors hover:text-copper hover:decoration-copper"
             >
               <span aria-hidden="true" className="text-copper">←</span> {c.close.backLabel}
-            </Link>
+            </a>
           </section>
 
           <footer className="mt-14 border-t border-line pt-6 sm:mt-16">

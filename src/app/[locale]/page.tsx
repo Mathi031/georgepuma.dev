@@ -1,8 +1,9 @@
-import Link from "next/link";
 import { setRequestLocale } from "next-intl/server";
 import { Evidence } from "@/components/Evidence";
+import { LocaleSwitcher } from "@/components/LocaleSwitcher";
 import { SectionHeading } from "@/components/SectionHeading";
 import { content, identity, type Locale } from "@/content/site";
+import { Link } from "@/i18n/navigation";
 
 const container = "mx-auto max-w-[880px] px-5 sm:px-9";
 const sectionGap = "pt-24 sm:pt-32";
@@ -20,13 +21,16 @@ export default async function HomePage({
     <>
       <header className={`${container} flex flex-wrap items-baseline justify-between gap-x-5 gap-y-2 pt-6`}>
         <p className="font-mono text-[13px] font-medium">georgepuma.dev</p>
-        <nav aria-label={ui.sectionsAria} className="flex flex-wrap gap-x-4 gap-y-2 font-mono text-[12.5px]">
-          {Object.values(ui.sections).map((s) => (
-            <a key={s} href={`#${s}`} className="text-muted transition-colors hover:text-copper">
-              /{s}
-            </a>
-          ))}
-        </nav>
+        <div className="flex flex-wrap items-baseline gap-x-5 gap-y-2">
+          <nav aria-label={ui.sectionsAria} className="flex flex-wrap gap-x-4 gap-y-2 font-mono text-[12.5px]">
+            {Object.values(ui.sections).map((s) => (
+              <a key={s} href={`#${s}`} className="text-muted transition-colors hover:text-copper">
+                /{s}
+              </a>
+            ))}
+          </nav>
+          <LocaleSwitcher locale={locale as Locale} href="/" aria={ui.langAria} />
+        </div>
       </header>
 
       <main id="contenido">
@@ -106,7 +110,8 @@ export default async function HomePage({
                   </a>
                 ) : (
                   <Link
-                    href={p.link.href}
+                    // ponytail: el único link interno; si aparece otro, tipar Project.link.href
+                    href={p.link.href as "/proyectos/notable-learning"}
                     className="mt-5 inline-block font-mono text-[13.5px] font-medium underline decoration-line underline-offset-[5px] transition-colors hover:text-copper hover:decoration-copper"
                   >
                     <span aria-hidden="true" className="text-copper">→</span> {p.link.label}
