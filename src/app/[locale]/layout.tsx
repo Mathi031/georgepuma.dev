@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { headers } from "next/headers";
 import { notFound } from "next/navigation";
 import { Analytics } from "@vercel/analytics/next";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
@@ -33,10 +34,6 @@ export const metadata: Metadata = {
   },
 };
 
-export function generateStaticParams() {
-  return routing.locales.map((locale) => ({ locale }));
-}
-
 export default async function LocaleLayout({
   children,
   params,
@@ -49,6 +46,9 @@ export default async function LocaleLayout({
     notFound();
   }
   setRequestLocale(locale);
+  // La CSP usa un nonce por request (middleware): el HTML no puede
+  // prerenderizarse. Leer headers() fuerza el render dinámico.
+  await headers();
 
   return (
     <html lang={locale}>
