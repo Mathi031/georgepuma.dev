@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { setRequestLocale } from "next-intl/server";
 import { Evidence } from "@/components/Evidence";
 import { LocaleSwitcher } from "@/components/LocaleSwitcher";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import { content as site, type Locale } from "@/content/site";
 import { getPathname, Link } from "@/i18n/navigation";
 import { caseStudy as caseEs } from "@/content/notable-learning.es";
@@ -59,6 +60,7 @@ export default async function NotableLearningPage({
             href="/proyectos/notable-learning"
             aria={site[locale as Locale].ui.langAria}
           />
+          <ThemeToggle aria={site[locale as Locale].ui.themeAria} />
         </div>
       </header>
 
