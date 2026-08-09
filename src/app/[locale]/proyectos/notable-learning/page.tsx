@@ -31,7 +31,7 @@ export async function generateMetadata({
 }
 
 const h2 = "display-md text-display-md font-semibold";
-const body = "text-body leading-[1.75] text-muted max-w-[65ch]";
+const body = "text-body leading-[1.75] max-w-[65ch]";
 const sectionGap = "mt-14 sm:mt-16";
 
 export default async function NotableLearningPage({
@@ -71,7 +71,7 @@ export default async function NotableLearningPage({
             <h1 className="display text-balance text-display font-bold">
               Notable Learning<span aria-hidden="true" className="text-copper">.</span>
             </h1>
-            <p className="mt-5 max-w-[60ch] text-title leading-[1.7] text-muted">
+            <p className="mt-5 max-w-[60ch] text-title leading-[1.7]">
               {c.lead}
             </p>
             <div className="mt-6 flex flex-wrap gap-2.5">
@@ -105,7 +105,7 @@ export default async function NotableLearningPage({
                   </span>
                   <div>
                     <h3 className="text-title font-semibold">{p.title}</h3>
-                    <p className="mt-1.5 max-w-[58ch] text-small text-muted">{p.text}</p>
+                    <p className="mt-1.5 max-w-[58ch] text-small">{p.text}</p>
                   </div>
                 </li>
               ))}
@@ -121,7 +121,7 @@ export default async function NotableLearningPage({
                 <li key={l.label} className={`border-t border-line py-5 ${i === c.war.layers.length - 1 ? "border-b" : ""}`}>
                   <p className="font-mono text-micro text-copper">{l.label}</p>
                   <h3 className="mt-1.5 text-title font-semibold">{l.title}</h3>
-                  <p className="mt-1.5 max-w-[58ch] text-small text-muted">{l.text}</p>
+                  <p className="mt-1.5 max-w-[58ch] text-small">{l.text}</p>
                 </li>
               ))}
             </ul>
@@ -154,7 +154,7 @@ export default async function NotableLearningPage({
             {/* href con prefijo de locale hardcodeado en el contenido; <a> plano. */}
             <a
               href={c.close.backHref}
-              className="font-mono text-small font-medium underline decoration-line underline-offset-[5px] transition-colors hover:text-copper hover:decoration-copper"
+              className="text-small font-medium underline decoration-line underline-offset-[5px] transition-colors hover:text-copper hover:decoration-copper"
             >
               <span aria-hidden="true" className="text-copper">←</span> {c.close.backLabel}
             </a>
