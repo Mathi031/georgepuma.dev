@@ -1,8 +1,10 @@
 import { setRequestLocale } from "next-intl/server";
 import { Evidence } from "@/components/Evidence";
 import { LocaleSwitcher } from "@/components/LocaleSwitcher";
+import { ScreenshotFrame } from "@/components/ScreenshotFrame";
 import { SectionHeading } from "@/components/SectionHeading";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { SchemaFigure } from "@/components/figures/SchemaFigure";
 import { content, identity, type Locale } from "@/content/site";
 import { Link } from "@/i18n/navigation";
 
@@ -16,7 +18,8 @@ export default async function HomePage({
 }) {
   const { locale } = await params;
   setRequestLocale(locale);
-  const { ui, hero, projects, experience, stack, aiWorkflow } = content[locale as Locale];
+  const { ui, hero, anchorProject, gridProjects, schemaFigure, experience, stack, aiWorkflow } =
+    content[locale as Locale];
 
   return (
     <>
@@ -88,37 +91,61 @@ export default async function HomePage({
         {/* ── Proyectos ──────────────────────────────────────── */}
         <section aria-labelledby={ui.sections.projects} className={`${container} ${sectionGap} scroll-mt-6`} id={ui.sections.projects}>
           <SectionHeading id={`${ui.sections.projects}-h`} label={ui.sections.projects} />
-          <ul>
-            {projects.map((p, i) => (
-              <li key={p.slug} className={`border-line py-9 ${i > 0 ? "border-t" : ""}`}>
-                <h3 className="display-md text-display-md font-semibold">{p.name}</h3>
-                <p className="mt-1.5 font-mono text-micro text-muted">{p.role}</p>
-                <p className="mt-4 max-w-[62ch] text-body">{p.summary}</p>
-                <div className="mt-5 flex flex-wrap gap-2.5">
+
+          {/* Ancla: Notable Learning ordena la lectura de la sección — y es
+              el momento cobre del home. */}
+          <article className="calibrated bg-copper-surface px-6 py-8 [--corner-size:18px] sm:px-10 sm:py-10">
+            <h3 className="display text-display-md font-bold">{anchorProject.name}</h3>
+            <p className="mt-1.5 font-mono text-micro text-muted">{anchorProject.role}</p>
+            <p className="mt-4 max-w-[62ch] text-body">{anchorProject.summary}</p>
+            <div className="mt-5 flex flex-wrap gap-2.5">
+              {anchorProject.evidence.map((e) => (
+                <Evidence key={e.value} value={e.value} source={e.source} />
+              ))}
+            </div>
+            <SchemaFigure id="schema-home" className="mt-8" {...schemaFigure} />
+            {anchorProject.image ? (
+              <div className="mt-8">
+                <ScreenshotFrame image={anchorProject.image} />
+              </div>
+            ) : null}
+            <p className="mt-6 font-mono text-micro leading-[1.8] text-muted">
+              {anchorProject.stack.join(" · ")}
+            </p>
+            <Link
+              href="/proyectos/notable-learning"
+              className="mt-6 inline-block bg-ink px-5 py-2.5 text-small font-medium text-paper transition-colors hover:bg-copper"
+            >
+              <span aria-hidden="true">→</span> {anchorProject.link.label}
+            </Link>
+          </article>
+
+          <ul className="mt-2 grid gap-x-10 sm:grid-cols-2">
+            {gridProjects.map((p) => (
+              <li key={p.slug} className="border-t border-line py-8">
+                {p.image ? (
+                  <div className="mb-5">
+                    <ScreenshotFrame image={p.image} />
+                  </div>
+                ) : null}
+                <h3 className="display-md text-title font-semibold">{p.name}</h3>
+                <p className="mt-1 font-mono text-micro text-muted">{p.role}</p>
+                <p className="mt-3 max-w-[62ch] text-small">{p.summary}</p>
+                <div className="mt-4 flex flex-wrap gap-2.5">
                   {p.evidence.map((e) => (
                     <Evidence key={e.value} value={e.value} source={e.source} />
                   ))}
                 </div>
-                <p className="mt-5 font-mono text-micro leading-[1.8] text-muted">
+                <p className="mt-4 font-mono text-micro leading-[1.8] text-muted">
                   {p.stack.join(" · ")}
                 </p>
-                {p.link.external ? (
-                  <a
-                    href={p.link.href}
-                    rel="noopener"
-                    className="mt-5 inline-block text-small font-medium underline decoration-line underline-offset-[5px] transition-colors hover:text-copper hover:decoration-copper"
-                  >
-                    <span aria-hidden="true" className="text-copper">↗</span> {p.link.label}
-                  </a>
-                ) : (
-                  <Link
-                    // ponytail: el único link interno; si aparece otro, tipar Project.link.href
-                    href={p.link.href as "/proyectos/notable-learning"}
-                    className="mt-5 inline-block text-small font-medium underline decoration-line underline-offset-[5px] transition-colors hover:text-copper hover:decoration-copper"
-                  >
-                    <span aria-hidden="true" className="text-copper">→</span> {p.link.label}
-                  </Link>
-                )}
+                <a
+                  href={p.link.href}
+                  rel="noopener"
+                  className="mt-4 inline-block text-small font-medium underline decoration-line underline-offset-[5px] transition-colors hover:text-copper hover:decoration-copper"
+                >
+                  <span aria-hidden="true" className="text-copper">↗</span> {p.link.label}
+                </a>
               </li>
             ))}
           </ul>
