@@ -3,6 +3,8 @@ import { setRequestLocale } from "next-intl/server";
 import { Evidence } from "@/components/Evidence";
 import { LocaleSwitcher } from "@/components/LocaleSwitcher";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { PipelineFigure } from "@/components/figures/PipelineFigure";
+import { SchemaFigure } from "@/components/figures/SchemaFigure";
 import { content as site, type Locale } from "@/content/site";
 import { getPathname, Link } from "@/i18n/navigation";
 import { caseStudy as caseEs } from "@/content/notable-learning.es";
@@ -137,6 +139,7 @@ export default async function NotableLearningPage({
                 <p key={i}>{paragraph}</p>
               ))}
             </div>
+            <SchemaFigure id="schema-case" className="mt-8" {...s.schemaFigure} />
           </section>
 
           <section className={sectionGap} aria-labelledby={c.decision.id}>
@@ -170,7 +173,13 @@ export default async function NotableLearningPage({
                 </li>
               ))}
             </ul>
-            <div className={`mt-6 space-y-4 ${body}`}>
+            <PipelineFigure
+              id="pipeline-pdf"
+              className="mt-8"
+              {...c.war.figure}
+              steps={c.war.layers.map(({ label, title }) => ({ label, title }))}
+            />
+            <div className={`mt-8 space-y-4 ${body}`}>
               {c.war.after.map((paragraph, i) => (
                 <p key={i}>{paragraph}</p>
               ))}
