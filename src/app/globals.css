@@ -1,32 +1,30 @@
 @import "tailwindcss";
 
 @theme {
-  --color-paper: #f7f7f5;
-  --color-ink: #16181d;
-  --color-muted: #575c63;
-  --color-line: #e4e3df;
-  --color-copper: #9c4a21;
+  /* Paleta por token con light-dark(): cada hex se escribe una sola vez.
+     Sin override manda prefers-color-scheme (color-scheme: light dark en
+     :root). Ojo: el build (Lightning CSS) compila light-dark() a un polyfill
+     con var(--lightningcss-light/dark) — cubre navegadores sin soporte, pero
+     los tokens se resuelven en el elemento que los declara, no en el que los
+     usa. El cobre se aclara en oscuro: #9c4a21 no llega a 4.5:1 sobre fondo
+     oscuro. Los ratios AA se verifican con axe sobre ambos esquemas en
+     tests/a11y.spec.ts. */
+  --color-paper: light-dark(#f7f7f5, #1a1815);
+  --color-ink: light-dark(#16181d, #eceae6);
+  --color-muted: light-dark(#575c63, #a8a49d);
+  --color-line: light-dark(#e4e3df, #3a362f);
+  --color-copper: light-dark(#9c4a21, #d97b4a);
+  /* Superficie cobre: mix sRGB de copper sobre paper — 6% en claro, 10% en
+     oscuro, precalculado a hex fijo (determinista para tests y scripts).
+     Recalcular a mano si cambia copper o paper. */
+  --color-copper-surface: light-dark(#f2ede8, #2f2219);
 
   --font-sans: "Archivo Variable", system-ui, sans-serif;
   --font-mono: "IBM Plex Mono", ui-monospace, monospace;
 }
 
-/* Paleta oscura: mismos tokens semánticos, redefinidos según el esquema del
-   sistema (sin toggle manual). Los ratios AA están verificados por par en
-   tests/a11y.spec.ts (project "dark"). El cobre se aclara: #9c4a21 no llega
-   a 4.5:1 sobre fondo oscuro. */
 :root {
   color-scheme: light dark;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --color-paper: #1a1815;
-    --color-ink: #eceae6;
-    --color-muted: #a8a49d;
-    --color-line: #3a362f;
-    --color-copper: #d97b4a;
-  }
 }
 
 html {
