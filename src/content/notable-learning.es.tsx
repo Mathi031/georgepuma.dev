@@ -18,6 +18,12 @@ export type CaseStudy = {
   pathSegments: [string, string];
   lead: ReactNode;
   chips: EvidenceItem[];
+  /**
+   * Ficha TL;DR: la lectura rápida del caso. Las filas cuentan problema,
+   * rol y escala; el resultado lo afirman las chips (voz de evidencia) —
+   * mismo dato, una sola vez.
+   */
+  tldr: { heading: string; rows: { term: string; text: string }[]; resultTerm: string };
   context: SectionText & { body: ReactNode[] };
   decision: SectionText & { intro: ReactNode; principles: Item[]; outro: ReactNode };
   war: SectionText & { intro: ReactNode; layers: (Item & { label: string })[]; after: ReactNode[] };
@@ -53,6 +59,24 @@ export const caseStudy: CaseStudy = {
     { value: "entregado en fecha", source: "12 jun 2026" },
     { value: "WCAG 2.1 AA", source: "jest-axe" },
   ],
+  tldr: {
+    heading: "resumen",
+    rows: [
+      {
+        term: "problema",
+        text: "Editor de contenido y pipeline de archivos para un LMS K-12 con datos de menores.",
+      },
+      {
+        term: "rol",
+        text: "Principal contribuidor: frontend completo y capa de API, con entregas semanales revisadas por el CTO.",
+      },
+      {
+        term: "escala",
+        text: "500+ escuelas en 10 países · esquema de 29 entidades · RBAC de 5 roles · FERPA.",
+      },
+    ],
+    resultTerm: "resultado",
+  },
   context: {
     id: "contexto",
     heading: "Contexto y rol",
