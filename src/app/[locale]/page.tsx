@@ -22,10 +22,10 @@ export default async function HomePage({
       <header className={`${container} flex flex-wrap items-baseline justify-between gap-x-5 gap-y-2 pt-6`}>
         <p className="font-mono text-micro font-medium">georgepuma.dev</p>
         <div className="flex flex-wrap items-baseline gap-x-5 gap-y-2">
-          <nav aria-label={ui.sectionsAria} className="flex flex-wrap gap-x-4 gap-y-2 font-mono text-micro">
+          <nav aria-label={ui.sectionsAria} className="flex flex-wrap gap-x-4 gap-y-2 text-small font-medium">
             {Object.values(ui.sections).map((s) => (
               <a key={s} href={`#${s}`} className="text-muted transition-colors hover:text-copper">
-                /{s}
+                {s}
               </a>
             ))}
           </nav>
@@ -48,8 +48,8 @@ export default async function HomePage({
               {hero.thesis}
             </span>
           </h1>
-          <p className="mt-6 max-w-[54ch] text-body text-muted">
-            <strong className="font-medium text-ink">{hero.positioning.lead}</strong>{" "}
+          <p className="mt-6 max-w-[54ch] text-body">
+            <strong className="font-medium">{hero.positioning.lead}</strong>{" "}
             {hero.positioning.rest}
           </p>
           <ul className="mt-7 flex flex-wrap gap-2.5" aria-label={ui.evidenceAria}>
@@ -62,7 +62,7 @@ export default async function HomePage({
           <nav aria-label={ui.linksAria} className="mt-8 flex flex-wrap items-center gap-x-5 gap-y-3">
             <a
               href={`mailto:${identity.email}`}
-              className="bg-ink px-5 py-2.5 font-mono text-small font-medium text-paper transition-colors hover:bg-copper"
+              className="bg-ink px-5 py-2.5 text-small font-medium text-paper transition-colors hover:bg-copper"
             >
               {ui.writeMe}
             </a>
@@ -75,7 +75,7 @@ export default async function HomePage({
                 key={l.label}
                 href={l.href}
                 rel="noopener"
-                className="font-mono text-small font-medium underline decoration-line underline-offset-[5px] transition-colors hover:text-copper hover:decoration-copper"
+                className="text-small font-medium underline decoration-line underline-offset-[5px] transition-colors hover:text-copper hover:decoration-copper"
               >
                 {l.label}
               </a>
@@ -91,7 +91,7 @@ export default async function HomePage({
               <li key={p.slug} className={`border-line py-9 ${i > 0 ? "border-t" : ""}`}>
                 <h3 className="display-md text-display-md font-semibold">{p.name}</h3>
                 <p className="mt-1.5 font-mono text-micro text-muted">{p.role}</p>
-                <p className="mt-4 max-w-[62ch] text-body text-muted">{p.summary}</p>
+                <p className="mt-4 max-w-[62ch] text-body">{p.summary}</p>
                 <div className="mt-5 flex flex-wrap gap-2.5">
                   {p.evidence.map((e) => (
                     <Evidence key={e.value} value={e.value} source={e.source} />
@@ -104,7 +104,7 @@ export default async function HomePage({
                   <a
                     href={p.link.href}
                     rel="noopener"
-                    className="mt-5 inline-block font-mono text-small font-medium underline decoration-line underline-offset-[5px] transition-colors hover:text-copper hover:decoration-copper"
+                    className="mt-5 inline-block text-small font-medium underline decoration-line underline-offset-[5px] transition-colors hover:text-copper hover:decoration-copper"
                   >
                     <span aria-hidden="true" className="text-copper">↗</span> {p.link.label}
                   </a>
@@ -112,7 +112,7 @@ export default async function HomePage({
                   <Link
                     // ponytail: el único link interno; si aparece otro, tipar Project.link.href
                     href={p.link.href as "/proyectos/notable-learning"}
-                    className="mt-5 inline-block font-mono text-small font-medium underline decoration-line underline-offset-[5px] transition-colors hover:text-copper hover:decoration-copper"
+                    className="mt-5 inline-block text-small font-medium underline decoration-line underline-offset-[5px] transition-colors hover:text-copper hover:decoration-copper"
                   >
                     <span aria-hidden="true" className="text-copper">→</span> {p.link.label}
                   </Link>
@@ -130,8 +130,8 @@ export default async function HomePage({
               <strong className="font-medium">{aiWorkflow.intro.lead}</strong>{" "}
               {aiWorkflow.intro.rest}
             </p>
-            <p className="text-muted">{aiWorkflow.highlight}</p>
-            <p className="text-muted">{aiWorkflow.honestyIntro}</p>
+            <p>{aiWorkflow.highlight}</p>
+            <p>{aiWorkflow.honestyIntro}</p>
           </div>
 
           {/* La pull quote es el segundo momento tipográfico del sitio. */}
@@ -188,7 +188,7 @@ export default async function HomePage({
                   </h3>
                   <p className="mt-0.5 font-mono text-micro text-muted">{job.location}</p>
                   {job.lines.map((line) => (
-                    <p key={line} className="mt-2 max-w-[56ch] text-small text-muted">
+                    <p key={line} className="mt-2 max-w-[56ch] text-small">
                       {line}
                     </p>
                   ))}
@@ -217,7 +217,7 @@ export default async function HomePage({
         {/* ── Contacto ───────────────────────────────────────── */}
         <section aria-labelledby={ui.sections.contact} className={`${container} ${sectionGap} scroll-mt-6 pb-20 sm:pb-24`} id={ui.sections.contact}>
           <SectionHeading id={`${ui.sections.contact}-h`} label={ui.sections.contact} />
-          <p className="mb-7 max-w-[55ch] text-body text-muted">
+          <p className="mb-7 max-w-[55ch] text-body">
             {ui.contact}
           </p>
           <a
