@@ -7,8 +7,8 @@
      con var(--lightningcss-light/dark) — cubre navegadores sin soporte, pero
      los tokens se resuelven en el elemento que los declara, no en el que los
      usa. El cobre se aclara en oscuro: #9c4a21 no llega a 4.5:1 sobre fondo
-     oscuro. Los ratios AA se verifican con axe sobre ambos esquemas en
-     tests/a11y.spec.ts. */
+     oscuro. Los ratios AA se verifican con axe (tests/a11y.spec.ts) y por
+     par en la matriz de tests/contrast.spec.ts, ambos en los dos temas. */
   --color-paper: light-dark(#f7f7f5, #1c1814);
   --color-ink: light-dark(#16181d, #eceae6);
   --color-muted: light-dark(#575c63, #a8a49d);
