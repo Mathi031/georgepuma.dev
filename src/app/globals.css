@@ -87,6 +87,21 @@
   }
 }
 
+/* Bloque invertido (papel sobre tinta): espejo exacto de la paleta con los
+   argumentos de light-dark() intercambiados. Se redeclara por token — girar
+   color-scheme no basta: el polyfill del build resuelve cada token en el
+   elemento que lo declara, y un color-scheme aquí además duplicaría sus
+   flags. Si cambia un hex en @theme, cambia también aquí; la matriz de
+   tests/contrast.spec.ts detecta cualquier desajuste. Una sola inversión
+   por página. */
+.inverted {
+  --color-paper: light-dark(#1c1814, #f7f7f5);
+  --color-ink: light-dark(#eceae6, #16181d);
+  --color-muted: light-dark(#a8a49d, #575c63);
+  --color-line: light-dark(#474135, #e4e3df);
+  --color-copper: light-dark(#d97b4a, #9c4a21);
+}
+
 html {
   scroll-behavior: smooth;
 }

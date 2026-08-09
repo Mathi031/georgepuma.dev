@@ -26,6 +26,9 @@ const pairs: Pair[] = [
   { fg: "--color-copper", bg: "--color-copper-surface", min: 4.5 },
   // Hover del CTA y ::selection: papel sobre cobre.
   { fg: "--color-paper", bg: "--color-copper", min: 4.5 },
+  // Bloque invertido de #ia: papel sobre tinta con el cobre del tema opuesto.
+  { fg: "--color-ink", bg: "--color-paper", scope: ".inverted", min: 4.5 },
+  { fg: "--color-copper", bg: "--color-paper", scope: ".inverted", min: 4.5 },
 ];
 
 function luminance(rgb: readonly [number, number, number]): number {

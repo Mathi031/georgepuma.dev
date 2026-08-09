@@ -163,13 +163,18 @@ export default async function HomePage({
             <p>{aiWorkflow.honestyIntro}</p>
           </div>
 
-          {/* La pull quote es el segundo momento tipográfico del sitio. */}
-          <blockquote className="mt-10 max-w-[36rem] sm:mt-12">
-            <span aria-hidden="true" className="mb-5 block h-0.5 w-9 bg-copper" />
-            <p className="display-md text-display-md font-medium leading-[1.45]">
-              {aiWorkflow.honestyQuote}
-            </p>
-          </blockquote>
+          {/* La pull quote es el segundo momento tipográfico del sitio — y el
+              único pico visual de la página: papel sobre tinta. bg-paper y
+              text-ink son obligatorios aquí: dentro de .inverted resuelven al
+              tema opuesto; lo heredado del body no se re-resuelve. */}
+          <div className="inverted mt-10 bg-paper px-6 py-8 text-ink sm:mt-12 sm:px-10 sm:py-10">
+            <blockquote className="max-w-[36rem]">
+              <span aria-hidden="true" className="mb-5 block h-0.5 w-9 bg-copper" />
+              <p className="display-md text-display-md font-medium leading-[1.45]">
+                {aiWorkflow.honestyQuote}
+              </p>
+            </blockquote>
+          </div>
 
           <div className="mt-10 sm:mt-12">
             <p className="mb-3.5 font-mono text-micro tracking-[0.04em] text-muted">
