@@ -14,6 +14,14 @@ export type Locale = "es" | "en";
 
 export type EvidenceItem = { value: string; source: string };
 
+export type ProjectImage = {
+  /** Ruta local bajo public/, p. ej. "/screenshots/cleo-spa.avif". */
+  src: string;
+  width: number;
+  height: number;
+  alt: string;
+};
+
 export type Project = {
   slug: string;
   name: string;
@@ -22,6 +30,8 @@ export type Project = {
   evidence: EvidenceItem[];
   stack: string[];
   link: { href: string; label: string; external: boolean };
+  /** Captura curada del producto. Opcional: la card no reserva hueco sin ella. */
+  image?: ProjectImage;
 };
 
 export type ExperienceItem = {
