@@ -5,13 +5,13 @@ type EvidenceProps = {
 
 /**
  * Ficha de evidencia — la firma visual del sitio.
- * Cada métrica se muestra junto a su fuente de verificación, enmarcada
- * por corchetes de calibración. Las esquinas cobre viven únicamente en
- * este componente: un dispositivo, un significado ("esto está verificado").
+ * Cada métrica se muestra junto a su fuente de verificación, enmarcada por
+ * los corchetes de calibración (.calibrated): un dispositivo, un significado
+ * ("esto está verificado"), compartido con las capturas reales de producto.
  */
 export function Evidence({ value, source }: EvidenceProps) {
   return (
-    <span className="evidence">
+    <span className="evidence calibrated">
       <span className="font-medium text-ink">{value}</span>
       <span aria-hidden="true" className="text-copper">
         ·

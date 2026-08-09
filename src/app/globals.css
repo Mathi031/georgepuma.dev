@@ -1,32 +1,105 @@
 @import "tailwindcss";
 
 @theme {
-  --color-paper: #f7f7f5;
-  --color-ink: #16181d;
-  --color-muted: #575c63;
-  --color-line: #e4e3df;
-  --color-copper: #9c4a21;
+  /* Paleta por token con light-dark(): cada hex se escribe una sola vez.
+     Sin override manda prefers-color-scheme (color-scheme: light dark en
+     :root). Ojo: el build (Lightning CSS) compila light-dark() a un polyfill
+     con var(--lightningcss-light/dark) — cubre navegadores sin soporte, pero
+     los tokens se resuelven en el elemento que los declara, no en el que los
+     usa. El cobre se aclara en oscuro: #9c4a21 no llega a 4.5:1 sobre fondo
+     oscuro. Los ratios AA se verifican con axe (tests/a11y.spec.ts) y por
+     par en la matriz de tests/contrast.spec.ts, ambos en los dos temas. */
+  --color-paper: light-dark(#f7f7f5, #1c1814);
+  --color-ink: light-dark(#16181d, #eceae6);
+  --color-muted: light-dark(#575c63, #a8a49d);
+  --color-line: light-dark(#e4e3df, #474135);
+  --color-copper: light-dark(#9c4a21, #d97b4a);
+  /* Superficie cobre: mix sRGB de copper sobre paper — 6% en claro, 10% en
+     oscuro, precalculado a hex fijo (determinista para tests y scripts).
+     Recalcular a mano si cambia copper o paper. */
+  --color-copper-surface: light-dark(#f2ede8, #2f2219);
 
   --font-sans: "Archivo Variable", system-ui, sans-serif;
   --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+
+  /* Escala tipográfica: seis voces y nada por debajo de micro.
+     --text-*: initial borra la escala por defecto de Tailwind — el contrato
+     es cerrado: si un tamaño no está aquí, no existe en el sitio. */
+  --text-*: initial;
+  --text-display: clamp(2.125rem, 5.8vw, 3.5rem);
+  --text-display--line-height: 1.05;
+  --text-display--letter-spacing: -0.02em;
+  --text-display-md: clamp(1.3125rem, 3vw, 1.75rem);
+  --text-display-md--line-height: 1.35;
+  --text-display-md--letter-spacing: -0.01em;
+  --text-title: 1.0625rem;
+  --text-title--line-height: 1.5;
+  --text-body: 1rem;
+  --text-body--line-height: 1.7;
+  --text-small: 0.90625rem;
+  --text-small--line-height: 1.65;
+  --text-micro: 0.78125rem;
+  --text-micro--line-height: 1.5;
 }
 
-/* Paleta oscura: mismos tokens semánticos, redefinidos según el esquema del
-   sistema (sin toggle manual). Los ratios AA están verificados por par en
-   tests/a11y.spec.ts (project "dark"). El cobre se aclara: #9c4a21 no llega
-   a 4.5:1 sobre fondo oscuro. */
 :root {
   color-scheme: light dark;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --color-paper: #1a1815;
-    --color-ink: #eceae6;
-    --color-muted: #a8a49d;
-    --color-line: #3a362f;
-    --color-copper: #d97b4a;
+/* Toggle manual de tema: el atributo fija color-scheme y la paleta
+   light-dark() se resuelve contra él (el polyfill del build añade sus
+   variables companion a cada regla con color-scheme, así que el override
+   funciona igual compilado). Sin atributo manda el sistema. */
+:root[data-theme="light"] {
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+}
+
+/* Transición de tema: solo colores, nunca bajo movimiento reducido. */
+@media (prefers-reduced-motion: no-preference) {
+  body {
+    transition:
+      background-color 160ms ease-out,
+      color 160ms ease-out;
   }
+}
+
+/* Glifos del toggle (sol/luna): única matriz media × atributo del sistema.
+   El botón no guarda estado; el CSS decide qué glifo se ve. */
+.theme-glyph-dark {
+  display: none;
+}
+:root[data-theme="dark"] .theme-glyph-light {
+  display: none;
+}
+:root[data-theme="dark"] .theme-glyph-dark {
+  display: inline-block;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) .theme-glyph-light {
+    display: none;
+  }
+  :root:not([data-theme]) .theme-glyph-dark {
+    display: inline-block;
+  }
+}
+
+/* Bloque invertido (papel sobre tinta): espejo exacto de la paleta con los
+   argumentos de light-dark() intercambiados. Se redeclara por token — girar
+   color-scheme no basta: el polyfill del build resuelve cada token en el
+   elemento que lo declara, y un color-scheme aquí además duplicaría sus
+   flags. Si cambia un hex en @theme, cambia también aquí; la matriz de
+   tests/contrast.spec.ts detecta cualquier desajuste. Una sola inversión
+   por página. */
+.inverted {
+  --color-paper: light-dark(#1c1814, #f7f7f5);
+  --color-ink: light-dark(#eceae6, #16181d);
+  --color-muted: light-dark(#a8a49d, #575c63);
+  --color-line: light-dark(#474135, #e4e3df);
+  --color-copper: light-dark(#d97b4a, #9c4a21);
 }
 
 html {
@@ -55,37 +128,44 @@ body {
   letter-spacing: -0.01em;
 }
 
-/* Ficha de evidencia: corchetes de calibración (variante 1c).
-   Este dispositivo vive SOLO aquí — un dispositivo, un significado. */
-.evidence {
+/* Corchetes de calibración: el dispositivo significa "material verificado".
+   Consumidores contados, un solo significado: las fichas de evidencia, el
+   marco de capturas reales (ScreenshotFrame) y las superficies ancla.
+   --corner-size escala las esquinas al tamaño del material. */
+.calibrated {
   position: relative;
-  display: inline-flex;
-  align-items: baseline;
-  gap: 7px;
-  font-family: var(--font-mono);
-  font-size: 12.5px;
-  line-height: 1;
-  padding: 9px 13px;
+  --corner-size: 8px;
 }
-.evidence::before {
+.calibrated::before {
   content: "";
   position: absolute;
   top: 0;
   left: 0;
-  width: 8px;
-  height: 8px;
+  width: var(--corner-size);
+  height: var(--corner-size);
   border-top: 1px solid var(--color-copper);
   border-left: 1px solid var(--color-copper);
 }
-.evidence::after {
+.calibrated::after {
   content: "";
   position: absolute;
   bottom: 0;
   right: 0;
-  width: 8px;
-  height: 8px;
+  width: var(--corner-size);
+  height: var(--corner-size);
   border-bottom: 1px solid var(--color-copper);
   border-right: 1px solid var(--color-copper);
+}
+
+/* Ficha de evidencia (variante 1c): compone .calibrated en el JSX. */
+.evidence {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 7px;
+  font-family: var(--font-mono);
+  font-size: var(--text-micro);
+  line-height: 1;
+  padding: 9px 13px;
 }
 
 ::selection {

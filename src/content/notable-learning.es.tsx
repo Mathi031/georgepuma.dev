@@ -18,9 +18,21 @@ export type CaseStudy = {
   pathSegments: [string, string];
   lead: ReactNode;
   chips: EvidenceItem[];
+  /**
+   * Ficha TL;DR: la lectura rápida del caso. Las filas cuentan problema,
+   * rol y escala; el resultado lo afirman las chips (voz de evidencia) —
+   * mismo dato, una sola vez.
+   */
+  tldr: { heading: string; rows: { term: string; text: string }[]; resultTerm: string };
   context: SectionText & { body: ReactNode[] };
   decision: SectionText & { intro: ReactNode; principles: Item[]; outro: ReactNode };
-  war: SectionText & { intro: ReactNode; layers: (Item & { label: string })[]; after: ReactNode[] };
+  war: SectionText & {
+    intro: ReactNode;
+    layers: (Item & { label: string })[];
+    /** Copy de la figura del pipeline (PipelineFigure); los pasos son las capas. */
+    figure: { title: string; desc: string; resolution: string };
+    after: ReactNode[];
+  };
   guards: SectionText & { body: ReactNode; quote: string };
   better: SectionText & { body: ReactNode };
   close: SectionText & { body: ReactNode; backHref: string; backLabel: string };
@@ -53,6 +65,24 @@ export const caseStudy: CaseStudy = {
     { value: "entregado en fecha", source: "12 jun 2026" },
     { value: "WCAG 2.1 AA", source: "jest-axe" },
   ],
+  tldr: {
+    heading: "resumen",
+    rows: [
+      {
+        term: "problema",
+        text: "Editor de contenido y pipeline de archivos para un LMS K-12 con datos de menores.",
+      },
+      {
+        term: "rol",
+        text: "Principal contribuidor: frontend completo y capa de API, con entregas semanales revisadas por el CTO.",
+      },
+      {
+        term: "escala",
+        text: "500+ escuelas en 10 países · esquema de 29 entidades · RBAC de 5 roles · FERPA.",
+      },
+    ],
+    resultTerm: "resultado",
+  },
   context: {
     id: "contexto",
     heading: "Contexto y rol",
@@ -154,6 +184,11 @@ export const caseStudy: CaseStudy = {
         text: "CORS es el mecanismo con el que el navegador decide si una página puede leer datos de otro dominio; cada petición lleva un header Origin que identifica quién la hace. La trampa: react-pdf descarga el documento con un fetch sujeto a CORS, y cuando ese fetch es redirigido hacia otro dominio, la especificación obliga al navegador a reemplazar el Origin por la palabra “null” — una marca deliberada de “este origen ya no es confiable tras el redirect”. Y ningún servidor puede dar permiso a “null” de forma segura, porque ese mismo valor lo usan las páginas abiertas desde archivos locales y los iframes aislados. La petición contra la URL firmada moría siempre, sin importar cuán correcta fuera la configuración del bucket. Por eso imágenes y videos nunca fallaron: img y video descargan su contenido en un modo relajado (no-cors) al que esa regla no aplica.",
       },
     ],
+    figure: {
+      title: "Las cuatro capas del PDF que no renderizaba",
+      desc: "Cada arreglo destapaba la capa siguiente: metadata del objeto, CSP, una hipótesis propia revertida, y la causa raíz en CORS. La salida: un proxy de streaming.",
+      resolution: "proxy de streaming",
+    },
     after: [
       <>
         La conclusión de la capa 4 fue que el problema no se podía arreglar

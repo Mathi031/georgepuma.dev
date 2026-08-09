@@ -9,6 +9,7 @@ export const ui = {
   skipLink: "Saltar al contenido",
   sectionsAria: "Secciones",
   langAria: "Idioma",
+  themeAria: "Cambiar tema",
   // Los valores son a la vez id de sección (ancla) y etiqueta visible.
   sections: {
     projects: "proyectos",
@@ -47,24 +48,47 @@ export const hero = {
   ] satisfies EvidenceItem[],
 };
 
-export const projects: Project[] = [
-  {
-    slug: "notable-learning",
-    name: "Notable Learning",
-    role: "Principal contribuidor · Feb – Jun 2026",
-    summary:
-      "LMS institucional K-12 para 500+ escuelas en EE.UU. y 10 países. Frontend completo y capa de API: editor de contenido, video, RBAC de 5 roles y cumplimiento FERPA sobre un esquema de 29 entidades.",
-    evidence: [
-      { value: "entregado en fecha", source: "jun 2026" },
-      { value: "FERPA", source: "datos de menores" },
-    ],
-    stack: ["TypeScript", "React 19", "Next.js 16", "Prisma", "PostgreSQL", "GCS", "Mux"],
-    link: {
-      href: "/proyectos/notable-learning",
-      label: "Leer el caso de estudio",
-      external: false,
-    },
+/**
+ * Proyecto ancla: Notable Learning ordena la lectura de /proyectos y se
+ * renderiza aparte (bloque a ancho completo). Export separado para no
+ * indexar con noUncheckedIndexedAccess. Su ficha suma las evidencias del
+ * caso de estudio — nada que no esté ya publicado.
+ */
+export const anchorProject: Project = {
+  slug: "notable-learning",
+  name: "Notable Learning",
+  role: "Principal contribuidor · Feb – Jun 2026",
+  summary:
+    "LMS institucional K-12 para 500+ escuelas en EE.UU. y 10 países. Frontend completo y capa de API: editor de contenido, video, RBAC de 5 roles y cumplimiento FERPA sobre un esquema de 29 entidades.",
+  evidence: [
+    { value: "500+ escuelas", source: "10 países" },
+    { value: "380+ commits", source: "100+ tickets" },
+    { value: "entregado en fecha", source: "jun 2026" },
+    { value: "FERPA", source: "datos de menores" },
+  ],
+  stack: ["TypeScript", "React 19", "Next.js 16", "Prisma", "PostgreSQL", "GCS", "Mux"],
+  link: {
+    href: "/proyectos/notable-learning",
+    label: "Leer el caso de estudio",
+    external: false,
   },
+};
+
+/**
+ * Copy de la figura del esquema (SchemaFigure). Solo datos ya publicados en
+ * el resumen y el caso de estudio; los roles no se nombran (NDA).
+ */
+export const schemaFigure = {
+  title: "Esquema del sistema de Notable Learning",
+  desc: "LMS multi-institución: 500+ escuelas en 10 países sobre un esquema de 29 entidades, con RBAC de 5 roles y cumplimiento FERPA.",
+  labels: {
+    schema: "29 entidades",
+    rbac: "RBAC · 5 roles",
+    compliance: "FERPA",
+  },
+};
+
+export const gridProjects: Project[] = [
   {
     slug: "cleo-spa",
     name: "Cleo Spa",
@@ -134,6 +158,9 @@ export const projects: Project[] = [
     },
   },
 ];
+
+/** Forma completa, ancla primero — conserva el contrato Record<Locale, typeof es>. */
+export const projects: Project[] = [anchorProject, ...gridProjects];
 
 export const experience: ExperienceItem[] = [
   {

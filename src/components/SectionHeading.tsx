@@ -11,7 +11,7 @@ type SectionHeadingProps = {
 export function SectionHeading({ id, label }: SectionHeadingProps) {
   return (
     <div className="mb-8 flex items-center gap-4 sm:mb-10">
-      <h2 id={id} className="font-mono text-[13px] font-medium tracking-[0.02em]">
+      <h2 id={id} className="font-mono text-micro font-medium tracking-[0.02em]">
         <span aria-hidden="true" className="text-copper">
           /
         </span>
