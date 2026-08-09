@@ -9,6 +9,7 @@ export const ui = {
   skipLink: "Saltar al contenido",
   sectionsAria: "Secciones",
   langAria: "Idioma",
+  themeAria: "Cambiar tema",
   // Los valores son a la vez id de sección (ancla) y etiqueta visible.
   sections: {
     projects: "proyectos",

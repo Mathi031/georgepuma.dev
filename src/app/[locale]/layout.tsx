@@ -57,12 +57,23 @@ export default async function LocaleLayout({
   }
   setRequestLocale(locale);
   // La CSP usa un nonce por request (middleware): el HTML no puede
-  // prerenderizarse. Leer headers() fuerza el render dinámico.
-  await headers();
+  // prerenderizarse, y el script inline del tema debe llevar ese nonce.
+  const nonce = (await headers()).get("x-nonce") ?? undefined;
 
   return (
-    <html lang={locale}>
+    // suppressHydrationWarning: el script del tema añade data-theme a <html>
+    // antes de que React hidrate; el atributo no viene del servidor.
+    <html lang={locale} suppressHydrationWarning>
       <body className="font-sans antialiased">
+        {/* Aplica la elección guardada antes del primer paint (sin FOUC).
+            Sin elección guardada no fija nada: manda prefers-color-scheme. */}
+        <script
+          nonce={nonce}
+          dangerouslySetInnerHTML={{
+            __html:
+              'try{var t=localStorage.getItem("theme");if(t==="light"||t==="dark")document.documentElement.dataset.theme=t}catch(e){}',
+          }}
+        />
         <a
           href="#contenido"
           className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:bg-paper focus:text-ink focus:px-4 focus:py-2"

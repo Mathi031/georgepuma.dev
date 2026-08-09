@@ -46,6 +46,47 @@
   color-scheme: light dark;
 }
 
+/* Toggle manual de tema: el atributo fija color-scheme y la paleta
+   light-dark() se resuelve contra él (el polyfill del build añade sus
+   variables companion a cada regla con color-scheme, así que el override
+   funciona igual compilado). Sin atributo manda el sistema. */
+:root[data-theme="light"] {
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+}
+
+/* Transición de tema: solo colores, nunca bajo movimiento reducido. */
+@media (prefers-reduced-motion: no-preference) {
+  body {
+    transition:
+      background-color 160ms ease-out,
+      color 160ms ease-out;
+  }
+}
+
+/* Glifos del toggle (sol/luna): única matriz media × atributo del sistema.
+   El botón no guarda estado; el CSS decide qué glifo se ve. */
+.theme-glyph-dark {
+  display: none;
+}
+:root[data-theme="dark"] .theme-glyph-light {
+  display: none;
+}
+:root[data-theme="dark"] .theme-glyph-dark {
+  display: inline-block;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) .theme-glyph-light {
+    display: none;
+  }
+  :root:not([data-theme]) .theme-glyph-dark {
+    display: inline-block;
+  }
+}
+
 html {
   scroll-behavior: smooth;
 }

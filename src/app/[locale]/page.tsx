@@ -2,6 +2,7 @@ import { setRequestLocale } from "next-intl/server";
 import { Evidence } from "@/components/Evidence";
 import { LocaleSwitcher } from "@/components/LocaleSwitcher";
 import { SectionHeading } from "@/components/SectionHeading";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import { content, identity, type Locale } from "@/content/site";
 import { Link } from "@/i18n/navigation";
 
@@ -30,6 +31,7 @@ export default async function HomePage({
             ))}
           </nav>
           <LocaleSwitcher locale={locale as Locale} href="/" aria={ui.langAria} />
+          <ThemeToggle aria={ui.themeAria} />
         </div>
       </header>
 
