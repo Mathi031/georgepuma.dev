@@ -31,7 +31,7 @@ export function LocaleSwitcher({ locale, href, aria }: LocaleSwitcherProps) {
     );
 
   return (
-    <nav aria-label={aria} className="font-mono text-[12.5px]">
+    <nav aria-label={aria} className="font-mono text-micro">
       {item("es")}
       <span aria-hidden="true" className="text-muted"> / </span>
       {item("en")}

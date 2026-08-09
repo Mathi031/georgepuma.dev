@@ -21,6 +21,25 @@
 
   --font-sans: "Archivo Variable", system-ui, sans-serif;
   --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+
+  /* Escala tipográfica: seis voces y nada por debajo de micro.
+     --text-*: initial borra la escala por defecto de Tailwind — el contrato
+     es cerrado: si un tamaño no está aquí, no existe en el sitio. */
+  --text-*: initial;
+  --text-display: clamp(2.125rem, 5.8vw, 3.5rem);
+  --text-display--line-height: 1.05;
+  --text-display--letter-spacing: -0.02em;
+  --text-display-md: clamp(1.3125rem, 3vw, 1.75rem);
+  --text-display-md--line-height: 1.35;
+  --text-display-md--letter-spacing: -0.01em;
+  --text-title: 1.0625rem;
+  --text-title--line-height: 1.5;
+  --text-body: 1rem;
+  --text-body--line-height: 1.7;
+  --text-small: 0.90625rem;
+  --text-small--line-height: 1.65;
+  --text-micro: 0.78125rem;
+  --text-micro--line-height: 1.5;
 }
 
 :root {
@@ -61,7 +80,7 @@ body {
   align-items: baseline;
   gap: 7px;
   font-family: var(--font-mono);
-  font-size: 12.5px;
+  font-size: var(--text-micro);
   line-height: 1;
   padding: 9px 13px;
 }
