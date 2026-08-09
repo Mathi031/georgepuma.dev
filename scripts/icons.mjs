@@ -16,14 +16,12 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import sharp from "sharp";
 import pngToIco from "png-to-ico";
+import { tokens } from "./tokens.mjs";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const app = join(root, "src/app");
 
-// ponytail: tokens duplicados de src/app/globals.css @theme (igual que og.mjs).
-const paper = "#f7f7f5";
-const ink = "#16181d";
-const copper = "#9c4a21";
+const { paper, ink, copper } = tokens.light;
 
 // "G" de Archivo, unitsPerEm 1000, coordenadas y-up (bbox x 60..905, y -12..699).
 const G_PATH =

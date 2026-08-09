@@ -11,6 +11,7 @@ import { chromium } from "@playwright/test"; // NO "playwright": no resuelve con
 import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
+import { tokens } from "./tokens.mjs";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const outDir = join(root, "src/app/[locale]");
@@ -21,21 +22,30 @@ const font = (p) =>
 const archivo = font("@fontsource-variable/archivo/files/archivo-latin-wdth-normal.woff2");
 const mono = font("@fontsource/ibm-plex-mono/files/ibm-plex-mono-latin-400-normal.woff2");
 
-// ponytail: tokens duplicados de src/app/globals.css @theme. Si aparece un tercer
-// consumidor, extraer a un módulo TS compartido.
-const paper = "#f7f7f5";
-const ink = "#16181d";
-const muted = "#575c63";
-const copper = "#9c4a21";
+const { paper, ink, muted, copper } = tokens.light;
 
-// es: espejo de hero.headline / hero.thesis en src/content/site.ts
-// en: solo vive aquí — el hero del sitio aún se renderiza en español en /en
+// es: espejo de hero.headline / hero.thesis / hero.evidence en src/content.
+// en: solo vive aquí — el sitio aún se renderiza en español en /en.
 const COPY = {
-  es: { headline: "Construyo productos web que llegan a producción", thesis: "Y puedo demostrarlo." },
-  en: { headline: "I build web products that ship to production", thesis: "And I can prove it." },
+  es: {
+    headline: "Construyo productos web que llegan a producción",
+    thesis: "Y puedo demostrarlo.",
+    chips: [
+      { value: "500+ escuelas", source: "LMS en producción" },
+      { value: "WCAG 2.1 AA", source: "requisito contractual" },
+    ],
+  },
+  en: {
+    headline: "I build web products that ship to production",
+    thesis: "And I can prove it.",
+    chips: [
+      { value: "500+ schools", source: "LMS in production" },
+      { value: "WCAG 2.1 AA", source: "contractual requirement" },
+    ],
+  },
 };
 
-const html = ({ headline, thesis }) => `<!doctype html>
+const html = ({ headline, thesis, chips }) => `<!doctype html>
 <html><head><meta charset="utf-8"><style>
   @font-face {
     font-family: "Archivo Variable";
@@ -75,10 +85,35 @@ const html = ({ headline, thesis }) => `<!doctype html>
     text-decoration-thickness: 2px;
     text-underline-offset: 8px;
   }
+  /* Fichas de evidencia: los corchetes de calibración del sitio (.calibrated)
+     entran a la tarjeta OG — la firma visual llega antes que la visita. */
+  .chips { display: flex; gap: 22px; margin-top: 40px; }
+  .chip {
+    position: relative; display: inline-flex; align-items: baseline; gap: 10px;
+    font-family: "IBM Plex Mono", monospace; font-size: 20px; line-height: 1;
+    padding: 14px 19px;
+  }
+  .chip::before {
+    content: ""; position: absolute; top: 0; left: 0; width: 12px; height: 12px;
+    border-top: 1.5px solid ${copper}; border-left: 1.5px solid ${copper};
+  }
+  .chip::after {
+    content: ""; position: absolute; bottom: 0; right: 0; width: 12px; height: 12px;
+    border-bottom: 1.5px solid ${copper}; border-right: 1.5px solid ${copper};
+  }
+  .chip .src { color: ${muted}; }
 </style></head>
 <body>
   <p class="mono">George Puma</p>
-  <h1>${headline}<span class="dot">.</span><br><span class="thesis">${thesis}</span></h1>
+  <div>
+    <h1>${headline}<span class="dot">.</span><br><span class="thesis">${thesis}</span></h1>
+    <div class="chips">${chips
+      .map(
+        (c) =>
+          `<span class="chip">${c.value} <span class="dot">·</span> <span class="src">${c.source}</span></span>`,
+      )
+      .join("")}</div>
+  </div>
   <p class="mono">georgepuma.dev</p>
 </body></html>`;
 
