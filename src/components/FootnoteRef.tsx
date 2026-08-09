@@ -11,7 +11,7 @@ export function FootnoteRef({ n, aria }: FootnoteRefProps) {
       href={`#nota-${n}`}
       id={`ref-${n}`}
       aria-label={aria}
-      className="ml-0.5 align-super font-mono text-[11px] text-copper no-underline"
+      className="ml-0.5 align-super font-mono text-micro leading-none text-copper no-underline"
     >
       {n}
     </a>
