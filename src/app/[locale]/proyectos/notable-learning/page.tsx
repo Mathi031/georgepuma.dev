@@ -35,6 +35,25 @@ const h2 = "display-md text-display-md font-semibold";
 const body = "text-body leading-[1.75] max-w-[65ch]";
 const sectionGap = "mt-14 sm:mt-16";
 
+/**
+ * Encabezado de sección del caso: kicker de ruta (eco del dispositivo
+ * SectionHeading/breadcrumb) sobre el titular narrativo. El kicker es
+ * decorativo — el outline de accesibilidad lo llevan los h2.
+ */
+function CaseHeading({ id, heading }: { id: string; heading: string }) {
+  return (
+    <>
+      <p aria-hidden="true" className="mb-2 font-mono text-micro text-muted">
+        <span className="text-copper">/</span>
+        {id}
+      </p>
+      <h2 id={id} className={h2}>
+        {heading}
+      </h2>
+    </>
+  );
+}
+
 export default async function NotableLearningPage({
   params,
 }: {
@@ -43,6 +62,7 @@ export default async function NotableLearningPage({
   const { locale } = await params;
   setRequestLocale(locale);
   const c = content[locale as Locale];
+  const s = site[locale as Locale];
 
   return (
     <>
@@ -58,9 +78,9 @@ export default async function NotableLearningPage({
           <LocaleSwitcher
             locale={locale as Locale}
             href="/proyectos/notable-learning"
-            aria={site[locale as Locale].ui.langAria}
+            aria={s.ui.langAria}
           />
-          <ThemeToggle aria={site[locale as Locale].ui.themeAria} />
+          <ThemeToggle aria={s.ui.themeAria} />
         </div>
       </header>
 
@@ -76,19 +96,42 @@ export default async function NotableLearningPage({
             <p className="mt-5 max-w-[60ch] text-title leading-[1.7]">
               {c.lead}
             </p>
-            <div className="mt-6 flex flex-wrap gap-2.5">
-              {c.chips.map((chip) => (
-                <Evidence key={chip.value} value={chip.value} source={chip.source} />
-              ))}
-            </div>
+            {/* Ficha TL;DR: la lectura de cinco segundos del caso — y su
+                momento cobre. El resultado lo afirman las chips. */}
+            <section
+              aria-label={c.tldr.heading}
+              className="calibrated mt-8 bg-copper-surface px-6 py-3 [--corner-size:18px] sm:px-8 sm:py-4"
+            >
+              <dl>
+                {c.tldr.rows.map((row) => (
+                  <div
+                    key={row.term}
+                    className="grid gap-1 border-b border-line py-3.5 sm:grid-cols-[7rem_1fr] sm:gap-6"
+                  >
+                    <dt className="font-mono text-micro leading-[1.7] text-muted">{row.term}</dt>
+                    <dd className="text-small">{row.text}</dd>
+                  </div>
+                ))}
+                <div className="grid gap-2 py-3.5 sm:grid-cols-[7rem_1fr] sm:gap-6">
+                  <dt className="font-mono text-micro leading-[1.7] text-muted">
+                    {c.tldr.resultTerm}
+                  </dt>
+                  <dd className="flex flex-wrap gap-2.5">
+                    {c.chips.map((chip) => (
+                      <Evidence key={chip.value} value={chip.value} source={chip.source} />
+                    ))}
+                  </dd>
+                </div>
+              </dl>
+            </section>
             <p className="mt-6 font-mono text-micro leading-[1.8] text-muted">
-              TypeScript · React 19 · Next.js 16 · Prisma · PostgreSQL · GCS · Mux
+              {s.anchorProject.stack.join(" · ")}
             </p>
             <div className="mt-10 h-px bg-line sm:mt-12" />
           </header>
 
           <section className={sectionGap} aria-labelledby={c.context.id}>
-            <h2 id={c.context.id} className={h2}>{c.context.heading}</h2>
+            <CaseHeading id={c.context.id} heading={c.context.heading} />
             <div className={`mt-4 space-y-4 ${body}`}>
               {c.context.body.map((paragraph, i) => (
                 <p key={i}>{paragraph}</p>
@@ -97,7 +140,7 @@ export default async function NotableLearningPage({
           </section>
 
           <section className={sectionGap} aria-labelledby={c.decision.id}>
-            <h2 id={c.decision.id} className={h2}>{c.decision.heading}</h2>
+            <CaseHeading id={c.decision.id} heading={c.decision.heading} />
             <p className={`mt-4 ${body}`}>{c.decision.intro}</p>
             <ol className="mt-6">
               {c.decision.principles.map((p, i) => (
@@ -116,7 +159,7 @@ export default async function NotableLearningPage({
           </section>
 
           <section className={sectionGap} aria-labelledby={c.war.id}>
-            <h2 id={c.war.id} className={h2}>{c.war.heading}</h2>
+            <CaseHeading id={c.war.id} heading={c.war.heading} />
             <p className={`mt-4 ${body}`}>{c.war.intro}</p>
             <ul className="mt-6">
               {c.war.layers.map((l, i) => (
@@ -135,7 +178,7 @@ export default async function NotableLearningPage({
           </section>
 
           <section className={sectionGap} aria-labelledby={c.guards.id}>
-            <h2 id={c.guards.id} className={h2}>{c.guards.heading}</h2>
+            <CaseHeading id={c.guards.id} heading={c.guards.heading} />
             <p className={`mt-4 ${body}`}>{c.guards.body}</p>
             <blockquote className="mt-10 max-w-[56ch]">
               <span aria-hidden="true" className="mb-5 block h-0.5 w-9 bg-copper" />
@@ -146,12 +189,12 @@ export default async function NotableLearningPage({
           </section>
 
           <section className={sectionGap} aria-labelledby={c.better.id}>
-            <h2 id={c.better.id} className={h2}>{c.better.heading}</h2>
+            <CaseHeading id={c.better.id} heading={c.better.heading} />
             <p className={`mt-4 ${body}`}>{c.better.body}</p>
           </section>
 
           <section className={sectionGap} aria-labelledby={c.close.id}>
-            <h2 id={c.close.id} className={h2}>{c.close.heading}</h2>
+            <CaseHeading id={c.close.id} heading={c.close.heading} />
             <p className={`mt-4 mb-7 ${body}`}>{c.close.body}</p>
             {/* href con prefijo de locale hardcodeado en el contenido; <a> plano. */}
             <a
