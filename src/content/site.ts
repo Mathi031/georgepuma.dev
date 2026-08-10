@@ -15,8 +15,13 @@ export type Locale = "es" | "en";
 export type EvidenceItem = { value: string; source: string };
 
 export type ProjectImage = {
-  /** Ruta local bajo public/, p. ej. "/screenshots/cleo-spa.avif". */
+  /**
+   * Fallback bajo public/, p. ej. "/screenshots/cleo-spa.webp". WebP y no
+   * PNG: lo entiende todo navegador que ejecute este sitio, y pesa la mitad.
+   */
   src: string;
+  /** AVIF del mismo render, preferido por <picture>. Lo emite `pnpm images`. */
+  avif?: string;
   width: number;
   height: number;
   alt: string;

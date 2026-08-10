@@ -37,6 +37,24 @@ pnpm build
 pnpm test:a11y  # requiere build previo
 ```
 
+### Assets generados
+
+Tres scripts producen assets que se commitean; ninguno corre en el build.
+
+```bash
+pnpm icons   # favicon.ico, icon.svg, apple-icon.png
+pnpm og      # Open Graph images por locale
+pnpm images  # capturas de proyecto: raw/*.png → public/screenshots/*.{avif,webp}
+```
+
+`pnpm images` lee las capturas sin comprimir de `raw/` (ignorada por git: pesan
+MB y solo hacen falta para regenerar), las recorta a la proporción del render
+—16:10 para las tarjetas del grid, para que las filas no se desalineen— y
+comprime bajando la calidad hasta entrar en un presupuesto de 120 KB por
+archivo. Al terminar imprime el campo `image` con las dimensiones reales, listo
+para pegar en `src/content/site.*.ts`; el `alt` se escribe a mano porque es
+contenido, no metadato de build.
+
 ## Estructura
 
 ```
