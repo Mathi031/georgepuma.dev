@@ -105,6 +105,13 @@ export const gridProjects: Project[] = [
       label: "Ver el sitio en vivo",
       external: true,
     },
+    image: {
+      src: "/screenshots/cleo-spa.webp",
+      avif: "/screenshots/cleo-spa.avif",
+      width: 768,
+      height: 384,
+      alt: "Portada del catálogo público: titular sobre el diagnóstico previo al servicio, con botón para reservar cita.",
+    },
   },
   {
     slug: "ronatello",
@@ -121,6 +128,13 @@ export const gridProjects: Project[] = [
       href: "https://ronatello.pe",
       label: "Ver el sitio en vivo",
       external: true,
+    },
+    image: {
+      src: "/screenshots/ronatello.webp",
+      avif: "/screenshots/ronatello.avif",
+      width: 768,
+      height: 384,
+      alt: "Página de promociones: tarjetas de combos con precio, estado de disponibilidad y botón para pedir por WhatsApp.",
     },
   },
   {
@@ -139,6 +153,13 @@ export const gridProjects: Project[] = [
       label: "Ver el demo en vivo",
       external: true,
     },
+    image: {
+      src: "/screenshots/studio-equilibrio.webp",
+      avif: "/screenshots/studio-equilibrio.avif",
+      width: 768,
+      height: 384,
+      alt: "Portada del estudio: titular sobre la reserva de clases, filtros por disciplina y contador de disciplinas y coaches.",
+    },
   },
   {
     slug: "projsync",
@@ -155,6 +176,13 @@ export const gridProjects: Project[] = [
       href: "https://github.com/Mathi031/projsync",
       label: "Ver el repositorio",
       external: true,
+    },
+    image: {
+      src: "/screenshots/projsync.webp",
+      avif: "/screenshots/projsync.avif",
+      width: 768,
+      height: 384,
+      alt: "Repositorio en GitHub: árbol de archivos del proyecto en Go y comienzo del README que describe la sincronización cifrada.",
     },
   },
 ];

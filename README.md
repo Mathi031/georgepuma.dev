@@ -49,9 +49,9 @@ pnpm images  # capturas de proyecto: raw/*.png → public/screenshots/*.{avif,we
 
 `pnpm images` lee las capturas sin comprimir de `raw/` (ignorada por git: pesan
 MB y solo hacen falta para regenerar), las recorta a la proporción del render
-—16:10 para las tarjetas del grid, para que las filas no se desalineen— y
-comprime bajando la calidad hasta entrar en un presupuesto de 120 KB por
-archivo. Al terminar imprime el campo `image` con las dimensiones reales, listo
+—2:1 para las tarjetas del grid, que es la del pliegue real de las capturas y
+mantiene las filas alineadas— y comprime bajando la calidad hasta entrar en un
+presupuesto de 120 KB por archivo. Al terminar imprime el campo `image` con las dimensiones reales, listo
 para pegar en `src/content/site.*.ts`; el `alt` se escribe a mano porque es
 contenido, no metadato de build.
 
