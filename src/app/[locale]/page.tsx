@@ -10,6 +10,8 @@ import { Link } from "@/i18n/navigation";
 
 const container = "mx-auto max-w-[880px] px-5 sm:px-9";
 const sectionGap = "pt-24 sm:pt-32";
+const cardLink =
+  "mt-4 inline-block text-small font-medium underline decoration-line underline-offset-[5px] transition-colors hover:text-copper hover:decoration-copper";
 
 export default async function HomePage({
   params,
@@ -139,13 +141,21 @@ export default async function HomePage({
                 <p className="mt-4 font-mono text-micro leading-[1.8] text-muted">
                   {p.stack.join(" · ")}
                 </p>
-                <a
-                  href={p.link.href}
-                  rel="noopener"
-                  className="mt-4 inline-block text-small font-medium underline decoration-line underline-offset-[5px] transition-colors hover:text-copper hover:decoration-copper"
-                >
-                  <span aria-hidden="true" className="text-copper">↗</span> {p.link.label}
-                </a>
+                {/* La flecha distingue el destino sin depender del color:
+                    ↗ sale del sitio, → se queda dentro. */}
+                {p.link.external ? (
+                  <a
+                    href={p.link.href}
+                    rel="noopener"
+                    className={cardLink}
+                  >
+                    <span aria-hidden="true" className="text-copper">↗</span> {p.link.label}
+                  </a>
+                ) : (
+                  <Link href={p.link.href} className={cardLink}>
+                    <span aria-hidden="true" className="text-copper">→</span> {p.link.label}
+                  </Link>
+                )}
               </li>
             ))}
           </ul>

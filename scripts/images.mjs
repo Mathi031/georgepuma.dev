@@ -27,8 +27,9 @@ const MAX_BYTES = 120 * 1024;
  * Anchos de render, derivados del layout real (container max-w 880 con
  * px-9 → 808 de contenido; ScreenshotFrame añade p-2.5 → 20):
  *
- *   card  → grid sm:grid-cols-2 con gap-x-10 → columna 384, imagen 364 → 2x
- *   frame → ancho completo del contenedor → imagen 788 → 2x
+ *   card   → grid sm:grid-cols-2 con gap-x-10 → columna 384, imagen 364 → 2x
+ *   frame  → ancho completo del contenedor del home → imagen 788 → 2x
+ *   screen → artículo de caso (max-w-720 con px-9) → imagen 628 → 2x
  *
  * `card` recorta a 2:1: las cuatro tarjetas del grid deben compartir
  * proporción o las filas se desalinean, y 2:1 es la proporción del pliegue
@@ -39,6 +40,7 @@ const MAX_BYTES = 120 * 1024;
 const TARGETS = {
   card: { width: 768, aspect: 2 },
   frame: { width: 1600, aspect: null },
+  screen: { width: 1280, aspect: null },
 };
 
 /**
@@ -56,6 +58,12 @@ const SOURCES = [
   { in: "ronatello.png", out: "ronatello", target: "card" },
   { in: "studio-equilibrio.png", out: "studio-equilibrio", target: "card" },
   { in: "projsync.png", out: "projsync", target: "card" },
+
+  // Pantallas del panel, para los mini-casos. A ancho completo y sin recorte:
+  // aquí la evidencia es la densidad de la tabla, no el encuadre.
+  { in: "cleo-spa-movimientos.png", out: "cleo-spa-movimientos", target: "screen" },
+  { in: "cleo-spa-usuarios.png", out: "cleo-spa-usuarios", target: "screen" },
+  { in: "cleo-spa-catalogo.png", out: "cleo-spa-catalogo", target: "screen" },
 ];
 
 const CODECS = [

@@ -88,31 +88,40 @@ export const schemaFigure = {
   },
 };
 
-export const gridProjects: Project[] = [
-  {
-    slug: "cleo-spa",
-    name: "Cleo Spa",
-    role: "Cliente directo · en producción",
-    summary:
-      "Inventario, catálogo público y reservas para un salón de belleza en Arequipa: ledger de stock inmutable con lotes FEFO, RLS default-deny en 16 tablas y panel con tres roles operativos (dueña, cajera, estilista). La herramienta que el personal usa a diario — no una vitrina.",
-    evidence: [
-      { value: "ledger insert-only", source: "correcciones = ajustes" },
-      { value: "3 roles", source: "permisos en BD y app" },
-    ],
-    stack: ["Next.js 16", "React 19", "TypeScript", "Tailwind v4", "Supabase", "Zod", "Vitest"],
-    link: {
-      href: "https://cleospa.pe",
-      label: "Ver el sitio en vivo",
-      external: true,
-    },
-    image: {
-      src: "/screenshots/cleo-spa.webp",
-      avif: "/screenshots/cleo-spa.avif",
-      width: 768,
-      height: 384,
-      alt: "Portada del catálogo público: titular sobre el diagnóstico previo al servicio, con botón para reservar cita.",
-    },
+/**
+ * Los proyectos con mini-caso propio se exportan sueltos: su página los
+ * necesita completos (fichas, stack, enlace en vivo) y buscarlos por slug
+ * en el array devolvería `Project | undefined` bajo noUncheckedIndexedAccess.
+ * Mismo motivo que `anchorProject`.
+ */
+export const cleoSpa: Project = {
+  slug: "cleo-spa",
+  name: "Cleo Spa",
+  role: "Cliente directo · en producción",
+  summary:
+    "Inventario, catálogo público y reservas para un salón de belleza en Arequipa: ledger de stock inmutable con lotes FEFO, RLS default-deny en 16 tablas y panel con tres roles operativos (dueña, cajera, estilista). La herramienta que el personal usa a diario — no una vitrina.",
+  evidence: [
+    { value: "ledger insert-only", source: "correcciones = ajustes" },
+    { value: "3 roles", source: "permisos en BD y app" },
+  ],
+  stack: ["Next.js 16", "React 19", "TypeScript", "Tailwind v4", "Supabase", "Zod", "Vitest"],
+  // La tarjeta lleva al mini-caso; el enlace al sitio en vivo vive dentro.
+  link: {
+    href: "/proyectos/cleo-spa",
+    label: "Leer el mini-caso",
+    external: false,
   },
+  image: {
+    src: "/screenshots/cleo-spa.webp",
+    avif: "/screenshots/cleo-spa.avif",
+    width: 768,
+    height: 384,
+    alt: "Portada del catálogo público: titular sobre el diagnóstico previo al servicio, con botón para reservar cita.",
+  },
+};
+
+export const gridProjects: Project[] = [
+  cleoSpa,
   {
     slug: "ronatello",
     name: "Ronatello",

@@ -8,8 +8,10 @@ import { expect, test } from "@playwright/test";
 const pages = [
   "/",
   "/proyectos/notable-learning",
+  "/proyectos/cleo-spa",
   "/en",
   "/en/projects/notable-learning",
+  "/en/projects/cleo-spa",
 ];
 
 for (const path of pages) {
