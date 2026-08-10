@@ -7,20 +7,41 @@
  * hace que typecheck falle si a un locale le falta una clave.
  */
 
+import { routing } from "@/i18n/routing";
 import * as es from "./site.es";
 import * as en from "./site.en";
 
 export type Locale = "es" | "en";
 
+/**
+ * Rutas que next-intl sabe traducir. El enlace de un proyecto o apunta a una
+ * de estas —y entonces lo renderiza <Link>, que le pone el prefijo de
+ * locale— o sale del sitio.
+ */
+export type InternalRoute = keyof typeof routing.pathnames;
+
 export type EvidenceItem = { value: string; source: string };
 
 export type ProjectImage = {
-  /** Ruta local bajo public/, p. ej. "/screenshots/cleo-spa.avif". */
+  /**
+   * Fallback bajo public/, p. ej. "/screenshots/cleo-spa.webp". WebP y no
+   * PNG: lo entiende todo navegador que ejecute este sitio, y pesa la mitad.
+   */
   src: string;
+  /** AVIF del mismo render, preferido por <picture>. Lo emite `pnpm images`. */
+  avif?: string;
   width: number;
   height: number;
   alt: string;
 };
+
+/**
+ * Unión discriminada: `external: false` obliga a que el href sea una ruta
+ * conocida, así el typecheck impide enlazar a un mini-caso que no existe.
+ */
+export type ProjectLink =
+  | { href: string; label: string; external: true }
+  | { href: InternalRoute; label: string; external: false };
 
 export type Project = {
   slug: string;
@@ -29,7 +50,7 @@ export type Project = {
   summary: string;
   evidence: EvidenceItem[];
   stack: string[];
-  link: { href: string; label: string; external: boolean };
+  link: ProjectLink;
   /** Captura curada del producto. Opcional: la card no reserva hueco sin ella. */
   image?: ProjectImage;
 };

@@ -10,24 +10,27 @@ type ScreenshotFrameProps = {
  * que significa "material verificado" — a la evidencia visual: capturas
  * reales del producto.
  *
- * <img> nativa a propósito: las capturas son locales, estáticas y viven bajo
- * el pliegue; lazy + width/height explícitos evitan CLS sin traer el
- * optimizador runtime de next/image (se pre-optimizan a AVIF/WebP con sharp).
+ * <picture> nativo a propósito: las capturas son locales, estáticas y viven
+ * bajo el pliegue; lazy + width/height explícitos evitan CLS sin traer el
+ * optimizador runtime de next/image. Los derivados AVIF/WebP los emite
+ * `pnpm images` (scripts/images.mjs), con presupuesto de peso por archivo.
  * ponytail: si alguna imagen entra al pliegue inicial, reevaluar next/image.
  */
 export function ScreenshotFrame({ image, caption }: ScreenshotFrameProps) {
   return (
     <figure className="calibrated p-2.5 [--corner-size:14px]">
-      {/* eslint-disable-next-line @next/next/no-img-element -- captura local pre-optimizada, bajo el pliegue */}
-      <img
-        src={image.src}
-        alt={image.alt}
-        width={image.width}
-        height={image.height}
-        loading="lazy"
-        decoding="async"
-        className="block h-auto w-full"
-      />
+      <picture>
+        {image.avif ? <source srcSet={image.avif} type="image/avif" /> : null}
+        <img
+          src={image.src}
+          alt={image.alt}
+          width={image.width}
+          height={image.height}
+          loading="lazy"
+          decoding="async"
+          className="block h-auto w-full"
+        />
+      </picture>
       {caption ? (
         <figcaption className="mt-2.5 font-mono text-micro text-muted">{caption}</figcaption>
       ) : null}

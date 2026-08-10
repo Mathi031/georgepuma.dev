@@ -10,5 +10,9 @@ export const routing = defineRouting({
       es: "/proyectos/notable-learning",
       en: "/projects/notable-learning",
     },
+    "/proyectos/cleo-spa": {
+      es: "/proyectos/cleo-spa",
+      en: "/projects/cleo-spa",
+    },
   },
 });

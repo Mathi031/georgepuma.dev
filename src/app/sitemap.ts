@@ -5,6 +5,7 @@ const base = "https://georgepuma.dev";
 const routes = [
   { href: "/", priority: 1 },
   { href: "/proyectos/notable-learning", priority: 0.8 },
+  { href: "/proyectos/cleo-spa", priority: 0.6 },
 ] as const;
 
 const abs = (locale: "es" | "en", href: (typeof routes)[number]["href"]) =>
