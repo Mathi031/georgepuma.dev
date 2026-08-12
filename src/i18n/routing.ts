@@ -14,5 +14,9 @@ export const routing = defineRouting({
       es: "/proyectos/cleo-spa",
       en: "/projects/cleo-spa",
     },
+    "/proyectos/ronatello": {
+      es: "/proyectos/ronatello",
+      en: "/projects/ronatello",
+    },
   },
 });

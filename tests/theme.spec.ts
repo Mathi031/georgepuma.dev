@@ -21,7 +21,7 @@ for (const forced of ["light", "dark"] as const) {
       await page.addInitScript((t) => localStorage.setItem("theme", t), forced);
     });
 
-    for (const path of ["/", "/proyectos/notable-learning", "/proyectos/cleo-spa"]) {
+    for (const path of ["/", "/proyectos/notable-learning", "/proyectos/cleo-spa", "/proyectos/ronatello"]) {
       test(`paleta forzada y axe sin violaciones en ${path}`, async ({ page }) => {
         await page.goto(path);
         await expect(page.locator("html")).toHaveAttribute("data-theme", forced);
