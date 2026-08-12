@@ -122,11 +122,11 @@ export const cleoSpa: Project = {
     external: false,
   },
   image: {
-    src: "/screenshots/cleo-spa.webp",
-    avif: "/screenshots/cleo-spa.avif",
+    src: "/screenshots/cleo-spa-card.webp",
+    avif: "/screenshots/cleo-spa-card.avif",
     width: 768,
     height: 384,
-    alt: "Portada del catálogo público: titular sobre el diagnóstico previo al servicio, con botón para reservar cita.",
+    alt: "Panel de movimientos de inventario: tabla de entradas, ventas, consumos y mermas, cada fila con producto, cantidad firmada, ubicación, fecha y autor.",
   },
 };
 

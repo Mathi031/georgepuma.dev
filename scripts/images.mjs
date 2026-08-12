@@ -47,14 +47,18 @@ const TARGETS = {
  * Fuente → derivado. Explícito a propósito: el nombre del archivo en `raw/`
  * es el contrato con quien captura, y un typo debe fallar, no inventar.
  *
- * `region` acota la franja del origen antes de encuadrar, en píxeles del
- * PNG. Solo hace falta donde el pliegue no cae en la proporción de destino;
- * sin ella se toma desde arriba.
+ * `region` acota el origen antes de encuadrar, en píxeles del PNG:
+ * { top, left, height, width }, todos opcionales (por defecto, el origen
+ * completo). Solo hace falta donde el pliegue no cae en la proporción de
+ * destino o donde sobra lienzo vacío; sin ella se toma desde arriba.
  */
 const SOURCES = [
   // El héroe termina en y=945: sin acotar, la tarjeta se lleva una banda
   // blanca de la sección siguiente.
   { in: "cleo-spa.png", out: "cleo-spa", target: "card", region: { top: 0, height: 945 } },
+  // La tarjeta del grid muestra el panel de movimientos, no la portada del
+  // catálogo: la herramienta diaria es el argumento del proyecto.
+  { in: "cleo-spa-movimientos.png", out: "cleo-spa-card", target: "card" },
   { in: "ronatello.png", out: "ronatello", target: "card" },
   { in: "studio-equilibrio.png", out: "studio-equilibrio", target: "card" },
   { in: "projsync.png", out: "projsync", target: "card" },
@@ -62,7 +66,10 @@ const SOURCES = [
   // Pantallas del panel, para los mini-casos. A ancho completo y sin recorte:
   // aquí la evidencia es la densidad de la tabla, no el encuadre.
   { in: "cleo-spa-movimientos.png", out: "cleo-spa-movimientos", target: "screen" },
-  { in: "cleo-spa-usuarios.png", out: "cleo-spa-usuarios", target: "screen" },
+  // Usuarios trae mucho lienzo vacío a la derecha: se conserva el 81% izquierdo
+  // (sidebar + formulario de invitación + tarjetas de roles). Coordenadas para
+  // un raw de 1920 de ancho; si el PNG es de otro ancho, escalar la proporción.
+  { in: "cleo-spa-usuarios.png", out: "cleo-spa-usuarios", target: "screen", region: { width: 1560 } },
   { in: "cleo-spa-catalogo.png", out: "cleo-spa-catalogo", target: "screen" },
 
   // --- Pantallas internas de Ronatello (mini-caso) ---
@@ -127,21 +134,27 @@ for (const source of SOURCES) {
   const full = sharp(inputPath);
   const meta = await full.metadata();
 
-  if (source.region) {
-    const { top, height } = source.region;
-    if (top + height > meta.height) {
-      throw new Error(`region de ${source.in} se sale del origen (${meta.height}px de alto)`);
-    }
+  const region = source.region
+    ? {
+        left: source.region.left ?? 0,
+        top: source.region.top ?? 0,
+        width: source.region.width ?? meta.width - (source.region.left ?? 0),
+        height: source.region.height ?? meta.height - (source.region.top ?? 0),
+      }
+    : null;
+  if (region && (region.left + region.width > meta.width || region.top + region.height > meta.height)) {
+    throw new Error(`region de ${source.in} se sale del origen (${meta.width}×${meta.height}px)`);
   }
 
-  const input = source.region
-    ? full.extract({ left: 0, top: source.region.top, width: meta.width, height: source.region.height })
-    : full;
+  const input = region ? full.extract(region) : full;
 
-  if (meta.width < target.width) {
+  // El ancho útil es el de la región: validar el origen completo dejaría
+  // pasar un recorte angosto que sharp escalaría hacia arriba en silencio.
+  const srcWidth = region?.width ?? meta.width;
+  if (srcWidth < target.width) {
     failed = true;
     console.error(
-      `✗ ${source.in}: origen ${meta.width}px < render ${target.width}px — recapturar a 2x`,
+      `✗ ${source.in}: origen ${srcWidth}px < render ${target.width}px — recapturar a 2x`,
     );
     continue;
   }
@@ -153,8 +166,8 @@ for (const source of SOURCES) {
     ? input.resize(target.width, height, { fit: "cover", position: "top" })
     : input.resize(target.width, null, { fit: "inside" });
 
-  const srcHeight = source.region?.height ?? meta.height;
-  const outHeight = height ?? Math.round((srcHeight * target.width) / meta.width);
+  const srcHeight = region?.height ?? meta.height;
+  const outHeight = height ?? Math.round((srcHeight * target.width) / srcWidth);
   if (!target.aspect && outHeight / target.width > 3) {
     console.warn(`⚠ ${source.in}: ${target.width}×${outHeight} es muy alto para un frame de página`);
   }
