@@ -64,6 +64,22 @@ const SOURCES = [
   { in: "cleo-spa-movimientos.png", out: "cleo-spa-movimientos", target: "screen" },
   { in: "cleo-spa-usuarios.png", out: "cleo-spa-usuarios", target: "screen" },
   { in: "cleo-spa-catalogo.png", out: "cleo-spa-catalogo", target: "screen" },
+
+  // --- Pantallas internas de Ronatello (mini-caso) ---
+  { in: "ronatello-catalogo.png", out: "ronatello-catalogo", target: "screen" },
+  { in: "ronatello-dashboard.png", out: "ronatello-dashboard", target: "screen" },
+  { in: "ronatello-editar-promocion.png", out: "ronatello-editar-promocion", target: "screen", region: { top: 0, height: 1600 } },
+  { in: "ronatello-promociones.png", out: "ronatello-promociones", target: "screen" },
+  { in: "ronatello-reservas.png", out: "ronatello-reservas", target: "screen" },
+
+  // --- Pantallas internas de Studio Equilibrio (mini-caso) ---
+  { in: "studio-equilibrio-alertas.png", out: "studio-equilibrio-alertas", target: "screen" },
+  { in: "studio-equilibrio-asistencia.png", out: "studio-equilibrio-asistencia", target: "screen" },
+  { in: "studio-equilibrio-cobros.png", out: "studio-equilibrio-cobros", target: "screen", region: { top: 0, height: 1600 } },
+  { in: "studio-equilibrio-horario.png", out: "studio-equilibrio-horario", target: "screen" },
+  { in: "studio-equilibrio-miembros.png", out: "studio-equilibrio-miembros", target: "screen", region: { top: 0, height: 1600 } },
+  { in: "studio-equilibrio-planes.png", out: "studio-equilibrio-planes", target: "screen" },
+  { in: "studio-equilibrio-retencion.png", out: "studio-equilibrio-retencion", target: "screen", region: { top: 0, height: 1600 } },
 ];
 
 const CODECS = [
@@ -173,13 +189,13 @@ if (results.length) {
   for (const r of results) {
     console.log(
       `  // ${r.out}\n` +
-        `  image: {\n` +
-        `    src: "/screenshots/${r.out}.webp",\n` +
-        `    avif: "/screenshots/${r.out}.avif",\n` +
-        `    width: ${r.width},\n` +
-        `    height: ${r.height},\n` +
-        `    alt: "",\n` +
-        `  },`,
+      `  image: {\n` +
+      `    src: "/screenshots/${r.out}.webp",\n` +
+      `    avif: "/screenshots/${r.out}.avif",\n` +
+      `    width: ${r.width},\n` +
+      `    height: ${r.height},\n` +
+      `    alt: "",\n` +
+      `  },`,
     );
   }
 }
