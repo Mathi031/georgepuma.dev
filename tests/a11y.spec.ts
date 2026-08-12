@@ -9,9 +9,11 @@ const pages = [
   "/",
   "/proyectos/notable-learning",
   "/proyectos/cleo-spa",
+  "/proyectos/ronatello",
   "/en",
   "/en/projects/notable-learning",
   "/en/projects/cleo-spa",
+  "/en/projects/ronatello",
 ];
 
 for (const path of pages) {

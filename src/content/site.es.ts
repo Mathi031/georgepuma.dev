@@ -130,32 +130,35 @@ export const cleoSpa: Project = {
   },
 };
 
+export const ronatello: Project = {
+  slug: "ronatello",
+  name: "Ronatello",
+  role: "Cliente directo · 12 días a producción",
+  summary:
+    "Sitio de producción para una licorería de barrio recién abierta en Arequipa: promociones con vigencia, reservas con cupo y panel de administración propio. Las reglas de negocio viven en Postgres (RLS), el CI levanta un stack Supabase real, y fue del brief al despliegue en 12 días reutilizando un starter kit extraído de Cleo Spa.",
+  evidence: [
+    { value: "12 días", source: "brief → producción" },
+    { value: "24 rutas", source: "9 públicas + panel admin" },
+  ],
+  stack: ["Next.js 16", "React 19", "TypeScript", "Tailwind v4", "Supabase", "Vitest", "GitHub Actions"],
+  // La tarjeta lleva al mini-caso; el enlace al sitio en vivo vive dentro.
+  link: {
+    href: "/proyectos/ronatello",
+    label: "Leer el mini-caso",
+    external: false,
+  },
+  image: {
+    src: "/screenshots/ronatello.webp",
+    avif: "/screenshots/ronatello.avif",
+    width: 768,
+    height: 384,
+    alt: "Página de promociones: tarjetas de combos con precio, estado de disponibilidad y botón para pedir por WhatsApp.",
+  },
+};
+
 export const gridProjects: Project[] = [
   cleoSpa,
-  {
-    slug: "ronatello",
-    name: "Ronatello",
-    role: "Cliente directo · 12 días a producción",
-    summary:
-      "Sitio de producción para una licorería de barrio recién abierta en Arequipa: promociones con vigencia, reservas con cupo y panel de administración propio. Las reglas de negocio viven en Postgres (RLS), el CI levanta un stack Supabase real, y fue del brief al despliegue en 12 días reutilizando un starter kit extraído de Cleo Spa.",
-    evidence: [
-      { value: "12 días", source: "brief → producción" },
-      { value: "24 rutas", source: "9 públicas + panel admin" },
-    ],
-    stack: ["Next.js 16", "React 19", "TypeScript", "Tailwind v4", "Supabase", "Vitest", "GitHub Actions"],
-    link: {
-      href: "https://ronatello.pe",
-      label: "Ver el sitio en vivo",
-      external: true,
-    },
-    image: {
-      src: "/screenshots/ronatello.webp",
-      avif: "/screenshots/ronatello.avif",
-      width: 768,
-      height: 384,
-      alt: "Página de promociones: tarjetas de combos con precio, estado de disponibilidad y botón para pedir por WhatsApp.",
-    },
-  },
+  ronatello,
   {
     slug: "studio-equilibrio",
     name: "Studio Equilibrio",
