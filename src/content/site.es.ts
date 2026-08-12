@@ -156,33 +156,36 @@ export const ronatello: Project = {
   },
 };
 
+export const studioEquilibrio: Project = {
+  slug: "studio-equilibrio",
+  name: "Studio Equilibrio",
+  role: "Diseño a producción, en solitario · 2.5 semanas",
+  summary:
+    "SaaS demo para estudios de fitness — reservas, membresías, facturación con recibos PDF y analítica — construido de extremo a extremo a partir de un brief comercial.",
+  evidence: [
+    { value: "LCP < 2 s", source: "móvil, 4G" },
+    { value: "30 pruebas E2E", source: "Playwright" },
+  ],
+  stack: ["Next.js 16", "React 19", "TypeScript", "Tailwind v4", "Supabase"],
+  // La tarjeta lleva al mini-caso; el enlace al demo en vivo vive dentro.
+  link: {
+    href: "/proyectos/studio-equilibrio",
+    label: "Leer el mini-caso",
+    external: false,
+  },
+  image: {
+    src: "/screenshots/studio-equilibrio.webp",
+    avif: "/screenshots/studio-equilibrio.avif",
+    width: 768,
+    height: 384,
+    alt: "Portada del estudio: titular sobre la reserva de clases, filtros por disciplina y contador de disciplinas y coaches.",
+  },
+};
+
 export const gridProjects: Project[] = [
   cleoSpa,
   ronatello,
-  {
-    slug: "studio-equilibrio",
-    name: "Studio Equilibrio",
-    role: "Diseño a producción, en solitario · 2.5 semanas",
-    summary:
-      "SaaS demo para estudios de fitness — reservas, membresías, facturación con recibos PDF y analítica — construido de extremo a extremo a partir de un brief comercial.",
-    evidence: [
-      { value: "LCP < 2 s", source: "móvil, 4G" },
-      { value: "30 pruebas E2E", source: "Playwright" },
-    ],
-    stack: ["Next.js 16", "React 19", "TypeScript", "Tailwind v4", "Supabase"],
-    link: {
-      href: "https://studio-equilibrio-demo.vercel.app",
-      label: "Ver el demo en vivo",
-      external: true,
-    },
-    image: {
-      src: "/screenshots/studio-equilibrio.webp",
-      avif: "/screenshots/studio-equilibrio.avif",
-      width: 768,
-      height: 384,
-      alt: "Portada del estudio: titular sobre la reserva de clases, filtros por disciplina y contador de disciplinas y coaches.",
-    },
-  },
+  studioEquilibrio,
   {
     slug: "projsync",
     name: "projsync",
