@@ -76,15 +76,25 @@ export const anchorProject: Project = {
 
 /**
  * Copy de la figura del esquema (SchemaFigure). Solo datos ya publicados en
- * el resumen y el caso de estudio; los roles no se nombran (NDA).
+ * el resumen y el caso de estudio; los roles no se nombran (NDA). Los
+ * dominios del grid salen del alcance descrito en el caso: editor de cursos,
+ * video (Mux), dashboards de docente y estudiante, panel multi-institución y
+ * pipeline de archivos.
  */
 export const schemaFigure = {
   title: "Esquema del sistema de Notable Learning",
-  desc: "LMS multi-institución: 500+ escuelas en 10 países sobre un esquema de 29 entidades, con RBAC de 5 roles y cumplimiento FERPA.",
+  desc: "LMS multi-institución: 500+ escuelas en 10 países sobre un esquema de 29 entidades agrupadas por dominio — cursos, video, usuarios, instituciones y archivos — con RBAC de 5 roles y cumplimiento FERPA.",
   labels: {
     schema: "29 entidades",
     rbac: "RBAC · 5 roles",
     compliance: "FERPA",
+    domains: {
+      courses: "cursos",
+      video: "video",
+      users: "usuarios",
+      institutions: "instituciones",
+      files: "archivos",
+    },
   },
 };
 
