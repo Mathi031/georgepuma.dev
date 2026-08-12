@@ -45,6 +45,82 @@ const COPY = {
   },
 };
 
+/**
+ * OG por mini-caso. Espejo de la ficha del proyecto en site.es.ts (kicker y
+ * chips del mini-caso); el inglés, como en COPY, solo vive aquí. La ruta del
+ * pie es la localizada — el mismo dispositivo de cabecera que usa la página.
+ */
+const CASES = [
+  {
+    slug: "cleo-spa",
+    name: "Cleo Spa",
+    es: {
+      kicker: "Mini-caso · Cliente directo · en producción",
+      path: "georgepuma.dev/proyectos/cleo-spa",
+      chips: [
+        { value: "ledger insert-only", source: "correcciones = ajustes" },
+        { value: "3 roles", source: "permisos en BD y app" },
+      ],
+    },
+    en: {
+      kicker: "Mini-case · Direct client · in production",
+      path: "georgepuma.dev/en/projects/cleo-spa",
+      chips: [
+        { value: "insert-only ledger", source: "corrections = adjustments" },
+        { value: "3 roles", source: "permissions in DB and app" },
+      ],
+    },
+  },
+  {
+    slug: "ronatello",
+    name: "Ronatello",
+    es: {
+      kicker: "Mini-caso · Cliente directo · 12 días a producción",
+      path: "georgepuma.dev/proyectos/ronatello",
+      chips: [
+        { value: "12 días", source: "brief → producción" },
+        { value: "24 rutas", source: "9 públicas + panel admin" },
+      ],
+    },
+    en: {
+      kicker: "Mini-case · Direct client · 12 days to production",
+      path: "georgepuma.dev/en/projects/ronatello",
+      chips: [
+        { value: "12 days", source: "brief → production" },
+        { value: "24 routes", source: "9 public + admin panel" },
+      ],
+    },
+  },
+  {
+    slug: "studio-equilibrio",
+    name: "Studio Equilibrio",
+    es: {
+      kicker: "Mini-caso · Diseño a producción, en solitario · 2.5 semanas",
+      path: "georgepuma.dev/proyectos/studio-equilibrio",
+      chips: [
+        { value: "LCP < 2 s", source: "móvil, 4G" },
+        { value: "30 pruebas E2E", source: "Playwright" },
+      ],
+    },
+    en: {
+      kicker: "Mini-case · Design to production, solo · 2.5 weeks",
+      path: "georgepuma.dev/en/projects/studio-equilibrio",
+      chips: [
+        { value: "LCP < 2 s", source: "mobile, 4G" },
+        { value: "30 E2E tests", source: "Playwright" },
+      ],
+    },
+  },
+];
+
+const chipsHtml = (chips) =>
+  chips
+    .map(
+      (c) =>
+        `<span class="chip">${c.value} <span class="dot">·</span> <span class="src">${c.source}</span></span>`,
+    )
+    .join("");
+
 const html = ({ headline, thesis, chips }) => `<!doctype html>
 <html><head><meta charset="utf-8"><style>
   @font-face {
@@ -107,17 +183,83 @@ const html = ({ headline, thesis, chips }) => `<!doctype html>
   <p class="mono">George Puma</p>
   <div>
     <h1>${headline}<span class="dot">.</span><br><span class="thesis">${thesis}</span></h1>
-    <div class="chips">${chips
-      .map(
-        (c) =>
-          `<span class="chip">${c.value} <span class="dot">·</span> <span class="src">${c.source}</span></span>`,
-      )
-      .join("")}</div>
+    <div class="chips">${chipsHtml(chips)}</div>
   </div>
   <p class="mono">georgepuma.dev</p>
 </body></html>`;
 
-const browser = await chromium.launch();
+/**
+ * Tarjeta de mini-caso: kicker en mono, nombre del proyecto con punto cobre
+ * y las mismas fichas calibradas; el pie lleva la ruta localizada — el mismo
+ * dispositivo de cabecera que usa la página del mini-caso.
+ */
+const caseHtml = ({ name, kicker, path, chips }) => `<!doctype html>
+<html><head><meta charset="utf-8"><style>
+  @font-face {
+    font-family: "Archivo Variable";
+    src: url("${archivo}") format("woff2-variations");
+    font-weight: 100 900;
+    font-stretch: 62% 125%;
+  }
+  @font-face {
+    font-family: "IBM Plex Mono";
+    src: url("${mono}") format("woff2");
+    font-weight: 400;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    width: 1200px; height: 630px; padding: 72px;
+    background: ${paper}; color: ${ink};
+    font-family: "Archivo Variable", sans-serif;
+    display: flex; flex-direction: column; justify-content: space-between;
+    -webkit-font-smoothing: antialiased;
+  }
+  .mono {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 22px; letter-spacing: 0.03em; color: ${muted};
+  }
+  .kicker {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 22px; letter-spacing: 0.03em; color: ${muted};
+    margin-bottom: 26px;
+  }
+  h1 {
+    font-size: 82px; font-weight: 700; line-height: 1.05;
+    letter-spacing: -0.02em; font-variation-settings: "wdth" 122;
+  }
+  .dot { color: ${copper}; }
+  .chips { display: flex; gap: 22px; margin-top: 44px; }
+  .chip {
+    position: relative; display: inline-flex; align-items: baseline; gap: 10px;
+    font-family: "IBM Plex Mono", monospace; font-size: 20px; line-height: 1;
+    padding: 14px 19px;
+  }
+  .chip::before {
+    content: ""; position: absolute; top: 0; left: 0; width: 12px; height: 12px;
+    border-top: 1.5px solid ${copper}; border-left: 1.5px solid ${copper};
+  }
+  .chip::after {
+    content: ""; position: absolute; bottom: 0; right: 0; width: 12px; height: 12px;
+    border-bottom: 1.5px solid ${copper}; border-right: 1.5px solid ${copper};
+  }
+  .chip .src { color: ${muted}; }
+</style></head>
+<body>
+  <p class="mono">George Puma</p>
+  <div>
+    <p class="kicker">${kicker}</p>
+    <h1>${name}<span class="dot">.</span></h1>
+    <div class="chips">${chipsHtml(chips)}</div>
+  </div>
+  <p class="mono">${path}</p>
+</body></html>`;
+
+// CHROMIUM_EXECUTABLE: escape para entornos donde el build que pide
+// @playwright/test no está descargado (p. ej. contenedores con un Chromium
+// del sistema). Sin la variable, el default de Playwright.
+const browser = await chromium.launch({
+  executablePath: process.env.CHROMIUM_EXECUTABLE || undefined,
+});
 const page = await browser.newPage({
   viewport: { width: 1200, height: 630 },
   deviceScaleFactor: 1,
@@ -129,6 +271,16 @@ for (const [locale, copy] of Object.entries(COPY)) {
   const path = join(outDir, `opengraph-image.${locale}.png`);
   await page.screenshot({ path });
   console.log(`✓ ${path}`);
+}
+
+for (const c of CASES) {
+  for (const locale of ["es", "en"]) {
+    await page.setContent(caseHtml({ name: c.name, ...c[locale] }), { waitUntil: "load" });
+    await page.evaluate(() => document.fonts.ready);
+    const path = join(outDir, "proyectos", c.slug, `opengraph-image.${locale}.png`);
+    await page.screenshot({ path });
+    console.log(`✓ ${path}`);
+  }
 }
 
 await browser.close();
