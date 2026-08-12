@@ -18,5 +18,9 @@ export const routing = defineRouting({
       es: "/proyectos/ronatello",
       en: "/projects/ronatello",
     },
+    "/proyectos/studio-equilibrio": {
+      es: "/proyectos/studio-equilibrio",
+      en: "/projects/studio-equilibrio",
+    },
   },
 });

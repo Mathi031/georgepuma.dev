@@ -10,10 +10,12 @@ const pages = [
   "/proyectos/notable-learning",
   "/proyectos/cleo-spa",
   "/proyectos/ronatello",
+  "/proyectos/studio-equilibrio",
   "/en",
   "/en/projects/notable-learning",
   "/en/projects/cleo-spa",
   "/en/projects/ronatello",
+  "/en/projects/studio-equilibrio",
 ];
 
 for (const path of pages) {

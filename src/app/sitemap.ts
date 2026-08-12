@@ -7,6 +7,7 @@ const routes = [
   { href: "/proyectos/notable-learning", priority: 0.8 },
   { href: "/proyectos/cleo-spa", priority: 0.6 },
   { href: "/proyectos/ronatello", priority: 0.6 },
+  { href: "/proyectos/studio-equilibrio", priority: 0.6 },
 ] as const;
 
 const abs = (locale: "es" | "en", href: (typeof routes)[number]["href"]) =>
