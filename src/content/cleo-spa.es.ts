@@ -55,7 +55,7 @@ export const miniCase: MiniCase = {
           src: "/screenshots/cleo-spa-usuarios.webp",
           avif: "/screenshots/cleo-spa-usuarios.avif",
           width: 1280,
-          height: 707,
+          height: 1178,
           alt: "Pantalla de usuarios: formulario de invitación con selector de rol y tres cuentas del equipo, cada una con su rol y un botón para desactivarla.",
         },
         caption:
