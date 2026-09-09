@@ -3,7 +3,6 @@ import { Evidence } from "@/components/Evidence";
 import { LocaleSwitcher } from "@/components/LocaleSwitcher";
 import { ScreenshotFrame } from "@/components/ScreenshotFrame";
 import { SectionHeading } from "@/components/SectionHeading";
-import { ThemeToggle } from "@/components/ThemeToggle";
 import { SchemaFigure } from "@/components/figures/SchemaFigure";
 import { content, identity, type Locale } from "@/content/site";
 import { Link } from "@/i18n/navigation";
@@ -11,7 +10,7 @@ import { Link } from "@/i18n/navigation";
 const container = "mx-auto max-w-[880px] px-5 sm:px-9";
 const sectionGap = "pt-24 sm:pt-32";
 const cardLink =
-  "mt-4 inline-block text-small font-medium underline decoration-line underline-offset-[5px] transition-colors hover:text-copper hover:decoration-copper";
+  "mt-4 inline-block text-small font-medium underline decoration-rule underline-offset-[5px] transition-colors hover:text-primary hover:decoration-primary";
 
 export default async function HomePage({
   params,
@@ -30,13 +29,12 @@ export default async function HomePage({
         <div className="flex flex-wrap items-baseline gap-x-5 gap-y-2">
           <nav aria-label={ui.sectionsAria} className="flex flex-wrap gap-x-4 gap-y-2 text-small font-medium">
             {Object.values(ui.sections).map((s) => (
-              <a key={s} href={`#${s}`} className="text-muted transition-colors hover:text-copper">
+              <a key={s} href={`#${s}`} className="text-muted transition-colors hover:text-primary">
                 {s}
               </a>
             ))}
           </nav>
           <LocaleSwitcher locale={locale as Locale} href="/" aria={ui.langAria} />
-          <ThemeToggle aria={ui.themeAria} />
         </div>
       </header>
 
@@ -44,14 +42,14 @@ export default async function HomePage({
         {/* ── Hero ───────────────────────────────────────────── */}
         <section className={`${container} pt-16 sm:pt-24`}>
           <p className="mb-6 font-mono text-micro tracking-[0.03em] text-muted">
-            {identity.fullName} <span aria-hidden="true" className="text-copper">·</span>{" "}
-            {ui.metaLine[0]} <span aria-hidden="true" className="text-copper">·</span> {ui.metaLine[1]}{" "}
-            <span aria-hidden="true" className="text-copper">·</span> {ui.metaLine[2]}
+            {identity.fullName} <span aria-hidden="true" className="text-primary">·</span>{" "}
+            {ui.metaLine[0]} <span aria-hidden="true" className="text-primary">·</span> {ui.metaLine[1]}{" "}
+            <span aria-hidden="true" className="text-primary">·</span> {ui.metaLine[2]}
           </p>
           <h1 className="display max-w-[17ch] text-balance text-display font-bold">
             {hero.headline.replace(/\.$/, "")}
-            <span aria-hidden="true" className="text-copper">.</span>{" "}
-            <span className="inline-block underline decoration-copper decoration-2 underline-offset-8">
+            <span aria-hidden="true" className="text-primary">.</span>{" "}
+            <span className="inline-block underline decoration-primary decoration-2 underline-offset-8">
               {hero.thesis}
             </span>
           </h1>
@@ -59,7 +57,10 @@ export default async function HomePage({
             <strong className="font-medium">{hero.positioning.lead}</strong>{" "}
             {hero.positioning.rest}
           </p>
-          <ul className="mt-7 flex flex-wrap gap-2.5" aria-label={ui.evidenceAria}>
+          {/* gap-x amplio: cada métrica son dos líneas (dato sobre contexto) y
+              con un gap estrecho las vecinas se leen como una fila de datos
+              seguida de una fila de contextos. */}
+          <ul className="mt-7 flex flex-wrap gap-x-step-48 gap-y-step-24" aria-label={ui.evidenceAria}>
             {hero.evidence.map((e) => (
               <li key={e.value}>
                 <Evidence value={e.value} source={e.source} />
@@ -69,7 +70,7 @@ export default async function HomePage({
           <nav aria-label={ui.linksAria} className="mt-8 flex flex-wrap items-center gap-x-5 gap-y-3">
             <a
               href={`mailto:${identity.email}`}
-              className="bg-ink px-5 py-2.5 text-small font-medium text-paper transition-colors hover:bg-copper"
+              className="inline-flex min-h-11 items-center rounded-md bg-primary px-5 py-2.5 text-small font-medium text-white transition-colors hover:bg-primary-hover"
             >
               {ui.writeMe}
             </a>
@@ -82,7 +83,7 @@ export default async function HomePage({
                 key={l.label}
                 href={l.href}
                 rel="noopener"
-                className="text-small font-medium underline decoration-line underline-offset-[5px] transition-colors hover:text-copper hover:decoration-copper"
+                className="text-small font-medium underline decoration-rule underline-offset-[5px] transition-colors hover:text-primary hover:decoration-primary"
               >
                 {l.label}
               </a>
@@ -95,12 +96,12 @@ export default async function HomePage({
           <SectionHeading id={`${ui.sections.projects}-h`} label={ui.sections.projects} />
 
           {/* Ancla: Notable Learning ordena la lectura de la sección — y es
-              el momento cobre del home. */}
-          <article className="calibrated bg-copper-surface px-6 py-8 [--corner-size:18px] sm:px-10 sm:py-10">
+              el bloque ancla del home. */}
+          <article className="rounded-sm bg-accent-muted px-6 py-8 sm:px-10 sm:py-10">
             <h3 className="display text-display-md font-bold">{anchorProject.name}</h3>
             <p className="mt-1.5 font-mono text-micro text-muted">{anchorProject.role}</p>
             <p className="mt-4 max-w-[62ch] text-body">{anchorProject.summary}</p>
-            <div className="mt-5 flex flex-wrap gap-2.5">
+            <div className="mt-5 flex flex-wrap gap-x-step-48 gap-y-step-24">
               {anchorProject.evidence.map((e) => (
                 <Evidence key={e.value} value={e.value} source={e.source} />
               ))}
@@ -116,7 +117,7 @@ export default async function HomePage({
             </p>
             <Link
               href="/proyectos/notable-learning"
-              className="mt-6 inline-block bg-ink px-5 py-2.5 text-small font-medium text-paper transition-colors hover:bg-copper"
+              className="mt-6 inline-flex min-h-11 items-center rounded-md bg-primary px-5 py-2.5 text-small font-medium text-white transition-colors hover:bg-primary-hover"
             >
               <span aria-hidden="true">→</span> {anchorProject.link.label}
             </Link>
@@ -124,7 +125,7 @@ export default async function HomePage({
 
           <ul className="mt-2 grid gap-x-10 sm:grid-cols-2">
             {gridProjects.map((p) => (
-              <li key={p.slug} className="border-t border-line py-8">
+              <li key={p.slug} className="border-t border-rule py-8">
                 {p.image ? (
                   <div className="mb-5">
                     <ScreenshotFrame image={p.image} />
@@ -133,7 +134,7 @@ export default async function HomePage({
                 <h3 className="display-md text-title font-semibold">{p.name}</h3>
                 <p className="mt-1 font-mono text-micro text-muted">{p.role}</p>
                 <p className="mt-3 max-w-[62ch] text-small">{p.summary}</p>
-                <div className="mt-4 flex flex-wrap gap-2.5">
+                <div className="mt-4 flex flex-wrap gap-x-step-48 gap-y-step-24">
                   {p.evidence.map((e) => (
                     <Evidence key={e.value} value={e.value} source={e.source} />
                   ))}
@@ -149,11 +150,11 @@ export default async function HomePage({
                     rel="noopener"
                     className={cardLink}
                   >
-                    <span aria-hidden="true" className="text-copper">↗</span> {p.link.label}
+                    <span aria-hidden="true" className="text-primary">↗</span> {p.link.label}
                   </a>
                 ) : (
                   <Link href={p.link.href} className={cardLink}>
-                    <span aria-hidden="true" className="text-copper">→</span> {p.link.label}
+                    <span aria-hidden="true" className="text-primary">→</span> {p.link.label}
                   </Link>
                 )}
               </li>
@@ -173,13 +174,13 @@ export default async function HomePage({
             <p>{aiWorkflow.honestyIntro}</p>
           </div>
 
-          {/* La pull quote es el segundo momento tipográfico del sitio — y el
-              único pico visual de la página: papel sobre tinta. bg-paper y
-              text-ink son obligatorios aquí: dentro de .inverted resuelven al
-              tema opuesto; lo heredado del body no se re-resuelve. */}
-          <div className="inverted mt-10 bg-paper px-6 py-8 text-ink sm:mt-12 sm:px-10 sm:py-10">
+          {/* La pull quote sigue siendo el segundo momento tipográfico del
+              sitio, pero ya no invierte a papel sobre tinta: el sistema es
+              light-only y la elevación se construye con surface + borde, sin
+              sombra ni bloque oscuro. La regla de acento marca el arranque. */}
+          <div className="mt-10 rounded-md border border-rule bg-surface px-6 py-8 sm:mt-12 sm:px-10 sm:py-10">
             <blockquote className="max-w-[36rem]">
-              <span aria-hidden="true" className="mb-5 block h-0.5 w-9 bg-copper" />
+              <span aria-hidden="true" className="mb-5 block h-0.5 w-9 bg-primary" />
               <p className="display-md text-display-md font-medium leading-[1.45]">
                 {aiWorkflow.honestyQuote}
               </p>
@@ -194,15 +195,15 @@ export default async function HomePage({
               {aiWorkflow.pipeline.map((step, i) => (
                 <span key={step} className="contents">
                   {i > 0 && (
-                    <span aria-hidden="true" className="text-copper">
+                    <span aria-hidden="true" className="text-primary">
                       →
                     </span>
                   )}
                   <span
                     className={
                       i === aiWorkflow.pipeline.length - 1
-                        ? "border border-copper px-2.5 py-1.5 text-copper"
-                        : "border border-line px-2.5 py-1.5"
+                        ? "border border-primary px-2.5 py-1.5 text-primary"
+                        : "border border-rule px-2.5 py-1.5"
                     }
                   >
                     {step}
@@ -223,7 +224,7 @@ export default async function HomePage({
             {experience.map((job, i) => (
               <li
                 key={job.company}
-                className={`grid gap-1 border-line py-7 sm:grid-cols-[10.5rem_1fr] sm:gap-6 ${i > 0 ? "border-t" : ""}`}
+                className={`grid gap-1 border-rule py-7 sm:grid-cols-[10.5rem_1fr] sm:gap-6 ${i > 0 ? "border-t" : ""}`}
               >
                 <p className="font-mono text-micro leading-[1.7] text-muted">{job.period}</p>
                 <div>
@@ -249,7 +250,7 @@ export default async function HomePage({
             {[stack.primary, stack.solid, stack.growing].map((group, i) => (
               <div
                 key={group.label}
-                className={`grid gap-1 border-line py-5 sm:grid-cols-[10.5rem_1fr] sm:gap-6 ${i > 0 ? "border-t" : ""}`}
+                className={`grid gap-1 border-rule py-5 sm:grid-cols-[10.5rem_1fr] sm:gap-6 ${i > 0 ? "border-t" : ""}`}
               >
                 <dt className="font-mono text-micro leading-[1.7] text-muted">{group.label}</dt>
                 <dd className="font-mono text-small leading-[1.9]">{group.items.join(" · ")}</dd>
@@ -266,14 +267,14 @@ export default async function HomePage({
           </p>
           <a
             href={`mailto:${identity.email}`}
-            className="display inline-block break-all text-display-md font-bold underline decoration-line decoration-2 underline-offset-8 transition-colors hover:text-copper hover:decoration-copper"
+            className="display inline-block break-all text-display-md font-bold underline decoration-rule decoration-2 underline-offset-8 transition-colors hover:text-primary hover:decoration-primary"
           >
             {identity.email}
           </a>
         </section>
       </main>
 
-      <footer className={`${container} border-t border-line pb-10 pt-6`}>
+      <footer className={`${container} border-t border-rule pb-10 pt-6`}>
         <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2 font-mono text-micro text-muted">
           <p>
             © {new Date().getFullYear()} {identity.fullName}
@@ -283,7 +284,7 @@ export default async function HomePage({
             <a
               href={identity.repo}
               rel="noopener"
-              className="underline underline-offset-4 transition-colors hover:text-copper"
+              className="underline underline-offset-4 transition-colors hover:text-primary"
             >
               {ui.footerSource}
             </a>

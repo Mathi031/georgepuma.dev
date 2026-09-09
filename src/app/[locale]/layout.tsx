@@ -1,14 +1,16 @@
 import type { Metadata } from "next";
-import { headers } from "next/headers";
 import { notFound } from "next/navigation";
 import { Analytics } from "@vercel/analytics/next";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { setRequestLocale } from "next-intl/server";
 import { routing } from "@/i18n/routing";
 import { content, identity, type Locale } from "@/content/site";
-import "@fontsource-variable/archivo/wdth.css";
-import "@fontsource/ibm-plex-mono/400.css";
-import "@fontsource/ibm-plex-mono/500.css";
+// Fuentes variables de Fontsource: un archivo por subset cubre todos los pesos,
+// y el unicode-range de cada @font-face hace que solo se descargue el latino.
+// Hanken Grotesk no se importa aquí: se declara en globals.css contra /public
+// para poder precargarla (ver el comentario del @font-face).
+import "@fontsource-variable/inter/wght.css";
+import "@fontsource-variable/jetbrains-mono/wght.css";
 import "../globals.css";
 
 export async function generateMetadata({
@@ -56,27 +58,24 @@ export default async function LocaleLayout({
     notFound();
   }
   setRequestLocale(locale);
-  // La CSP usa un nonce por request (middleware): el HTML no puede
-  // prerenderizarse, y el script inline del tema debe llevar ese nonce.
-  const nonce = (await headers()).get("x-nonce") ?? undefined;
 
   return (
-    // suppressHydrationWarning: el script del tema añade data-theme a <html>
-    // antes de que React hidrate; el atributo no viene del servidor.
-    <html lang={locale} suppressHydrationWarning>
-      <body className="font-sans antialiased">
-        {/* Aplica la elección guardada antes del primer paint (sin FOUC).
-            Sin elección guardada no fija nada: manda prefers-color-scheme. */}
-        <script
-          nonce={nonce}
-          dangerouslySetInnerHTML={{
-            __html:
-              'try{var t=localStorage.getItem("theme");if(t==="light"||t==="dark")document.documentElement.dataset.theme=t}catch(e){}',
-          }}
+    <html lang={locale}>
+      <head>
+        {/* Única fuente precargada: la del H1, que es el elemento LCP. Las
+            otras dos entran por CSS con font-display: swap. */}
+        <link
+          rel="preload"
+          href="/fonts/hanken-grotesk-latin-wght-normal.woff2"
+          as="font"
+          type="font/woff2"
+          crossOrigin="anonymous"
         />
+      </head>
+      <body className="font-sans antialiased">
         <a
           href="#contenido"
-          className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:bg-paper focus:text-ink focus:px-4 focus:py-2"
+          className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:bg-surface focus:text-ink focus:px-4 focus:py-2"
         >
           {content[locale as Locale].ui.skipLink}
         </a>

@@ -2,12 +2,17 @@
  * Genera el set de favicons: src/app/icon.svg (fuente de verdad),
  * favicon.ico (32px) y apple-touch-icon.png (180px).
  *
- * El monograma es la "G" de Archivo en wdth 122 / wght 700 — el mismo eje que
- * los titulares del sitio — con el punto terminal cobre del headline
- * (src/app/[locale]/page.tsx). El contorno está congelado como path porque el
- * navegador que pinta un favicon SVG no tiene acceso a la fuente; se extrajo
- * una sola vez del woff2 de @fontsource-variable/archivo (wawoff2 + fontkit
- * getVariation, one-off fuera del repo — Chromium no exporta contornos).
+ * El monograma es una "G" con el punto terminal del headline
+ * (src/app/[locale]/page.tsx). Los colores salen de tokens.mjs, así que ya son
+ * los del sistema C2; el contorno, en cambio, sigue siendo el de Archivo.
+ *
+ * DEUDA CONOCIDA: el path está congelado porque el navegador que pinta un
+ * favicon SVG no tiene acceso a la fuente. Se extrajo una sola vez del woff2 de
+ * @fontsource-variable/archivo (wawoff2 + fontkit getVariation, one-off fuera
+ * del repo — Chromium no exporta contornos), y Archivo ya no es una dependencia
+ * del proyecto. Redibujar la "G" en Hanken Grotesk exige repetir ese proceso
+ * manual, que queda fuera de la fase fundacional: hasta entonces el favicon
+ * lleva la letra vieja con la paleta nueva.
  *
  * Uso: pnpm icons
  */
@@ -16,12 +21,12 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import sharp from "sharp";
 import pngToIco from "png-to-ico";
-import { tokens } from "./tokens.mjs";
+import { palette } from "./tokens.mjs";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const app = join(root, "src/app");
 
-const { paper, ink, copper } = tokens.light;
+const { bg, text, primary } = palette;
 
 // "G" de Archivo, unitsPerEm 1000, coordenadas y-up (bbox x 60..905, y -12..699).
 const G_PATH =
@@ -44,9 +49,9 @@ const tx = left - BBOX.minX * S;
 const r2 = (n) => Math.round(n * 100) / 100;
 
 const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-  <rect width="32" height="32" fill="${ink}"/>
-  <path transform="translate(${r2(tx)} ${r2(baseline)}) scale(${S} -${S})" fill="${paper}" d="${G_PATH}"/>
-  <circle cx="${r2(left + gW + GAP + DOT_R)}" cy="${r2(baseline - DOT_R)}" r="${DOT_R}" fill="${copper}"/>
+  <rect width="32" height="32" fill="${text}"/>
+  <path transform="translate(${r2(tx)} ${r2(baseline)}) scale(${S} -${S})" fill="${bg}" d="${G_PATH}"/>
+  <circle cx="${r2(left + gW + GAP + DOT_R)}" cy="${r2(baseline - DOT_R)}" r="${DOT_R}" fill="${primary}"/>
 </svg>
 `;
 
@@ -59,7 +64,7 @@ const raster = (px) =>
 // iOS enmascara esquinas y no añade padding: el glifo va a ~62% del lienzo,
 // el resto es fondo tinta (iOS además ignora la transparencia).
 const appleSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180">
-  <rect width="180" height="180" fill="${ink}"/>
+  <rect width="180" height="180" fill="${text}"/>
   <svg x="34" y="34" width="112" height="112" viewBox="0 0 32 32">${svg.replace(/<\/?svg[^>]*>/g, "")}</svg>
 </svg>`;
 

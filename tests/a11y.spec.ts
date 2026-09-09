@@ -16,6 +16,10 @@ const pages = [
   "/en/projects/cleo-spa",
   "/en/projects/ronatello",
   "/en/projects/studio-equilibrio",
+  // Referencia visual del design system: no es una página pública, pero es
+  // donde viven todas las primitivas juntas, así que es el sitio más barato
+  // para detectar una regresión de contraste o de semántica.
+  "/sistema",
 ];
 
 for (const path of pages) {

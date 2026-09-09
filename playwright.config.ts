@@ -11,12 +11,9 @@ export default defineConfig({
   use: {
     baseURL: `http://localhost:${port}`,
   },
-  // El mismo spec corre en ambos esquemas: axe valida color-contrast contra
-  // los colores computados reales de cada paleta.
-  projects: [
-    { name: "light", use: { colorScheme: "light" } },
-    { name: "dark", use: { colorScheme: "dark" } },
-  ],
+  // Un solo project: el sistema es light-only. Un project dark validaría una
+  // paleta que ya no existe y daría confianza falsa.
+  projects: [{ name: "light", use: { colorScheme: "light" } }],
   webServer: {
     command: "pnpm start",
     url: `http://localhost:${port}`,

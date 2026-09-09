@@ -260,7 +260,7 @@ export const caseStudy: CaseStudy = {
         El proyecto se entregó en fecha — 12 de junio — y el contrato concluyó con
         la entrega. De este proyecto también salió el revisor automatizado de PRs
         que construí sobre Claude Code:{" "}
-        <Link href="/#ia" className="text-ink underline decoration-line underline-offset-4 transition-colors hover:text-copper hover:decoration-copper">
+        <Link href="/#ia" className="text-ink underline decoration-rule underline-offset-4 transition-colors hover:text-primary hover:decoration-primary">
           la otra mitad de esta historia
         </Link>
         .

@@ -6,9 +6,9 @@ type ScreenshotFrameProps = {
 };
 
 /**
- * Marco de captura: extiende los corchetes de calibración — el dispositivo
- * que significa "material verificado" — a la evidencia visual: capturas
- * reales del producto.
+ * Bloque de captura con pie (sección 5.18 de la spec): fondo `surface`, borde
+ * 1 px, radio 2. Sin mockup de dispositivo y sin sombra: la captura se presenta
+ * como material, no como producto renderizado.
  *
  * <picture> nativo a propósito: las capturas son locales, estáticas y viven
  * bajo el pliegue; lazy + width/height explícitos evitan CLS sin traer el
@@ -18,7 +18,7 @@ type ScreenshotFrameProps = {
  */
 export function ScreenshotFrame({ image, caption }: ScreenshotFrameProps) {
   return (
-    <figure className="calibrated p-2.5 [--corner-size:14px]">
+    <figure className="grid-safe">
       <picture>
         {image.avif ? <source srcSet={image.avif} type="image/avif" /> : null}
         <img
@@ -28,11 +28,11 @@ export function ScreenshotFrame({ image, caption }: ScreenshotFrameProps) {
           height={image.height}
           loading="lazy"
           decoding="async"
-          className="block h-auto w-full"
+          className="block h-auto w-full rounded-sm border border-rule bg-surface"
         />
       </picture>
       {caption ? (
-        <figcaption className="mt-2.5 font-mono text-micro text-muted">{caption}</figcaption>
+        <figcaption className="mt-step-12 text-caption text-muted">{caption}</figcaption>
       ) : null}
     </figure>
   );
