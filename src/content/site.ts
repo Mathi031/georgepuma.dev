@@ -72,6 +72,37 @@ export const identity = {
   repo: "https://github.com/Mathi031/georgepuma.dev",
   linkedin: "https://www.linkedin.com/in/mathi031/",
   cvUrl: "/cv-george-puma.pdf", // TODO: subir el PDF a /public
+  /** Dominio de producción. Base de metadataBase, canonical y JSON-LD. */
+  url: "https://georgepuma.dev",
+  /** og:site_name y la firma del header. */
+  siteName: "georgepuma.dev",
+  /**
+   * La ciudad que ya declara la línea meta del hero. Va como `homeLocation`
+   * y no como `address`: es una ubicación, no un domicilio postal.
+   */
+  location: { locality: "Arequipa", country: "PE" },
 };
+
+/**
+ * Rutas indexables: la home más la página propia de cada proyecto que la
+ * tenga. Las consumen el sitemap y el spec, así que un proyecto nuevo entra
+ * en ambos sin tocar ninguna lista.
+ */
+export const indexedRoutes: InternalRoute[] = [
+  "/",
+  ...es.projects.flatMap((p) => (p.link.external ? [] : [p.link.href])),
+];
+
+/**
+ * Rutas con opengraph-image.tsx propio; las demás anuncian la de la home, que
+ * es la que Next les sirve. No se deriva del disco porque seo.ts también viaja
+ * al navegador, así que la contrasta un test contra los archivos reales.
+ */
+export const ROUTES_WITH_OWN_OG: readonly InternalRoute[] = [
+  "/",
+  "/proyectos/cleo-spa",
+  "/proyectos/ronatello",
+  "/proyectos/studio-equilibrio",
+];
 
 export const content: Record<Locale, typeof es> = { es, en };

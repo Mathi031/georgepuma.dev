@@ -9,9 +9,8 @@ import type { MiniCase } from "./mini-case";
 
 export const miniCase: MiniCase = {
   meta: {
-    title: "Cleo Spa — mini-caso",
     description:
-      "Inventario y catálogo para un salón de belleza en Arequipa: ledger de stock insert-only con lotes FEFO y tres roles con permisos en base de datos y aplicación.",
+      "Inventario y catálogo para un salón de belleza en Arequipa: ledger de stock insert-only con lotes FEFO y tres roles con permisos en BD y app.",
   },
   route: "/proyectos/cleo-spa",
   kicker: "Mini-caso · Cliente directo · en producción",
@@ -97,7 +96,6 @@ export const miniCase: MiniCase = {
     body: "De aquí salió el starter kit con el que Ronatello llegó a producción en 12 días: el mismo esqueleto de roles, RLS y CI, ya discutido una vez.",
     liveHref: "https://cleospa.pe",
     liveLabel: "Ver el sitio en vivo",
-    backHref: "/#proyectos",
     backLabel: "Volver a proyectos",
   },
 };

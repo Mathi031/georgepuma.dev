@@ -1,16 +1,35 @@
+import type { Metadata } from "next";
 import { setRequestLocale } from "next-intl/server";
 import { Evidence } from "@/components/Evidence";
+import { JsonLd } from "@/components/JsonLd";
 import { LocaleSwitcher } from "@/components/LocaleSwitcher";
 import { ScreenshotFrame } from "@/components/ScreenshotFrame";
 import { SectionHeading } from "@/components/SectionHeading";
 import { SchemaFigure } from "@/components/figures/SchemaFigure";
 import { content, identity, type Locale } from "@/content/site";
 import { Link } from "@/i18n/navigation";
+import { pageMetadata, personJsonLd } from "@/lib/seo";
 
 const container = "mx-auto max-w-[880px] px-5 sm:px-9";
 const sectionGap = "pt-24 sm:pt-32";
 const cardLink =
   "mt-4 inline-block text-small font-medium underline decoration-rule underline-offset-[5px] transition-colors hover:text-primary hover:decoration-primary";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const { ui } = content[locale as Locale];
+  return pageMetadata({
+    locale: locale as Locale,
+    href: "/",
+    title: ui.meta.title,
+    description: ui.meta.description,
+    ownTitle: false, // el título de la home es el `default` del layout
+  });
+}
 
 export default async function HomePage({
   params,
@@ -24,6 +43,7 @@ export default async function HomePage({
 
   return (
     <>
+      <JsonLd data={personJsonLd(locale as Locale)} />
       <header className={`${container} flex flex-wrap items-baseline justify-between gap-x-5 gap-y-2 pt-6`}>
         <p className="font-mono text-micro font-medium">georgepuma.dev</p>
         <div className="flex flex-wrap items-baseline gap-x-5 gap-y-2">

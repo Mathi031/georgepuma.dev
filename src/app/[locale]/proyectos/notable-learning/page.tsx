@@ -4,8 +4,10 @@ import { Evidence } from "@/components/Evidence";
 import { LocaleSwitcher } from "@/components/LocaleSwitcher";
 import { PipelineFigure } from "@/components/figures/PipelineFigure";
 import { SchemaFigure } from "@/components/figures/SchemaFigure";
+import { JsonLd } from "@/components/JsonLd";
 import { content as site, type Locale } from "@/content/site";
-import { getPathname, Link } from "@/i18n/navigation";
+import { Link } from "@/i18n/navigation";
+import { pageMetadata, techArticleJsonLd } from "@/lib/seo";
 import { caseStudy as caseEs } from "@/content/notable-learning.es";
 import { caseStudy as caseEn } from "@/content/notable-learning.en";
 
@@ -13,23 +15,22 @@ const content: Record<Locale, typeof caseEs> = { es: caseEs, en: caseEn };
 
 const pathnameKey = "/proyectos/notable-learning" as const;
 
+function meta(locale: Locale) {
+  return {
+    locale,
+    href: pathnameKey,
+    title: site[locale].anchorProject.name + site[locale].ui.meta.caseSuffix,
+    description: content[locale].meta.description,
+  };
+}
+
 export async function generateMetadata({
   params,
 }: {
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
   const { locale } = await params;
-  const c = content[locale as Locale];
-  const es = getPathname({ locale: "es", href: pathnameKey });
-  const en = getPathname({ locale: "en", href: pathnameKey });
-  return {
-    title: c.meta.title,
-    description: c.meta.description,
-    alternates: {
-      canonical: locale === "en" ? en : es,
-      languages: { es, en, "x-default": es },
-    },
-  };
+  return pageMetadata(meta(locale as Locale));
 }
 
 const h2 = "display-md text-display-md font-semibold";
@@ -67,6 +68,7 @@ export default async function NotableLearningPage({
 
   return (
     <>
+      <JsonLd data={techArticleJsonLd(meta(locale as Locale))} />
       <header className="mx-auto flex max-w-[720px] flex-wrap items-baseline justify-between gap-x-5 gap-y-2 px-5 pt-6 sm:px-9">
         <Link href="/" className="font-mono text-micro font-medium no-underline transition-colors hover:text-primary">
           <span aria-hidden="true" className="text-primary">←</span> georgepuma.dev
@@ -203,13 +205,13 @@ export default async function NotableLearningPage({
           <section className={sectionGap} aria-labelledby={c.close.id}>
             <CaseHeading id={c.close.id} heading={c.close.heading} />
             <p className={`mt-4 mb-7 ${body}`}>{c.close.body}</p>
-            {/* href con prefijo de locale hardcodeado en el contenido; <a> plano. */}
-            <a
-              href={c.close.backHref}
+            {/* Link de next-intl: pone el prefijo del locale actual. */}
+            <Link
+              href={{ pathname: "/", hash: s.ui.sections.projects }}
               className="text-small font-medium underline decoration-rule underline-offset-[5px] transition-colors hover:text-primary hover:decoration-primary"
             >
               <span aria-hidden="true" className="text-primary">←</span> {c.close.backLabel}
-            </a>
+            </Link>
           </section>
 
           <footer className="mt-14 border-t border-rule pt-6 sm:mt-16">

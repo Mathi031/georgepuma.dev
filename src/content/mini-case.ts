@@ -13,7 +13,8 @@
 import type { InternalRoute, ProjectImage } from "./site";
 
 export type MiniCase = {
-  meta: { title: string; description: string };
+  /** El título se compone con el nombre del proyecto y `ui.meta.caseSuffix`. */
+  meta: { description: string };
   /** Clave de pathnames de esta página; la usan LocaleSwitcher y el sitemap. */
   route: InternalRoute;
   kicker: string;
@@ -31,7 +32,10 @@ export type MiniCase = {
     /** Enlace al producto en vivo: sale de la tarjeta del grid y aterriza aquí. */
     liveHref: string;
     liveLabel: string;
-    backHref: string;
+    /**
+     * Sin href: lo construye el componente con Link, que pone el prefijo de
+     * locale. Uno literal aquí mandaba a la home española desde /en.
+     */
     backLabel: string;
   };
 };

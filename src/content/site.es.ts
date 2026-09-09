@@ -27,8 +27,12 @@ export const ui = {
   pipelineKicker: "pipeline · revisor de PRs",
   footerSource: "código fuente",
   meta: {
+    /** Título de la home. Las subpáginas lo componen con `caseSuffix`. */
+    title: "George Puma — Full Stack Developer (React, Next.js, PostgreSQL)",
     description:
       "Full Stack Developer — React, Next.js, TypeScript. Cinco años construyendo productos web empresariales, con flujos de desarrollo asistidos por IA.",
+    /** Se añade al nombre del proyecto para formar el título de su página. */
+    caseSuffix: " — caso de estudio",
     ogLocale: "es_PE",
   },
 };

@@ -150,14 +150,14 @@ export function MiniCase({ locale, project, c }: MiniCaseProps) {
               >
                 <span aria-hidden="true">↗</span> {c.close.liveLabel}
               </a>
-              {/* href con prefijo de locale en el contenido; <a> plano, igual
-                  que el cierre del caso de estudio. */}
-              <a
-                href={c.close.backHref}
+              {/* Link de next-intl: pone el prefijo del locale, así que desde
+                  /en vuelve a la home inglesa. */}
+              <Link
+                href={{ pathname: "/", hash: site[locale].ui.sections.projects }}
                 className="text-small font-medium underline decoration-rule underline-offset-[5px] transition-colors hover:text-primary hover:decoration-primary"
               >
                 <span aria-hidden="true" className="text-primary">←</span> {c.close.backLabel}
-              </a>
+              </Link>
             </div>
           </section>
         </article>

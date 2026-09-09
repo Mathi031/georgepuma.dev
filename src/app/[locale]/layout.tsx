@@ -3,8 +3,9 @@ import { notFound } from "next/navigation";
 import { Analytics } from "@vercel/analytics/next";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { setRequestLocale } from "next-intl/server";
-import { routing } from "@/i18n/routing";
+import { enContentReady, routing } from "@/i18n/routing";
 import { content, identity, type Locale } from "@/content/site";
+import { robotsFor, siteUrl } from "@/lib/seo";
 // Fuentes variables de Fontsource: un archivo por subset cubre todos los pesos,
 // y el unicode-range de cada @font-face hace que solo se descargue el latino.
 // Hanken Grotesk no se importa aquí: se declara en globals.css contra /public
@@ -18,31 +19,27 @@ export async function generateMetadata({
 }: {
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
-  const { locale } = await params;
-  const { ui } = content[hasLocale(routing.locales, locale) ? locale : routing.defaultLocale];
+  const { locale: raw } = await params;
+  const locale = hasLocale(routing.locales, raw) ? raw : routing.defaultLocale;
+  const { ui } = content[locale];
+
+  // Solo lo común al locale; las imágenes las declara cada página, la home
+  // incluida: si lo hiciera el layout, opengraph-image.tsx (mismo segmento)
+  // las pisaría con una URL que redirige.
   return {
-    metadataBase: new URL("https://georgepuma.dev"),
+    metadataBase: new URL(siteUrl),
     title: {
-      default: `${identity.name} — ${identity.title}`,
-      template: `%s — ${identity.name}`,
+      default: ui.meta.title,
+      template: `%s · ${identity.name}`,
     },
     description: ui.meta.description,
-    alternates: {
-      canonical: locale === "en" ? "/en" : "/",
-      languages: { es: "/", en: "/en", "x-default": "/" },
-    },
+    robots: robotsFor(locale),
     openGraph: {
       type: "website",
+      siteName: identity.siteName,
       locale: ui.meta.ogLocale,
-      siteName: "georgepuma.dev",
     },
-    // Sin `images` aquí ni en openGraph: Next solo aplica la imagen de convención
-    // de archivo (opengraph-image.tsx) si el metadata no declara `images` propio.
-    twitter: {
-      card: "summary_large_image",
-      title: `${identity.name} — ${identity.title}`,
-      description: ui.meta.description,
-    },
+    twitter: { card: "summary_large_image" },
   };
 }
 
@@ -59,8 +56,13 @@ export default async function LocaleLayout({
   }
   setRequestLocale(locale);
 
+  // El idioma del texto, que no siempre es el de la ruta: /en sirve español
+  // hasta que exista su traducción, y declararlo `en` haría que un lector de
+  // pantalla lo pronunciara con fonética inglesa (WCAG 3.1.1).
+  const contentLang = enContentReady ? locale : routing.defaultLocale;
+
   return (
-    <html lang={locale}>
+    <html lang={contentLang}>
       <head>
         {/* Única fuente precargada: la del H1, que es el elemento LCP. Las
             otras dos entran por CSS con font-display: swap. */}

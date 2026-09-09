@@ -162,21 +162,11 @@ const html = ({ headline, thesis, chips }) => `<!doctype html>
     text-decoration-thickness: 2px;
     text-underline-offset: 8px;
   }
-  /* Fichas de evidencia: los corchetes de calibración del sitio (.calibrated)
-     entran a la tarjeta OG — la firma visual llega antes que la visita. */
-  .chips { display: flex; gap: 22px; margin-top: 40px; }
+  /* Fichas de evidencia: tipografía y jerarquía, sin adorno. */
+  .chips { display: flex; gap: 40px; margin-top: 40px; }
   .chip {
-    position: relative; display: inline-flex; align-items: baseline; gap: 10px;
+    display: inline-flex; align-items: baseline; gap: 10px;
     font-family: "JetBrains Mono Variable", monospace; font-size: 20px; line-height: 1;
-    padding: 14px 19px;
-  }
-  .chip::before {
-    content: ""; position: absolute; top: 0; left: 0; width: 12px; height: 12px;
-    border-top: 1.5px solid ${primary}; border-left: 1.5px solid ${primary};
-  }
-  .chip::after {
-    content: ""; position: absolute; bottom: 0; right: 0; width: 12px; height: 12px;
-    border-bottom: 1.5px solid ${primary}; border-right: 1.5px solid ${primary};
   }
   .chip .src { color: ${muted}; }
 </style></head>
@@ -229,19 +219,10 @@ const caseHtml = ({ name, kicker, path, chips }) => `<!doctype html>
     letter-spacing: -0.02em; font-variation-settings: "wdth" 122;
   }
   .dot { color: ${primary}; }
-  .chips { display: flex; gap: 22px; margin-top: 44px; }
+  .chips { display: flex; gap: 40px; margin-top: 44px; }
   .chip {
-    position: relative; display: inline-flex; align-items: baseline; gap: 10px;
+    display: inline-flex; align-items: baseline; gap: 10px;
     font-family: "JetBrains Mono Variable", monospace; font-size: 20px; line-height: 1;
-    padding: 14px 19px;
-  }
-  .chip::before {
-    content: ""; position: absolute; top: 0; left: 0; width: 12px; height: 12px;
-    border-top: 1.5px solid ${primary}; border-left: 1.5px solid ${primary};
-  }
-  .chip::after {
-    content: ""; position: absolute; bottom: 0; right: 0; width: 12px; height: 12px;
-    border-bottom: 1.5px solid ${primary}; border-right: 1.5px solid ${primary};
   }
   .chip .src { color: ${muted}; }
 </style></head>
