@@ -63,15 +63,26 @@ export type ExperienceItem = {
   lines: string[];
 };
 
+const repo = "https://github.com/Mathi031/georgepuma.dev";
+const github = "https://github.com/Mathi031";
+const linkedin = "https://www.linkedin.com/in/mathi031/";
+
 export const identity = {
   name: "George Puma",
   fullName: "George Miguel Puma Salcedo",
   title: "Full Stack Developer",
   email: "george@georgepuma.dev",
-  github: "https://github.com/Mathi031",
-  repo: "https://github.com/Mathi031/georgepuma.dev",
-  linkedin: "https://www.linkedin.com/in/mathi031/",
-  cvUrl: "/cv-george-puma.pdf", // TODO: subir el PDF a /public
+  github,
+  repo,
+  /** URL de Actions del workflow de CI, para el enlace del footer. */
+  ci: `${repo}/actions/workflows/ci.yml`,
+  linkedin,
+  /** Enlaces de marca del hero (íconos GitHub/LinkedIn). Nombres no traducibles. */
+  social: [
+    { name: "GitHub", href: github },
+    { name: "LinkedIn", href: linkedin },
+  ] as const,
+  cvUrl: "/cv-george-puma.pdf",
   /** Dominio de producción. Base de metadataBase, canonical y JSON-LD. */
   url: "https://georgepuma.dev",
   /** og:site_name y la firma del header. */
@@ -81,6 +92,18 @@ export const identity = {
    * y no como `address`: es una ubicación, no un domicilio postal.
    */
   location: { locality: "Arequipa", country: "PE" },
+};
+
+/**
+ * Ids de sección (a la vez ancla y valor de aria-labelledby). No traducibles:
+ * viven junto a identity, igual que el resto del vocabulario estructural.
+ */
+export const sectionIds = {
+  work: "trabajo",
+  method: "metodo",
+  experience: "experiencia",
+  stack: "stack",
+  contact: "contacto",
 };
 
 /**

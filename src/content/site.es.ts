@@ -9,23 +9,30 @@ export const ui = {
   skipLink: "Saltar al contenido",
   sectionsAria: "Secciones",
   langAria: "Idioma",
-  // Los valores son a la vez id de sección (ancla) y etiqueta visible.
-  sections: {
-    projects: "proyectos",
-    ai: "ia",
-    experience: "experiencia",
-    stack: "stack",
-    contact: "contacto",
+  brandAria: "George Puma — inicio",
+  availability: "DISPONIBLE AHORA",
+  nav: {
+    work: "Trabajo",
+    method: "Método",
+    experience: "Experiencia",
+    contact: "Contacto",
   },
-  metaLine: ["Arequipa, Perú", "GMT-5", "remoto"],
+  headings: {
+    work: "Trabajo",
+    method: "Método",
+    experience: "Experiencia",
+    stack: "Stack",
+    contact: "Contacto",
+  },
+  footer: {
+    source: "código fuente ↗",
+    ci: "CI ↗",
+  },
   evidenceAria: "Evidencia verificable",
   linksAria: "Enlaces principales",
-  writeMe: "Escríbeme",
-  cvLabel: "CV en PDF ↓",
   contact:
     "Busco roles full stack o frontend, de preferencia remotos. Si crees que encajo en tu equipo, escríbeme — respondo siempre.",
   pipelineKicker: "pipeline · revisor de PRs",
-  footerSource: "código fuente",
   meta: {
     /** Título de la home. Las subpáginas lo componen con `caseSuffix`. */
     title: "George Puma — Full Stack Developer (React, Next.js, PostgreSQL)",
@@ -38,17 +45,21 @@ export const ui = {
 };
 
 export const hero = {
-  headline: "Construyo productos web que llegan a producción.",
-  thesis: "Y puedo demostrarlo.",
-  positioning: {
-    lead: "Full Stack Developer — React, Next.js, TypeScript.",
-    rest: "Cinco años construyendo productos empresariales: EdTech, e-commerce, ERP y facturación electrónica. Diseño flujos de desarrollo asistidos por IA y los trato como lo que son: ingeniería.",
-  },
+  // nbsp alrededor de "·" para que el separador no quede huérfano al partir
+  // línea; GMT‑5 lleva guion U+2011 (no ruptura) en vez de un "-" normal.
+  status: "Full stack · contrato o indefinido · remoto · Arequipa, Perú · GMT‑5",
+  headline: "Construyo productos web que llegan a producción. Y puedo demostrarlo.",
+  lead: "Full Stack Developer — React, Next.js, TypeScript, PostgreSQL. Desde 2022 construyendo productos empresariales en EdTech, e-commerce, ERP y facturación electrónica, con equipos remotos de EE.UU. y Latinoamérica. Diseño flujos de desarrollo asistidos por IA y los trato como lo que son: ingeniería.",
   evidence: [
-    { value: "500+ escuelas", source: "LMS en producción" },
-    { value: "LCP < 2 s", source: "medido en 4G" },
-    { value: "WCAG 2.1 AA", source: "requisito contractual" },
+    { value: "500+ escuelas", source: "LMS K‑12 en producción; principal contribuidor de frontend y API" },
+    { value: "2 negocios", source: "usan a diario software que diseñé y construí de extremo a extremo" },
+    { value: "WCAG 2.1 AA", source: "requisito contractual, cumplido y cubierto por tests" },
   ] satisfies EvidenceItem[],
+  // nbsp entre flecha y palabra (sección 4): el token no se parte en dos líneas.
+  ctas: {
+    work: "Ver el trabajo →",
+    cv: "CV en PDF ↓",
+  },
 };
 
 /**

@@ -10,7 +10,7 @@ import { FootnoteRef } from "@/components/FootnoteRef";
 // desde la versión inglesa este enlace no lleva a la home española.
 import { Link } from "@/i18n/navigation";
 import type { EvidenceItem } from "./site";
-import { ui } from "./site.es";
+import { sectionIds } from "./site";
 
 type SectionText = { id: string; heading: string };
 type Item = { title: string; text: string };
@@ -263,7 +263,7 @@ export const caseStudy: CaseStudy = {
         la entrega. De este proyecto también salió el revisor automatizado de PRs
         que construí sobre Claude Code:{" "}
         <Link
-          href={{ pathname: "/", hash: ui.sections.ai }}
+          href={{ pathname: "/", hash: sectionIds.method }}
           className="text-ink underline decoration-rule underline-offset-4 transition-colors hover:text-primary hover:decoration-primary"
         >
           la otra mitad de esta historia

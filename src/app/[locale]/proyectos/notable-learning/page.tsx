@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
 import { setRequestLocale } from "next-intl/server";
+import { Brand } from "@/components/Brand";
 import { Evidence } from "@/components/Evidence";
 import { LocaleSwitcher } from "@/components/LocaleSwitcher";
 import { PipelineFigure } from "@/components/figures/PipelineFigure";
 import { SchemaFigure } from "@/components/figures/SchemaFigure";
 import { JsonLd } from "@/components/JsonLd";
-import { content as site, type Locale } from "@/content/site";
+import { content as site, sectionIds, type Locale } from "@/content/site";
 import { Link } from "@/i18n/navigation";
 import { pageMetadata, techArticleJsonLd } from "@/lib/seo";
 import { caseStudy as caseEs } from "@/content/notable-learning.es";
@@ -70,9 +71,7 @@ export default async function NotableLearningPage({
     <>
       <JsonLd data={techArticleJsonLd(meta(locale as Locale))} />
       <header className="mx-auto flex max-w-[720px] flex-wrap items-baseline justify-between gap-x-5 gap-y-2 px-5 pt-6 sm:px-9">
-        <Link href="/" className="font-mono text-micro font-medium no-underline transition-colors hover:text-primary">
-          <span aria-hidden="true" className="text-primary">←</span> georgepuma.dev
-        </Link>
+        <Brand aria={s.ui.brandAria} back />
         <div className="flex flex-wrap items-baseline gap-x-5 gap-y-2">
           <p className="font-mono text-micro text-muted">
             <span aria-hidden="true" className="text-primary">/</span>{c.pathSegments[0]}
@@ -207,7 +206,7 @@ export default async function NotableLearningPage({
             <p className={`mt-4 mb-7 ${body}`}>{c.close.body}</p>
             {/* Link de next-intl: pone el prefijo del locale actual. */}
             <Link
-              href={{ pathname: "/", hash: s.ui.sections.projects }}
+              href={{ pathname: "/", hash: sectionIds.work }}
               className="text-small font-medium underline decoration-rule underline-offset-[5px] transition-colors hover:text-primary hover:decoration-primary"
             >
               <span aria-hidden="true" className="text-primary">←</span> {c.close.backLabel}

@@ -1,12 +1,18 @@
 import type { Metadata } from "next";
 import { setRequestLocale } from "next-intl/server";
+import { ActiveSection } from "@/components/ActiveSection";
+import { Brand } from "@/components/Brand";
 import { Evidence } from "@/components/Evidence";
 import { JsonLd } from "@/components/JsonLd";
 import { LocaleSwitcher } from "@/components/LocaleSwitcher";
 import { ScreenshotFrame } from "@/components/ScreenshotFrame";
 import { SectionHeading } from "@/components/SectionHeading";
+import { SocialIcon } from "@/components/SocialIcon";
 import { SchemaFigure } from "@/components/figures/SchemaFigure";
-import { content, identity, type Locale } from "@/content/site";
+import { Badge } from "@/components/ui/Badge";
+import { ButtonLink } from "@/components/ui/Button";
+import { MetricWithContext } from "@/components/ui/MetricWithContext";
+import { content, identity, sectionIds, type Locale } from "@/content/site";
 import { Link } from "@/i18n/navigation";
 import { pageMetadata, personJsonLd } from "@/lib/seo";
 
@@ -44,76 +50,98 @@ export default async function HomePage({
   return (
     <>
       <JsonLd data={personJsonLd(locale as Locale)} />
-      <header className={`${container} flex flex-wrap items-baseline justify-between gap-x-5 gap-y-2 pt-6`}>
-        <p className="font-mono text-micro font-medium">georgepuma.dev</p>
-        <div className="flex flex-wrap items-baseline gap-x-5 gap-y-2">
-          <nav aria-label={ui.sectionsAria} className="flex flex-wrap gap-x-4 gap-y-2 text-small font-medium">
-            {Object.values(ui.sections).map((s) => (
-              <a key={s} href={`#${s}`} className="text-muted transition-colors hover:text-primary">
-                {s}
-              </a>
-            ))}
-          </nav>
-          <LocaleSwitcher locale={locale as Locale} href="/" aria={ui.langAria} />
-        </div>
+      <header
+        className={`${container} flex flex-wrap items-center justify-between gap-y-step-16 pt-step-24 [@media(min-width:361px)]:gap-y-step-24 md:flex-nowrap`}
+      >
+        <Brand aria={ui.brandAria} />
+        <nav
+          aria-label={ui.sectionsAria}
+          data-section-nav
+          className="order-3 flex w-full flex-wrap gap-x-step-16 [@media(min-width:361px)]:gap-x-step-24 md:order-none md:w-auto"
+        >
+          {(
+            [
+              [sectionIds.work, ui.nav.work],
+              [sectionIds.method, ui.nav.method],
+              [sectionIds.experience, ui.nav.experience],
+              [sectionIds.contact, ui.nav.contact],
+            ] as const
+          ).map(([id, label]) => (
+            <a
+              key={id}
+              href={`#${id}`}
+              className="inline-flex min-h-11 items-center border-b border-transparent text-body-small font-medium motion-link hover:text-primary aria-[current=location]:border-ink"
+            >
+              {label}
+            </a>
+          ))}
+        </nav>
+        <LocaleSwitcher locale={locale as Locale} href="/" aria={ui.langAria} />
+        <ActiveSection />
       </header>
 
       <main id="contenido">
         {/* ── Hero ───────────────────────────────────────────── */}
         <section className={`${container} pt-16 sm:pt-24`}>
-          <p className="mb-6 font-mono text-micro tracking-[0.03em] text-muted">
-            {identity.fullName} <span aria-hidden="true" className="text-primary">·</span>{" "}
-            {ui.metaLine[0]} <span aria-hidden="true" className="text-primary">·</span> {ui.metaLine[1]}{" "}
-            <span aria-hidden="true" className="text-primary">·</span> {ui.metaLine[2]}
-          </p>
-          <h1 className="display max-w-[17ch] text-balance text-display font-bold">
-            {hero.headline.replace(/\.$/, "")}
-            <span aria-hidden="true" className="text-primary">.</span>{" "}
-            <span className="inline-block underline decoration-primary decoration-2 underline-offset-8">
-              {hero.thesis}
-            </span>
+          <div className="flex flex-wrap items-center gap-step-12">
+            <Badge variant="accent">{ui.availability}</Badge>
+            <p className="font-mono text-metadata text-muted">{hero.status}</p>
+          </div>
+          <h1 className="mt-step-24 max-w-[20ch] text-balance font-display text-h1 font-semibold">
+            {hero.headline}
           </h1>
-          <p className="mt-6 max-w-[54ch] text-body">
-            <strong className="font-medium">{hero.positioning.lead}</strong>{" "}
-            {hero.positioning.rest}
-          </p>
-          {/* gap-x amplio: cada métrica son dos líneas (dato sobre contexto) y
-              con un gap estrecho las vecinas se leen como una fila de datos
-              seguida de una fila de contextos. */}
-          <ul className="mt-7 flex flex-wrap gap-x-step-48 gap-y-step-24" aria-label={ui.evidenceAria}>
+          <p className="mt-step-32 max-w-[66ch] text-lead">{hero.lead}</p>
+          {/* Regla entre filas solo en móvil: en desktop las tres columnas del
+              grid ya se distinguen por el espacio horizontal. */}
+          <ul
+            aria-label={ui.evidenceAria}
+            className="mt-step-48 grid grid-safe gap-x-step-24 divide-y divide-rule md:grid-cols-3 md:divide-y-0"
+          >
             {hero.evidence.map((e) => (
-              <li key={e.value}>
-                <Evidence value={e.value} source={e.source} />
+              <li key={e.value} className="min-w-0 py-step-16 md:py-0">
+                <MetricWithContext value={e.value} context={e.source} size="hero" />
               </li>
             ))}
           </ul>
-          <nav aria-label={ui.linksAria} className="mt-8 flex flex-wrap items-center gap-x-5 gap-y-3">
-            <a
-              href={`mailto:${identity.email}`}
-              className="inline-flex min-h-11 items-center rounded-md bg-primary px-5 py-2.5 text-small font-medium text-white transition-colors hover:bg-primary-hover"
+          <nav
+            aria-label={ui.linksAria}
+            className="mt-step-48 flex flex-col gap-step-16 md:flex-row md:flex-wrap md:items-center"
+          >
+            <ButtonLink href={`#${sectionIds.work}`} className="w-full md:w-auto">
+              {hero.ctas.work}
+            </ButtonLink>
+            <ButtonLink
+              variant="secondary"
+              href={identity.cvUrl}
+              download
+              className="w-full md:w-auto"
             >
-              {ui.writeMe}
-            </a>
-            {[
-              { href: identity.github, label: "GitHub ↗" },
-              { href: identity.linkedin, label: "LinkedIn ↗" },
-              { href: identity.cvUrl, label: ui.cvLabel },
-            ].map((l) => (
-              <a
-                key={l.label}
-                href={l.href}
-                rel="noopener"
-                className="text-small font-medium underline decoration-rule underline-offset-[5px] transition-colors hover:text-primary hover:decoration-primary"
-              >
-                {l.label}
-              </a>
-            ))}
+              {hero.ctas.cv}
+            </ButtonLink>
+            <ul className="flex gap-step-8 xl:ml-auto">
+              {identity.social.map((s) => (
+                <li key={s.name}>
+                  <a
+                    href={s.href}
+                    rel="noopener"
+                    className="inline-flex h-11 w-11 items-center justify-center motion-link hover:text-primary"
+                  >
+                    <SocialIcon name={s.name} />
+                    <span className="sr-only">{s.name}</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
           </nav>
         </section>
 
         {/* ── Proyectos ──────────────────────────────────────── */}
-        <section aria-labelledby={ui.sections.projects} className={`${container} ${sectionGap} scroll-mt-6`} id={ui.sections.projects}>
-          <SectionHeading id={`${ui.sections.projects}-h`} label={ui.sections.projects} />
+        <section
+          aria-labelledby={`${sectionIds.work}-h`}
+          className={`${container} ${sectionGap} scroll-mt-6`}
+          id={sectionIds.work}
+        >
+          <SectionHeading id={`${sectionIds.work}-h`} label={ui.headings.work} index="01" />
 
           {/* Ancla: Notable Learning ordena la lectura de la sección — y es
               el bloque ancla del home. */}
@@ -183,8 +211,12 @@ export default async function HomePage({
         </section>
 
         {/* ── IA ─────────────────────────────────────────────── */}
-        <section aria-labelledby={ui.sections.ai} className={`${container} ${sectionGap} scroll-mt-6`} id={ui.sections.ai}>
-          <SectionHeading id={`${ui.sections.ai}-h`} label={ui.sections.ai} />
+        <section
+          aria-labelledby={`${sectionIds.method}-h`}
+          className={`${container} ${sectionGap} scroll-mt-6`}
+          id={sectionIds.method}
+        >
+          <SectionHeading id={`${sectionIds.method}-h`} label={ui.headings.method} index="02" />
           <div className="max-w-[65ch] space-y-5 text-body leading-[1.75]">
             <p>
               <strong className="font-medium">{aiWorkflow.intro.lead}</strong>{" "}
@@ -238,8 +270,12 @@ export default async function HomePage({
         </section>
 
         {/* ── Experiencia ────────────────────────────────────── */}
-        <section aria-labelledby={ui.sections.experience} className={`${container} ${sectionGap} scroll-mt-6`} id={ui.sections.experience}>
-          <SectionHeading id={`${ui.sections.experience}-h`} label={ui.sections.experience} />
+        <section
+          aria-labelledby={`${sectionIds.experience}-h`}
+          className={`${container} ${sectionGap} scroll-mt-6`}
+          id={sectionIds.experience}
+        >
+          <SectionHeading id={`${sectionIds.experience}-h`} label={ui.headings.experience} index="03" />
           <ol>
             {experience.map((job, i) => (
               <li
@@ -264,8 +300,12 @@ export default async function HomePage({
         </section>
 
         {/* ── Stack ──────────────────────────────────────────── */}
-        <section aria-labelledby={ui.sections.stack} className={`${container} ${sectionGap} scroll-mt-6`} id={ui.sections.stack}>
-          <SectionHeading id={`${ui.sections.stack}-h`} label={ui.sections.stack} />
+        <section
+          aria-labelledby={`${sectionIds.stack}-h`}
+          className={`${container} ${sectionGap} scroll-mt-6`}
+          id={sectionIds.stack}
+        >
+          <SectionHeading id={`${sectionIds.stack}-h`} label={ui.headings.stack} index="04" />
           <dl>
             {[stack.primary, stack.solid, stack.growing].map((group, i) => (
               <div
@@ -280,8 +320,12 @@ export default async function HomePage({
         </section>
 
         {/* ── Contacto ───────────────────────────────────────── */}
-        <section aria-labelledby={ui.sections.contact} className={`${container} ${sectionGap} scroll-mt-6 pb-20 sm:pb-24`} id={ui.sections.contact}>
-          <SectionHeading id={`${ui.sections.contact}-h`} label={ui.sections.contact} />
+        <section
+          aria-labelledby={`${sectionIds.contact}-h`}
+          className={`${container} ${sectionGap} scroll-mt-6 pb-20 sm:pb-24`}
+          id={sectionIds.contact}
+        >
+          <SectionHeading id={`${sectionIds.contact}-h`} label={ui.headings.contact} index="05" />
           <p className="mb-7 max-w-[55ch] text-body">
             {ui.contact}
           </p>
@@ -294,22 +338,20 @@ export default async function HomePage({
         </section>
       </main>
 
-      <footer className={`${container} border-t border-rule pb-10 pt-6`}>
-        <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2 font-mono text-micro text-muted">
-          <p>
-            © {new Date().getFullYear()} {identity.fullName}
-          </p>
-          <p>
-            Next.js · TypeScript · Vercel ·{" "}
-            <a
-              href={identity.repo}
-              rel="noopener"
-              className="underline underline-offset-4 transition-colors hover:text-primary"
-            >
-              {ui.footerSource}
-            </a>
-          </p>
-        </div>
+      <footer
+        className={`${container} flex flex-col gap-step-8 border-t border-rule pb-step-64 pt-step-24 font-mono text-metadata text-muted sm:flex-row sm:justify-between`}
+      >
+        <p>
+          © {new Date().getFullYear()} {identity.fullName}
+        </p>
+        <p>
+          <a href={identity.repo} rel="noopener" className="motion-link hover:text-primary">
+            {ui.footer.source}
+          </a>{" "}
+          · <a href={identity.ci} rel="noopener" className="motion-link hover:text-primary">
+            {ui.footer.ci}
+          </a>
+        </p>
       </footer>
     </>
   );

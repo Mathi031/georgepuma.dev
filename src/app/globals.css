@@ -189,13 +189,9 @@
   transition: var(--motion-card);
 }
 
-html {
-  scroll-behavior: smooth;
-}
-
-@media (prefers-reduced-motion: reduce) {
+@media (prefers-reduced-motion: no-preference) {
   html {
-    scroll-behavior: auto;
+    scroll-behavior: smooth;
   }
 }
 
@@ -272,5 +268,13 @@ body {
   .text-h1,
   .text-display {
     font-size: 1.875rem; /* 30px */
+  }
+}
+
+/* Escalón intermedio (tablet): entre el H1 completo de desktop y el móvil. */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .text-h1,
+  .text-display {
+    font-size: 2.5rem; /* 40px */
   }
 }

@@ -10,6 +10,18 @@ export * from "./site.es";
 
 export const ui = {
   ...esUi,
+  nav: {
+    work: "Work",
+    method: "How I work",
+    experience: "Experience",
+    contact: "Contact",
+  },
+  brandAria: "George Puma — home",
+  availability: "AVAILABLE NOW",
+  footer: {
+    source: "source code ↗",
+    ci: "CI ↗",
+  },
   meta: {
     // El título no se traduce: nombre, rol y tecnologías son los mismos.
     title: "George Puma — Full Stack Developer (React, Next.js, PostgreSQL)",
