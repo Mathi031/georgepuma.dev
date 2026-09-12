@@ -149,8 +149,7 @@
 
 /* Motion: los tokens valen 0s por defecto y solo toman su valor real bajo
    no-preference, así las utilidades motion-* quedan instantáneas en reduce
-   sin duplicar reglas. --motion-accordion espera al accordion, que aún no
-   existe. */
+   sin duplicar reglas. */
 :root {
   --motion-link: 0s;
   --motion-card: 0s;
@@ -173,6 +172,18 @@
 
 @utility motion-card {
   transition: var(--motion-card);
+}
+
+/* Cuerpo del accordion. Solo opacity: animar la altura obliga a medirla con
+   JS o a fijar un max-height inventado.
+
+   Sin @starting-style: además de dar el estado inicial al abrir, lo aplicaba
+   también en la carga de la página, así que el ítem abierto por defecto
+   entraba con un fade que dejaba su texto a medio color durante 200 ms. Axe
+   lo medía ahí y lo leía como un fallo de contraste. La transición se dispara
+   igual al abrir, porque el cuerpo pasa de display:none a visible. */
+@utility motion-accordion {
+  transition: var(--motion-accordion);
 }
 
 @media (prefers-reduced-motion: no-preference) {

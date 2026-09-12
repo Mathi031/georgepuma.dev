@@ -29,6 +29,13 @@ export const ui = {
     source: "código fuente ↗",
     ci: "CI ↗",
   },
+  /** Etiquetas del cuerpo de cada puesto en la trayectoria. */
+  experience: {
+    context: "Contexto",
+    scope: "Alcance",
+    result: "Resultado",
+    tech: "Tecnologías",
+  },
   evidenceAria: "Evidencia verificable",
   linksAria: "Enlaces principales",
   contact:
@@ -214,9 +221,9 @@ export const studioEquilibrio: Project = {
   name: "Studio Equilibrio",
   level: "menor",
   badge: "DEMO",
-  meta: "Sin cliente · estándar de producción · 2,5 semanas",
+  meta: "Demo comercial para Junto AI · en solitario · 2,5 semanas",
   summary:
-    "SaaS demo para estudios de fitness — reservas, membresías, facturación con recibos PDF y analítica — construido de extremo a extremo a partir de un brief comercial.",
+    "SaaS demo para estudios de fitness — reservas, membresías, facturación con recibos PDF y analítica — construida de extremo a extremo por encargo de Junto AI, a partir de un brief comercial.",
   proofs: [
     { value: "LCP < 2 s", context: "en móvil sobre 4G; 30 pruebas E2E con Playwright" },
   ],
@@ -285,51 +292,131 @@ export const projects: Project[] = [anchorProject, ...gridProjects];
 export const experience: ExperienceItem[] = [
   {
     company: "Junto AI",
-    role: "Full Stack Developer (contrato por proyecto)",
+    role: "Full Stack Developer",
     period: "Feb 2026 – Jun 2026",
+    type: "Contrato por proyecto",
     location: "Remoto · EE.UU. / Costa Rica",
-    lines: [
-      "Principal contribuidor de Notable Learning, LMS K-12 en producción para 500+ escuelas.",
-      "Entregas semanales revisadas por el CTO; proyecto entregado en fecha.",
+    impact:
+      "Principal contribuidor de un LMS K‑12 en producción para 500+ escuelas, entregado en la fecha comprometida.",
+    context:
+      "LMS institucional para EE.UU. y 10 países, con datos de estudiantes menores de edad y cumplimiento FERPA como requisito. Contrato de alcance cerrado, concluido con la entrega.",
+    scope: [
+      "Frontend completo y capa de API: librería de componentes, editor de contenido para docentes, dashboards de estudiante y docente, y panel de administración multi-institución.",
+      "Integraciones de video (Mux) y almacenamiento (Google Cloud Storage), con subida directa en tres pasos y validación del contenido en servidor.",
+      "Revisor automatizado de PRs con Claude Code: webhook, validación contra el ticket de Linear, subagentes según el diff y un único comentario consolidado.",
+    ],
+    result:
+      "Entregado el 12 jun 2026, la fecha comprometida, con entregas semanales revisadas por el CTO y WCAG 2.1 AA verificado con jest-axe en cada componente.",
+    resultLink: { href: "/proyectos/notable-learning", label: "Leer el caso de estudio →" },
+    tech: [
+      "TypeScript",
+      "React 19",
+      "Next.js 16",
+      "Prisma",
+      "PostgreSQL",
+      "NextAuth",
+      "GCS",
+      "Mux",
+      "Linear",
     ],
   },
   {
     company: "Global Resources",
-    role: "Full Stack Developer",
+    role: "Frontend Developer",
     period: "Feb 2025 – Ene 2026",
+    type: "Contrato",
     location: "Remoto · Venezuela",
-    lines: [
-      "Módulo de gestión desde cero para un ERP en Next.js, coherente con la arquitectura existente.",
-      "Colaboración con backend en diagnóstico de microservicios Spring Boot.",
+    impact:
+      "Frontend en Next.js para el sistema de gestión de red de un operador de telecomunicaciones, construido sobre servicios existentes.",
+    context:
+      "El cliente operaba su sistema desde un frontend en Java sobre los mismos servicios y quería una interfaz moderna. Partí de una plantilla mínima con su design system (Mistica) y trabajé con otro frontend, cada uno a cargo de sus módulos.",
+    scope: [
+      "Módulos de consulta de la red: componentes, fuentes, nodos y tipos de componente, sobre APIs en Java y Quarkus con Kafka.",
+      "Ciclo de demo con el cliente en cada iteración: presentación, cambios pedidos, implementación y nueva presentación.",
+      "Ajustes en la API junto al equipo backend cuando el frontend necesitaba otra forma de los datos, y diagnóstico de incidencias en microservicios Spring Boot.",
+      "Pruebas unitarias con Cypress sobre los módulos entregados, al cierre del proyecto.",
+      "Para un segundo cliente de la consultora, cambios de interfaz en un frontend Angular con microfrontends y en una app Flutter.",
+    ],
+    result:
+      "Los módulos se entregaron validados por el cliente en cada iteración, con sus pruebas en el repositorio del equipo.",
+    tech: [
+      "Next.js",
+      "React",
+      "TypeScript",
+      "Mistica",
+      "Cypress",
+      "Angular",
+      "Flutter",
+      "Docker",
+      "Java / Quarkus y Kafka (lado servidor)",
+      "Spring Boot (diagnóstico)",
     ],
   },
   {
     company: "Desis",
-    role: "Software Developer",
+    role: "Programador",
     period: "Oct 2024 – Ene 2025",
+    type: "Empleo",
     location: "Remoto · Chile",
-    lines: [
-      "Facturación electrónica empresarial: optimización de PostgreSQL y procesamiento de grandes volúmenes.",
+    impact:
+      "Tickets de extremo a extremo sobre un sistema de facturación electrónica en producción, en PHP y JavaScript nativos.",
+    context:
+      "Sistema en producción desde hacía años, sin framework. El trabajo llegaba por tickets del área operativa y comercial, y cada cambio pasaba por QA antes de subir a producción.",
+    scope: [
+      "Cambios sobre cualquier parte del sistema: flujo de cotización, emisión de facturas y boletas, visualización de contenido y navegación por teclado.",
+      "Objetos de base de datos en PostgreSQL — índices, funciones, procedimientos y tipos — para sostener las funciones nuevas y mejorar tiempos de consulta.",
+      "Correcciones sobre los tickets devueltos por QA, con el feedback resuelto en el propio ticket.",
     ],
+    result: "Cada cambio llegó a producción tras la validación de QA.",
+    tech: ["PostgreSQL", "PHP", "JavaScript", "HTML", "CSS"],
   },
   {
     company: "AccountTECH",
     role: "Frontend Developer",
     period: "Mar 2023 – Dic 2023",
+    type: "Contrato",
     location: "Remoto · EE.UU.",
-    lines: [
-      "Migración de un sistema financiero de escritorio a web en React + TypeScript (AR/AP, Invoices).",
-      "Responsable del módulo nuevo de notificaciones y campañas.",
+    impact:
+      "Migración a React de un software de gestión inmobiliaria usado por varios clientes en EE.UU., módulo a módulo.",
+    context:
+      "El producto existía como aplicación de escritorio en Visual Basic, con una base de datos por cliente y volumen alto. El equipo recibió ese código y lo migró por partes a una plataforma web.",
+    scope: [
+      "Migración de módulos financieros: Invoices, AR Payments, AP Payments, Notifications y Reports.",
+      "Módulo nuevo de notificaciones y campañas, desarrollado de principio a fin, coordinando las reglas de negocio con backend.",
+      "Definición de módulos nuevos con el equipo a partir de lo que pedían los clientes del producto.",
     ],
+    result: "Cada módulo migrado pasó a la plataforma web que usan los clientes del sistema.",
+    tech: ["React", "TypeScript", "Kendo UI", "Tailwind CSS", "React Query"],
   },
   {
     company: "Footloose",
     role: "Analista Programador",
     period: "Feb 2022 – Jun 2023",
-    location: "Remoto · Perú",
-    lines: [
-      "Ecosistema e-commerce VTEX: catálogo, promociones, storefront y componentes React en VTEX IO.",
+    type: "Empleo",
+    location: "Perú",
+    impact:
+      "Dos sistemas a la vez: el e-commerce VTEX de cara al cliente y el sistema interno sobre SQL Server que usaba el personal.",
+    context:
+      "Retail de calzado con operación comercial continua. El e-commerce estaba construido y en marcha; el trabajo era mantenerlo, extenderlo y sostener las campañas de temporada.",
+    scope: [
+      "Operación comercial en VTEX: campañas, cupones, catálogos, carga masiva de precios y formularios de promociones.",
+      "Storefront: cambios de diseño por JSONC, plantillas de correo transaccional y componentes React en VTEX IO.",
+      "Sistema interno en Scriptcase: consulta de productos por SKU, cronogramas de pago de colaboradores y generadores de PDF para contratación.",
+      "Base de datos SQL Server: tablas, procedimientos almacenados y cambios propagados de desarrollo a producción.",
     ],
+    result:
+      "El e-commerce se mantuvo operativo durante las campañas de temporada y el equipo interno trabajó a diario sobre los módulos que entregué.",
+    tech: ["VTEX IO", "React", "TypeScript", "Scriptcase (PHP)", "SQL Server"],
+  },
+  {
+    company: "BIZZPERU",
+    role: "Desarrollador web",
+    period: "Mar 2021 – Jul 2021",
+    type: "Freelance",
+    location: "Perú",
+    impact: "Sitios e interfaces web en Vue y Laravel sobre MySQL, antes del salto a producto.",
+    compact: true,
+    group: "Antes de 2022",
   },
 ];
 

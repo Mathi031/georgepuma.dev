@@ -68,12 +68,32 @@ export type Project = {
   crop?: ProjectImage;
 };
 
+/**
+ * Un puesto de la trayectoria. Los cinco con cuerpo se renderizan como
+ * accordion; el compacto (antes de 2022) solo lleva cabecera, así que los
+ * campos del cuerpo son opcionales en vez de una unión discriminada para un
+ * único caso.
+ */
 export type ExperienceItem = {
   company: string;
   role: string;
   period: string;
+  /** Tipo de vínculo: empleo, contrato, contrato por proyecto o freelance. */
+  type: string;
+  /** Solo país (y "Remoto" cuando aplica); nunca ciudad. */
   location: string;
-  lines: string[];
+  /** Línea visible en la cabecera, con el tratamiento del CAMBIO #5. */
+  impact: string;
+  context?: string;
+  scope?: string[];
+  result?: string;
+  /** Enlace terciario al final del resultado. */
+  resultLink?: { href: InternalRoute; label: string };
+  tech?: string[];
+  /** Sin cuerpo expandible: se renderiza como fila, no como accordion. */
+  compact?: boolean;
+  /** Etiqueta que abre un grupo por encima de este ítem. */
+  group?: string;
 };
 
 const repo = "https://github.com/Mathi031/georgepuma.dev";

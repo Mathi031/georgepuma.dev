@@ -17,6 +17,7 @@ import {
   content,
   identity,
   sectionIds,
+  type ExperienceItem,
   type Locale,
 } from "@/content/site";
 import { Link } from "@/i18n/navigation";
@@ -45,6 +46,29 @@ export async function generateMetadata({
     description: ui.meta.description,
     ownTitle: false, // el título de la home es el `default` del layout
   });
+}
+
+/**
+ * Cabecera de un puesto: meta, titular e impacto. La comparten el <summary>
+ * de los expandibles y el <div> del compacto, por eso los textos van en
+ * <span class="block">: el modelo de contenido de <summary> es phrasing más
+ * un encabezado, y un <p> ahí no es marcado válido.
+ */
+function JobHeader({ job }: { job: ExperienceItem }) {
+  return (
+    <div className="min-w-0">
+      <span className="relative block font-mono text-metadata uppercase text-muted md:before:absolute md:before:top-[0.55em] md:before:-left-[36px] md:before:size-[7px] md:before:rounded-full md:before:bg-text">
+        <span className="nowrap-token">{job.period}</span>&nbsp;·&nbsp;{job.type}&nbsp;·&nbsp;
+        {job.location}
+      </span>
+      <h3 className="mt-step-8 text-h3 font-semibold">
+        {job.company} — {job.role}
+      </h3>
+      {/* La jerarquía va por peso y color, no por tamaño: a 390 el
+          20/17 anterior no se distinguía. */}
+      <span className="mt-step-16 block max-w-[66ch] text-body font-medium">{job.impact}</span>
+    </div>
+  );
 }
 
 export default async function HomePage({
@@ -110,55 +134,55 @@ export default async function HomePage({
             de lectura. */}
         <section className={`${container} pt-16 sm:pt-24`}>
           <div>
-          <p className="font-mono text-metadata uppercase text-muted">{hero.status}</p>
-          <Badge variant="accent" className="mt-step-16">
-            {ui.availability}
-          </Badge>
-          <h1 className="mt-step-32 max-w-[680px] font-display text-h1 font-semibold">
-            {hero.headline}
-          </h1>
-          <p className="mt-step-32 max-w-[66ch] text-lead">{hero.lead}</p>
-          <hr className="mt-step-48 border-rule" />
-          <ul
-            aria-label={ui.evidenceAria}
-            className="mt-step-32 grid grid-safe gap-x-step-24 gap-y-step-32 md:grid-cols-3"
-          >
-            {hero.evidence.map((e) => (
-              <li key={e.value} className="min-w-0">
-                <MetricWithContext value={e.value} context={e.source} size="hero" />
-              </li>
-            ))}
-          </ul>
-          <nav
-            aria-label={ui.linksAria}
-            className="mt-step-48 flex flex-col gap-step-16 md:flex-row md:flex-wrap md:items-center"
-          >
-            <ButtonLink href={`#${sectionIds.work}`} className="w-full md:w-auto">
-              {hero.ctas.work}
-            </ButtonLink>
-            <ButtonLink
-              variant="secondary"
-              href={hero.ctas.cvUrl}
-              download
-              className="w-full md:w-auto"
+            <p className="font-mono text-metadata uppercase text-muted">{hero.status}</p>
+            <Badge variant="accent" className="mt-step-16">
+              {ui.availability}
+            </Badge>
+            <h1 className="mt-step-32 max-w-[680px] font-display text-h1 font-semibold">
+              {hero.headline}
+            </h1>
+            <p className="mt-step-32 max-w-[66ch] text-lead">{hero.lead}</p>
+            <hr className="mt-step-48 border-rule" />
+            <ul
+              aria-label={ui.evidenceAria}
+              className="mt-step-32 grid grid-safe gap-x-step-24 gap-y-step-32 md:grid-cols-3"
             >
-              {hero.ctas.cv}
-            </ButtonLink>
-            <ul className="mt-step-16 flex gap-step-16 md:mt-0 md:ml-auto">
-              {identity.social.map((s) => (
-                <li key={s.name}>
-                  <a
-                    href={s.href}
-                    rel="noopener"
-                    className="inline-flex h-11 w-11 items-center justify-center motion-link hover:text-primary"
-                  >
-                    <SocialIcon name={s.name} />
-                    <span className="sr-only">{s.name}</span>
-                  </a>
+              {hero.evidence.map((e) => (
+                <li key={e.value} className="min-w-0">
+                  <MetricWithContext value={e.value} context={e.source} size="hero" />
                 </li>
               ))}
             </ul>
-          </nav>
+            <nav
+              aria-label={ui.linksAria}
+              className="mt-step-48 flex flex-col gap-step-16 md:flex-row md:flex-wrap md:items-center"
+            >
+              <ButtonLink href={`#${sectionIds.work}`} className="w-full md:w-auto">
+                {hero.ctas.work}
+              </ButtonLink>
+              <ButtonLink
+                variant="secondary"
+                href={hero.ctas.cvUrl}
+                download
+                className="w-full md:w-auto"
+              >
+                {hero.ctas.cv}
+              </ButtonLink>
+              <ul className="mt-step-16 flex gap-step-16 md:mt-0 md:ml-auto">
+                {identity.social.map((s) => (
+                  <li key={s.name}>
+                    <a
+                      href={s.href}
+                      rel="noopener"
+                      className="inline-flex h-11 w-11 items-center justify-center motion-link hover:text-primary"
+                    >
+                      <SocialIcon name={s.name} />
+                      <span className="sr-only">{s.name}</span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </nav>
           </div>
         </section>
 
@@ -333,11 +357,10 @@ export default async function HomePage({
                           </span>
                         )}
                         <span
-                          className={`flex min-w-0 items-center px-step-12 py-step-12 font-mono text-metadata uppercase md:flex-auto md:justify-center md:text-center ${
-                            last
+                          className={`flex min-w-0 items-center px-step-12 py-step-12 font-mono text-metadata uppercase md:flex-auto md:justify-center md:text-center ${last
                               ? "border-[1.25px] border-primary bg-accent-muted text-primary"
                               : "border-[1.25px] border-text bg-surface"
-                          }`}
+                            }`}
                         >
                           {step}
                         </span>
@@ -377,36 +400,111 @@ export default async function HomePage({
             index="03"
           />
 
-          {/* Sin accordion por puesto: ese contenido (contexto, alcance,
-              resultado, tecnologías) no existe aún. */}
+          {/* Accordion nativo: <details> por puesto, sin JS ni estado. El
+              primero abre por defecto y abrir uno no cierra los demás, que es
+              el comportamiento por defecto de <details> sin atributo name. */}
           <div className="grid grid-safe gap-x-step-48 gap-y-step-48 xl:grid-cols-[8fr_4fr]">
+            <div className="min-w-0">
             <ol className="min-w-0 md:border-l md:border-text">
-              {experience.map((job) => (
+              {experience.filter((job) => !job.group).map((job, i) => (
                 <li
                   key={job.company}
-                  className="border-t border-rule py-10 last:pb-0 md:ml-step-32 md:first:border-t-0 md:first:pt-0"
+                  className="border-t border-rule md:ml-step-32 md:first:border-t-0"
                 >
-                  <p className="relative font-mono text-metadata uppercase text-muted md:before:absolute md:before:top-1/2 md:before:-left-[36px] md:before:size-[7px] md:before:-translate-y-1/2 md:before:rounded-full md:before:bg-text">
-                    {job.period}&nbsp;·&nbsp;{job.location}
-                  </p>
-                  <h3 className="mt-step-8 text-h3 font-semibold">
-                    {job.company} — {job.role}
-                  </h3>
-                  {/* La jerarquía va por peso y color, no por tamaño: a 390 el
-                      20/17 anterior no se distinguía. */}
-                  {job.lines.map((line, i) => (
-                    <p
-                      key={line}
-                      className={`mt-step-16 max-w-[66ch] ${
-                        i === 0 ? "text-body font-medium" : "text-body-small text-muted"
-                      }`}
-                    >
-                      {line}
-                    </p>
-                  ))}
+                  {job.compact ? (
+                    <div className="py-step-24">
+                      <JobHeader job={job} />
+                    </div>
+                  ) : (
+                    <details className="group" open={i === 0}>
+                      {/* list-none más el pseudo-elemento de WebKit: el
+                          triángulo nativo se retira en los dos motores. La
+                          retícula deja el indicador a la derecha y el resto
+                          de la cabecera en la primera columna. */}
+                      <summary className="grid cursor-pointer list-none grid-cols-[1fr_auto] items-start gap-x-step-16 py-step-24 [&::-webkit-details-marker]:hidden">
+                        <JobHeader job={job} />
+                        <span
+                          aria-hidden="true"
+                          className="font-mono text-h3 leading-[1.2] text-muted"
+                        >
+                          <span className="group-open:hidden">+</span>
+                          <span className="hidden group-open:inline">−</span>
+                        </span>
+                      </summary>
+                      <dl className="motion-accordion pb-step-32">
+                        {[
+                          { label: ui.experience.context, body: <p className="max-w-[66ch] text-body-small">{job.context}</p> },
+                          {
+                            label: ui.experience.scope,
+                            body: (
+                              <ol className="grid gap-y-step-8">
+                                {(job.scope ?? []).map((item, n) => (
+                                  <li key={item} className="grid grid-cols-[32px_1fr] gap-x-step-8 text-body-small">
+                                    <span
+                                      aria-hidden="true"
+                                      className="font-mono text-numeral-list font-medium leading-[1.6] text-primary"
+                                    >
+                                      {String(n + 1).padStart(2, "0")}
+                                    </span>
+                                    <span className="max-w-[66ch]">{item}</span>
+                                  </li>
+                                ))}
+                              </ol>
+                            ),
+                          },
+                          {
+                            label: ui.experience.result,
+                            body: (
+                              <>
+                                <p className="max-w-[66ch] text-body-small">{job.result}</p>
+                                {job.resultLink ? (
+                                  <Link
+                                    href={job.resultLink.href}
+                                    className={`${buttonLinkClass("tertiary")} mt-step-8`}
+                                  >
+                                    {job.resultLink.label}
+                                  </Link>
+                                ) : null}
+                              </>
+                            ),
+                          },
+                          { label: ui.experience.tech, body: <TagList items={job.tech ?? []} /> },
+                        ].map(({ label, body }) => (
+                          <div
+                            key={label}
+                            className="grid gap-y-step-8 border-t border-rule py-step-16 lg:grid-cols-[3fr_9fr] lg:gap-x-step-24"
+                          >
+                            <dt className="font-mono text-metadata uppercase text-muted">{label}</dt>
+                            <dd className="min-w-0">{body}</dd>
+                          </div>
+                        ))}
+                      </dl>
+                    </details>
+                  )}
                 </li>
               ))}
             </ol>
+
+            {/* La etiqueta de grupo divide la trayectoria: no pertenece al
+                puesto que le sigue, así que va fuera de la lista y el grupo
+                abre su propia lista. */}
+            {experience
+              .filter((job) => job.group)
+              .map((job) => (
+                <div key={job.company}>
+                  <p className="border-t border-rule pt-step-32 font-mono text-metadata uppercase text-muted md:ml-step-32">
+                    {job.group}
+                  </p>
+                  <ol className="min-w-0 md:border-l md:border-text">
+                    <li className="md:ml-step-32">
+                      <div className="py-step-24">
+                        <JobHeader job={job} />
+                      </div>
+                    </li>
+                  </ol>
+                </div>
+              ))}
+            </div>
 
             <div id={sectionIds.stack} className="min-w-0 self-start border-t border-rule pt-10 scroll-mt-6">
               <h3 className="font-mono text-metadata uppercase text-muted">{ui.headings.stack}</h3>

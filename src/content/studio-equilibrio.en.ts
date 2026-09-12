@@ -24,7 +24,7 @@ export const miniCase: MiniCase = {
       },
       {
         term: "role",
-        text: "Design to production, solo: from a business brief to an end-to-end demo in 2.5 weeks.",
+        text: "Commissioned by Junto AI as a sales demo to win clients. Design to production, solo: from brief to an end-to-end demo in 2.5 weeks.",
       },
       {
         term: "scope",
@@ -86,14 +86,14 @@ export const miniCase: MiniCase = {
       },
       {
         title: "A demo held to production standards",
-        text: "Built end to end from a business brief and covered by 30 E2E tests with Playwright, with LCP < 2 s measured on mobile over 4G. That is the point of the demo: the standard does not drop because there is no client.",
+        text: "Built end to end from a business brief and covered by 30 E2E tests with Playwright, with LCP < 2 s measured on mobile over 4G. That is the point of the demo: the standard doesn't drop because the product is a sales piece.",
       },
     ],
   },
   close: {
     id: "closing",
     heading: "What it left behind",
-    body: "The piece of the grid that shows full range without a client in the loop: from the business brief to a navigable product — bookings, memberships, billing and analytics — operable end to end in the live demo.",
+    body: "The piece of the grid that shows full range on a tightly scoped commission: from the business brief to a navigable product — bookings, memberships, billing and analytics — operable end to end in the live demo.",
     liveHref: "https://studio-equilibrio-demo.vercel.app",
     liveLabel: "See the live demo",
     backLabel: "Back to projects",

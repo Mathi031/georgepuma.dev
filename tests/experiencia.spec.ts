@@ -5,10 +5,16 @@ import { expect, test, type Locator, type Page } from "@playwright/test";
  * Los valores esperados van escritos aquí, no importados de src/content: el
  * test afirma lo que se aprobó, no lo que el contenido diga hoy.
  *
- * Contrato de marcado que asume:
- *   - #experiencia contiene un `ol` con un `li` por puesto, la línea del
- *     timeline es el borde izquierdo de ese `ol` y el punto es el `::before`
- *     del `p` de periodo;
+ * Contrato de marcado que asume (CAMBIO #7):
+ *   - #experiencia contiene un `ol` con un `li` por puesto; los cinco
+ *     primeros llevan un `details` con `summary`, y el sexto (BIZZPERU) es
+ *     compacto: su cabecera va en un `div`, sin `details`;
+ *   - la cabecera lleva la meta mono, el `h3` "Empresa — Rol" y la línea de
+ *     impacto, todos como `span` (el modelo de contenido de `summary` es
+ *     phrasing, así que no admite `p`);
+ *   - la línea del timeline es el borde izquierdo del `ol` y el punto es el
+ *     `::before` de la meta de cada ítem;
+ *   - el cuerpo abierto es un `dl` con cuatro pares `dt`/`dd`;
  *   - el stack es `div#stack`, columna derecha de la misma retícula;
  *   - cada meta de sección es el primer `p.font-mono` de la sección.
  */
@@ -16,7 +22,11 @@ import { expect, test, type Locator, type Page } from "@playwright/test";
 const EXPERIENCE = "#experiencia";
 const STACK = "#stack";
 const CONTACT = "#contacto";
-const JOBS = ["Junto AI", "Global Resources", "Desis", "AccountTECH", "Footloose"];
+const JOBS = ["Junto AI", "Global Resources", "Desis", "AccountTECH", "Footloose", "BIZZPERU"];
+/** Los cinco primeros son expandibles; BIZZPERU no. */
+const EXPANDABLE = 5;
+const BODY_LABELS = ["CONTEXTO", "ALCANCE", "RESULTADO", "TECNOLOGÍAS"];
+const BODY_LABELS_EN = ["CONTEXT", "SCOPE", "OUTCOME", "TECH"];
 const STACK_GROUPS = ["Dominio principal", "Sólido", "En crecimiento"];
 const SECTION_METAS = ["01 · Trabajo", "02 · Método", "03 · Trayectoria", "04 · Contacto"];
 const EN_HEADINGS = ["Work", "How I work", "Experience", "Contact"];
@@ -24,8 +34,26 @@ const WIDTHS = [360, 390, 768, 1280, 1680];
 /** 8/4 de una retícula de 12: el track izquierdo se lleva dos tercios. */
 const STACK_RATIO = 8 / 12;
 
-const timeline = (page: Page) => page.locator(`${EXPERIENCE} ol`).first();
-const jobs = (page: Page) => timeline(page).locator("> li");
+/**
+ * La trayectoria son dos listas: la de los puestos con cuerpo y la del grupo
+ * "antes de 2022", que abre la suya para que su etiqueta no quede dentro de
+ * un <li>. `jobs` recorre las dos en orden; `timeline` es la primera, que es
+ * donde se miden la línea y la retícula.
+ */
+const lists = (page: Page) => page.locator(`${EXPERIENCE} ol:not(dd ol)`);
+const timeline = (page: Page) => lists(page).first();
+const jobs = (page: Page) => lists(page).locator("> li");
+const details = (page: Page, i: number) => jobs(page).nth(i).locator("details");
+/**
+ * Cabecera del ítem: el `summary` en los expandibles, el `div` de cabecera en
+ * el compacto. La meta y el impacto se leen de aquí en ambos casos.
+ */
+const header = (page: Page, i: number) =>
+  jobs(page)
+    .nth(i)
+    .locator(":scope > details > summary, :scope > div")
+    .first();
+const meta = (page: Page, i: number) => header(page, i).locator(".font-mono").first();
 
 async function box(el: Locator) {
   const b = await el.boundingBox();
@@ -64,7 +92,7 @@ function toRgb(hex: string) {
 }
 
 test.describe("estructura de la trayectoria", () => {
-  test("cinco puestos en orden, cada uno con periodo y titular", async ({ page }) => {
+  test("seis puestos en orden; cinco expandibles y el último compacto", async ({ page }) => {
     await page.goto("/");
     await expect(jobs(page)).toHaveCount(JOBS.length);
     const titles = await jobs(page)
@@ -73,47 +101,194 @@ test.describe("estructura de la trayectoria", () => {
     for (const [i, company] of JOBS.entries()) {
       expect(titles[i], `puesto ${i}`).toContain(company);
     }
-    for (let i = 0; i < JOBS.length; i++) {
-      const meta = jobs(page).nth(i).locator("p").first();
-      expect((await meta.textContent())?.trim(), `${JOBS[i]}: periodo`).not.toBe("");
+    for (let i = 0; i < EXPANDABLE; i++) {
+      await expect(details(page, i), `${JOBS[i]}: es expandible`).toHaveCount(1);
     }
+    await expect(details(page, EXPANDABLE), "BIZZPERU no lleva details").toHaveCount(0);
+  });
+
+  test("cada meta declara periodo y tipo de vínculo", async ({ page }) => {
+    await page.goto("/");
+    for (const [i, company] of JOBS.entries()) {
+      const text = (await meta(page, i).textContent())?.trim() ?? "";
+      expect(text, `${company}: meta no vacía`).not.toBe("");
+      // La meta es PERIODO · TIPO · UBICACIÓN: al menos tres segmentos, y el
+      // del medio es el tipo de vínculo, que no puede venir vacío.
+      const parts = text.split("·").map((p) => p.trim());
+      expect(parts.length, `${company}: segmentos de la meta (${text})`).toBeGreaterThanOrEqual(3);
+      expect(parts[1], `${company}: tipo de vínculo`).not.toBe("");
+    }
+  });
+
+  test("la etiqueta de grupo va fuera de la lista y precede a su puesto", async ({ page }) => {
+    await page.goto("/");
+    const label = page.locator(`${EXPERIENCE} p`, { hasText: /antes de 2022/i }).first();
+    await expect(label, "el grupo antes de 2022 está declarado").toHaveCount(1);
+    // Dentro de un <li> el lector de pantalla lo anunciaría como parte del
+    // puesto, y la etiqueta divide la trayectoria, no describe a BIZZPERU.
+    expect(
+      await label.evaluate((el) => !!el.closest("li")),
+      "la etiqueta no puede vivir dentro de un li",
+    ).toBe(false);
+    expect(
+      await label.evaluate((el) => el.nextElementSibling?.tagName),
+      "la etiqueta precede a la lista de su grupo",
+    ).toBe("OL");
   });
 
   // La jerarquía de la línea de impacto se lleva por peso y color, no por
   // tamaño: a 390 un 18/17 no se distinguía (hallazgo medio del QA de la
   // ronda 2). Ahora es 17 en peso 500 frente a 15 en text-secondary, y eso
-  // vale igual en móvil que en escritorio.
+  // vale igual en móvil que en escritorio. El CAMBIO #7 mueve el impacto de
+  // un `p` a un `span` dentro del `summary`, pero el tratamiento no cambia.
   for (const width of [390, 1280]) {
-    test(`en ${width} la primera línea de cada puesto destaca por peso y color`, async ({
+    test(`en ${width} la línea de impacto de cada puesto destaca por peso y color`, async ({
       page,
     }) => {
       await page.setViewportSize({ width, height: 900 });
       await page.goto("/");
       const secondary = toRgb(await token(page, "--color-text-secondary"));
-      for (let i = 0; i < JOBS.length; i++) {
-        // p[0] es el periodo; p[1] es la primera línea de contenido.
-        const impact = jobs(page).nth(i).locator("p").nth(1);
+      for (const [i, company] of JOBS.entries()) {
+        const impact = header(page, i).locator("h3 ~ *").first();
         const got = await impact.evaluate((el) => {
           const s = getComputedStyle(el);
           return { size: s.fontSize, weight: s.fontWeight, color: s.color };
         });
-        expect(got.size, `${JOBS[i]}: tamaño del impacto`).toBe("17px");
-        expect(got.weight, `${JOBS[i]}: peso del impacto`).toBe("500");
-        expect(got.color, `${JOBS[i]}: color del impacto`).not.toBe(secondary);
-
-        // El resto de líneas, si las hay, quedan un escalón por debajo.
-        const rest = jobs(page).nth(i).locator("p");
-        for (let j = 2; j < (await rest.count()); j++) {
-          const line = await rest.nth(j).evaluate((el) => {
-            const s = getComputedStyle(el);
-            return { size: s.fontSize, color: s.color };
-          });
-          expect(line.size, `${JOBS[i]}: línea ${j} tamaño`).toBe("15px");
-          expect(line.color, `${JOBS[i]}: línea ${j} color`).toBe(secondary);
-        }
+        expect(got.size, `${company}: tamaño del impacto`).toBe("17px");
+        expect(got.weight, `${company}: peso del impacto`).toBe("500");
+        expect(got.color, `${company}: color del impacto`).not.toBe(secondary);
       }
     });
   }
+
+  test("el cuerpo abierto va un escalón por debajo, en 15 px", async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await page.goto("/");
+    // El TagList de TECNOLOGÍAS es metadata (12.5) por diseño: la prosa del
+    // cuerpo es la que va en 15.
+    const sizes = await details(page, 0)
+      .locator("dd p:not(.font-mono), dd li")
+      .evaluateAll((els) => els.map((el) => getComputedStyle(el).fontSize));
+    expect(sizes.length, "el cuerpo tiene prosa").toBeGreaterThan(0);
+    for (const s of sizes) expect(s, "tamaño de la prosa del cuerpo").toBe("15px");
+  });
+});
+
+test.describe("accordion", () => {
+  test("el primero abre por defecto, el resto cerrados, y no es exclusivo", async ({ page }) => {
+    await page.goto("/");
+    expect(await details(page, 0).evaluate((el: HTMLDetailsElement) => el.open)).toBe(true);
+    for (let i = 1; i < EXPANDABLE; i++) {
+      expect(
+        await details(page, i).evaluate((el: HTMLDetailsElement) => el.open),
+        `${JOBS[i]}: cerrado de inicio`,
+      ).toBe(false);
+    }
+    await header(page, 1).click();
+    expect(
+      await details(page, 1).evaluate((el: HTMLDetailsElement) => el.open),
+      "el segundo abre",
+    ).toBe(true);
+    expect(
+      await details(page, 0).evaluate((el: HTMLDetailsElement) => el.open),
+      "el primero sigue abierto: el accordion no es exclusivo",
+    ).toBe(true);
+  });
+
+  test("cada puesto expandible declara las cuatro etiquetas con contenido", async ({ page }) => {
+    await page.goto("/");
+    for (let i = 0; i < EXPANDABLE; i++) {
+      await details(page, i).evaluate((el: HTMLDetailsElement) => (el.open = true));
+      const labels = await details(page, i)
+        .locator("dt")
+        .evaluateAll((els) => els.map((el) => (el.textContent ?? "").trim().toUpperCase()));
+      expect(labels, `${JOBS[i]}: etiquetas del cuerpo`).toEqual(BODY_LABELS);
+      const values = await details(page, i)
+        .locator("dd")
+        .evaluateAll((els) => els.map((el) => (el.textContent ?? "").trim()));
+      for (const [j, v] of values.entries()) {
+        expect(v, `${JOBS[i]}: ${BODY_LABELS[j]} no vacío`).not.toBe("");
+      }
+      await expect(
+        details(page, i).locator("dd ol"),
+        `${JOBS[i]}: el alcance es una lista ordenada`,
+      ).toHaveCount(1);
+    }
+  });
+
+  test("el indicador es + cerrado y − abierto", async ({ page }) => {
+    await page.goto("/");
+    const visible = (i: number) =>
+      header(page, i).evaluate((el) =>
+        // El indicador conmuta ocultando uno de los dos signos con
+        // group-open: se lee el que sigue renderizado, no el DOM entero.
+        [...el.querySelectorAll("span")]
+          .filter((n) => getComputedStyle(n).display !== "none")
+          .map((n) => (n.textContent ?? "").trim())
+          .filter((t) => t === "+" || t === "−")
+          .join(""),
+      );
+    expect(await visible(0), "el abierto muestra −").toBe("−");
+    expect(await visible(1), "el cerrado muestra +").toBe("+");
+    await header(page, 1).click();
+    expect(await visible(1), "tras abrir, muestra −").toBe("−");
+  });
+
+  test("en 390 el summary mide al menos 44 px de alto", async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 800 });
+    await page.goto("/");
+    for (let i = 0; i < EXPANDABLE; i++) {
+      const b = await box(header(page, i));
+      expect(b.height, `${JOBS[i]}: alto del summary`).toBeGreaterThanOrEqual(44);
+    }
+  });
+
+  test("se alcanza y se acciona con teclado, y el foco es visible", async ({ page }) => {
+    await page.goto("/");
+    const second = details(page, 1).locator("summary");
+    await second.focus();
+    await expect(second, "el summary recibe foco").toBeFocused();
+    const outline = await second.evaluate((el) => {
+      const s = getComputedStyle(el);
+      return { width: s.outlineWidth, style: s.outlineStyle };
+    });
+    expect(outline.style, "estilo del foco").not.toBe("none");
+    expect(parseFloat(outline.width), "grosor del foco").toBeGreaterThanOrEqual(2);
+
+    await page.keyboard.press("Enter");
+    expect(
+      await details(page, 1).evaluate((el: HTMLDetailsElement) => el.open),
+      "Enter abre",
+    ).toBe(true);
+    await page.keyboard.press("Enter");
+    expect(
+      await details(page, 1).evaluate((el: HTMLDetailsElement) => el.open),
+      "Enter cierra",
+    ).toBe(false);
+    await page.keyboard.press("Space");
+    expect(
+      await details(page, 1).evaluate((el: HTMLDetailsElement) => el.open),
+      "Espacio abre",
+    ).toBe(true);
+  });
+
+  test("el resultado de Junto AI enlaza al caso de estudio", async ({ page }) => {
+    await page.goto("/");
+    const link = details(page, 0).locator('a[href="/proyectos/notable-learning"]');
+    await expect(link, "enlace al caso").toHaveCount(1);
+  });
+
+  test.describe("bajo reduce el cuerpo no anima", () => {
+    test.use({ contextOptions: { reducedMotion: "reduce" } });
+    test("la transición del cuerpo dura 0s", async ({ page }) => {
+      await page.goto("/");
+      const durations = await details(page, 0)
+        .locator("dl")
+        .evaluate((el) => getComputedStyle(el).transitionDuration);
+      const animating = durations.split(",").filter((d) => d.trim() !== "0s");
+      expect(animating, `duraciones distintas de 0s: ${animating.join(" | ")}`).toEqual([]);
+    });
+  });
 });
 
 test.describe("timeline", () => {
@@ -128,18 +303,14 @@ test.describe("timeline", () => {
       expect(line.w, "ancho de la línea").toBe("1px");
       expect(line.c, "color de la línea").toBe(toRgb(await token(page, "--color-text")));
 
-      for (let i = 0; i < JOBS.length; i++) {
-        const dot = await jobs(page)
-          .nth(i)
-          .locator("p")
-          .first()
-          .evaluate((el) => {
-            const s = getComputedStyle(el, "::before");
-            return { content: s.content, w: s.width, h: s.height, display: s.display };
-          });
-        expect(dot.content, `${JOBS[i]}: el punto existe`).not.toBe("none");
-        expect(dot.w, `${JOBS[i]}: ancho del punto`).toBe("7px");
-        expect(dot.h, `${JOBS[i]}: alto del punto`).toBe("7px");
+      for (const [i, company] of JOBS.entries()) {
+        const dot = await meta(page, i).evaluate((el) => {
+          const s = getComputedStyle(el, "::before");
+          return { content: s.content, w: s.width, h: s.height };
+        });
+        expect(dot.content, `${company}: el punto existe`).not.toBe("none");
+        expect(dot.w, `${company}: ancho del punto`).toBe("7px");
+        expect(dot.h, `${company}: alto del punto`).toBe("7px");
       }
     });
   }
@@ -151,13 +322,11 @@ test.describe("timeline", () => {
       await timeline(page).evaluate((el) => getComputedStyle(el).borderLeftWidth),
       "la línea no se pinta",
     ).toBe("0px");
-    for (let i = 0; i < JOBS.length; i++) {
-      const content = await jobs(page)
-        .nth(i)
-        .locator("p")
-        .first()
-        .evaluate((el) => getComputedStyle(el, "::before").content);
-      expect(content, `${JOBS[i]}: el punto no se pinta`).toBe("none");
+    for (const [i, company] of JOBS.entries()) {
+      const content = await meta(page, i).evaluate(
+        (el) => getComputedStyle(el, "::before").content,
+      );
+      expect(content, `${company}: el punto no se pinta`).toBe("none");
     }
   });
 });
@@ -245,6 +414,10 @@ for (const width of WIDTHS) {
   test(`sin overflow en experiencia y contacto a ${width}`, async ({ page }) => {
     await page.setViewportSize({ width, height: 900 });
     await page.goto("/");
+    // Con todos los ítems abiertos: es el estado más ancho posible.
+    await page.locator(`${EXPERIENCE} details`).evaluateAll((els) =>
+      els.forEach((el) => ((el as HTMLDetailsElement).open = true)),
+    );
     expect(await overflow(page), "overflow del documento").toBe(0);
     for (const sel of [EXPERIENCE, CONTACT]) {
       const inner = await page.locator(sel).evaluate((el) => el.scrollWidth - el.clientWidth);
@@ -253,16 +426,50 @@ for (const width of WIDTHS) {
   });
 }
 
+test.describe("Studio Equilibrio ya no se presenta como demo sin cliente", () => {
+  for (const path of ["/", "/proyectos/studio-equilibrio"]) {
+    test(`ni "sin cliente" ni "no client" en ${path}`, async ({ page }) => {
+      await page.goto(path);
+      const text = await page.evaluate(() => document.body.innerText.toLowerCase());
+      expect(text, "sin cliente").not.toContain("sin cliente");
+      expect(text, "no client").not.toContain("no client");
+    });
+  }
+  for (const path of ["/en", "/en/projects/studio-equilibrio"]) {
+    test(`ni "sin cliente" ni "no client" en ${path}`, async ({ page }) => {
+      await page.goto(path);
+      const text = await page.evaluate(() => document.body.innerText.toLowerCase());
+      expect(text, "sin cliente").not.toContain("sin cliente");
+      expect(text, "no client").not.toContain("no client");
+    });
+  }
+});
+
 test.describe("la home en inglés no arrastra español", () => {
   test("los cuatro H2 están traducidos", async ({ page }) => {
     await page.goto("/en");
     await expect(page.locator("main h2")).toHaveText(EN_HEADINGS);
   });
 
+  test("las etiquetas del cuerpo están en inglés", async ({ page }) => {
+    await page.goto("/en");
+    for (let i = 0; i < EXPANDABLE; i++) {
+      await details(page, i).evaluate((el: HTMLDetailsElement) => (el.open = true));
+      const labels = await details(page, i)
+        .locator("dt")
+        .evaluateAll((els) => els.map((el) => (el.textContent ?? "").trim().toUpperCase()));
+      expect(labels, `puesto ${i}: etiquetas en inglés`).toEqual(BODY_LABELS_EN);
+    }
+  });
+
   test("ni el texto visible ni los nombres accesibles llevan cadenas en español", async ({
     page,
   }) => {
     await page.goto("/en");
+    // Con todo abierto: el cuerpo cerrado no aparece en innerText.
+    await page.locator(`${EXPERIENCE} details`).evaluateAll((els) =>
+      els.forEach((el) => ((el as HTMLDetailsElement).open = true)),
+    );
     const strings = await page.evaluate(() => {
       const out: string[] = [];
       const body = document.body as HTMLElement;
@@ -289,6 +496,7 @@ test.describe("la home en inglés no arrastra español", () => {
       "DISPONIBLE AHORA",
       "Ver el trabajo",
       "Leer el mini-caso",
+      "Leer el caso de estudio",
       "EN PRODUCCIÓN",
       "Calidad como práctica",
       "Flujo asistido por IA",
@@ -302,6 +510,13 @@ test.describe("la home en inglés no arrastra español", () => {
       "dos etapas",
       "comentario único",
       "revisor de PRs",
+      "CONTEXTO",
+      "ALCANCE",
+      "RESULTADO",
+      "TECNOLOGÍAS",
+      "Antes de 2022",
+      "Contrato por proyecto",
+      "Empleo",
     ];
     for (const m of MARKERS) {
       expect(haystack, `cadena en español: ${m}`).not.toContain(m);
