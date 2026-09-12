@@ -26,11 +26,12 @@ import { pageMetadata, personJsonLd } from "@/lib/seo";
 const container = "mx-auto max-w-(--container-page) px-5 sm:px-9 xl:px-10";
 const sectionGap = "pt-24 sm:pt-32";
 /**
- * Nombre accesible del enlace de una card: tres cards dicen "Leer el
- * mini-caso →", así que se añade el proyecto. El texto visible va primero
- * (WCAG 2.5.3) y la flecha se omite: es visual, no se lee.
+ * Nombre accesible de un enlace que repite etiqueta: tres cards dicen "Leer el
+ * mini-caso →" y el CV aparece en el hero y en Contacto, así que se añade el
+ * proyecto o la sección. El texto visible va primero (WCAG 2.5.3) y la flecha
+ * se omite: es visual, no se lee.
  */
-const linkName = (label: string, name: string) => `${label.replace(/\s*[→↗]$/u, "")}: ${name}`;
+const linkName = (label: string, name: string) => `${label.replace(/\s*[→↗↓]$/u, "")}: ${name}`;
 
 export async function generateMetadata({
   params,
@@ -526,15 +527,52 @@ export default async function HomePage({
           id={sectionIds.contact}
         >
           <SectionHeading id={`${sectionIds.contact}-h`} label={ui.headings.contact} index="04" />
-          <p className="mb-7 max-w-[55ch] text-body">
-            {ui.contact}
+          <p className="max-w-[66ch] text-body">{ui.contact.body}</p>
+          {/* La meta sale de hero.status: un solo origen para el mismo dato.
+              Apilada por debajo de 431, donde el separador sobra. */}
+          <p className="mt-step-24 flex flex-col items-start gap-step-8 font-mono text-metadata uppercase text-muted [@media(min-width:431px)]:flex-row [@media(min-width:431px)]:flex-wrap [@media(min-width:431px)]:items-center">
+            <Badge variant="accent">{ui.availability}</Badge>
+            <span aria-hidden="true" className="hidden [@media(min-width:431px)]:inline">
+              ·
+            </span>
+            <span>{hero.status}</span>
           </p>
+          {/* 24 px en móvil es del contrato de este cambio y queda fuera de la
+              escala: el h2 baja a 28 por debajo de 768. */}
           <a
             href={`mailto:${identity.email}`}
-            className="display inline-block break-all text-display-md font-bold underline decoration-rule decoration-2 underline-offset-8 transition-colors hover:text-primary hover:decoration-primary"
+            className="mt-step-24 inline-flex min-h-11 items-center break-all font-display text-[1.5rem] font-semibold leading-[1.2] tracking-[-0.015em] underline decoration-rule decoration-2 underline-offset-8 motion-link hover:text-primary hover:decoration-primary md:text-h2"
           >
             {identity.email}
           </a>
+          {/* nav etiquetado, como los enlaces del hero: son un conjunto, no prosa. */}
+          <nav
+            aria-label={ui.contact.linksAria}
+            className="mt-step-24 flex flex-wrap items-center gap-x-step-8"
+          >
+            <ButtonLink variant="tertiary" href={identity.linkedin} rel="noopener">
+              {ui.contact.linkedin}
+            </ButtonLink>
+            <span aria-hidden="true" className="text-metadata text-muted">
+              ·
+            </span>
+            <ButtonLink variant="tertiary" href={identity.github} rel="noopener">
+              {ui.contact.github}
+            </ButtonLink>
+            <span aria-hidden="true" className="text-metadata text-muted">
+              ·
+            </span>
+            {/* El hero enlaza al mismo PDF: sin esto, dos enlaces distintos
+                comparten nombre accesible. Mismo helper que las cards. */}
+            <ButtonLink
+              variant="tertiary"
+              href={hero.ctas.cvUrl}
+              aria-label={linkName(hero.ctas.cv, ui.headings.contact)}
+              download
+            >
+              {hero.ctas.cv}
+            </ButtonLink>
+          </nav>
         </section>
       </main>
 

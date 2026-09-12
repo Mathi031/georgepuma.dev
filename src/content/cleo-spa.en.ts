@@ -92,6 +92,10 @@ export const miniCase: MiniCase = {
     id: "closing",
     heading: "What it left behind",
     body: "This is where the starter kit came from that took Ronatello to production in 12 days: the same skeleton of roles, RLS and CI, already argued through once.",
+    pending:
+      "The migrations are versioned and idempotent, but they're still applied with a tool " +
+      "outside the repository: a clean environment can't be spun up from scratch. It's the " +
+      "first thing I'd close before the project changes hands.",
     liveHref: "https://cleospa.pe",
     liveLabel: "See the live site",
     backLabel: "Back to projects",

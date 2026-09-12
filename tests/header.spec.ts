@@ -136,12 +136,17 @@ test("no queda ninguna referencia a los anclajes viejos en src/", async () => {
   expect(offenders).toEqual([]);
 });
 
+/** El hero es la primera sección de main; Contacto repite badge y CV. */
+const hero = (page: Page) => page.locator("main section").first();
+
 test.describe("hero", () => {
   test("muestra el badge de disponibilidad y ya no dice cinco años", async ({ page }) => {
     await page.goto("/");
-    await expect(page.locator("main").getByText(BADGE.es, { exact: true })).toBeVisible();
+    // .first(): desde el CAMBIO #8 el badge se repite en Contacto; este caso
+    // mide el del hero, que es el primero del documento.
+    await expect(page.locator("main").getByText(BADGE.es, { exact: true }).first()).toBeVisible();
     await page.goto("/en");
-    await expect(page.locator("main").getByText(BADGE.en, { exact: true })).toBeVisible();
+    await expect(page.locator("main").getByText(BADGE.en, { exact: true }).first()).toBeVisible();
     const body = (await page.locator("body").textContent()) ?? "";
     expect(body.toLowerCase()).not.toContain("cinco años");
   });
@@ -168,7 +173,8 @@ test.describe("hero", () => {
     const primary = page.locator('main a[href="#trabajo"]');
     await expect(primary).toHaveCount(1);
     await expect(primary).toHaveText("Ver el trabajo →");
-    await expect(page.locator('main a[href="/cv-george-puma.pdf"]')).toHaveText(
+    // Acotado al hero: Contacto enlaza al mismo PDF desde el CAMBIO #8.
+    await expect(hero(page).locator('a[href="/cv-george-puma.pdf"]')).toHaveText(
       "CV en PDF\u00a0↓",
     );
   });
@@ -181,7 +187,7 @@ test.describe("hero", () => {
   ] as const) {
     test(`el CV de ${route} apunta a ${href} y el archivo existe`, async ({ page, request }) => {
       await page.goto(route);
-      const cv = page.locator(`main a[href="${href}"]`);
+      const cv = hero(page).locator(`a[href="${href}"]`);
       await expect(cv).toHaveCount(1);
       await expect(cv).toHaveText(label);
       await expect(cv).toHaveAttribute("download", "");

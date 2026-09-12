@@ -38,8 +38,17 @@ export const ui = {
   },
   evidenceAria: "Verifiable evidence",
   linksAria: "Main links",
-  contact:
-    "I'm looking for full stack or frontend roles, ideally remote. If you think I'd fit your team, get in touch — I always reply.",
+  contact: {
+    body:
+      "I'm looking for full stack or frontend roles, remote, contract or full-time, on teams " +
+      "that treat quality as part of the product. English B2 (EF SET). GMT‑5: full overlap " +
+      "with the US and two to three hours with Europe. If you think I'd fit your team, get " +
+      "in touch — I always reply.",
+    linkedin: "LinkedIn ↗",
+    github: "GitHub ↗",
+    linksAria: "Contact links",
+  },
+  miniCase: { pendingLabel: "Still pending" },
   pipelineKicker: "pipeline · PR reviewer",
   meta: {
     // El título no se traduce: nombre, rol y tecnologías son los mismos.
@@ -53,7 +62,7 @@ export const ui = {
 
 export const hero = {
   // nbsp alrededor de "·" y guion U+2011 en GMT‑5: mismo motivo que en español.
-  status: "Full stack · contract or full-time · remote · Arequipa, Peru · GMT‑5",
+  status: "Full stack · contract or full-time · remote · Peru · GMT‑5",
   headline: "I build web products that ship to production. And I can prove it.",
   lead: "Full Stack Developer — React, Next.js, TypeScript, PostgreSQL. Five years building enterprise products in EdTech, e-commerce, ERP and electronic invoicing, with remote teams in the US and Latin America. I design AI-assisted development workflows and treat them as what they are: engineering.",
   evidence: [

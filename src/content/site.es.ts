@@ -38,8 +38,19 @@ export const ui = {
   },
   evidenceAria: "Evidencia verificable",
   linksAria: "Enlaces principales",
-  contact:
-    "Busco roles full stack o frontend, de preferencia remotos. Si crees que encajo en tu equipo, escríbeme — respondo siempre.",
+  contact: {
+    body:
+      "Busco roles full stack o frontend, remotos, por contrato o indefinidos, en equipos " +
+      "que traten la calidad como parte del producto. Inglés B2 (EF SET). GMT‑5: horario " +
+      "completo con EE.UU. y dos o tres horas de solapamiento con Europa. Si crees que " +
+      "encajo en tu equipo, escríbeme — respondo siempre.",
+    // nbsp entre palabra y flecha, igual que en hero.ctas.
+    linkedin: "LinkedIn ↗",
+    github: "GitHub ↗",
+    linksAria: "Enlaces de contacto",
+  },
+  /** Etiquetas compartidas por los tres mini-casos. */
+  miniCase: { pendingLabel: "Pendiente" },
   pipelineKicker: "pipeline · revisor de PRs",
   meta: {
     /** Título de la home. Las subpáginas lo componen con `caseSuffix`. */
@@ -55,7 +66,7 @@ export const ui = {
 export const hero = {
   // nbsp alrededor de "·" para que el separador no quede huérfano al partir
   // línea; GMT‑5 lleva guion U+2011 (no ruptura) en vez de un "-" normal.
-  status: "Full stack · contrato o indefinido · remoto · Arequipa, Perú · GMT‑5",
+  status: "Full stack · contrato o indefinido · remoto · Perú · GMT‑5",
   headline: "Construyo productos web que llegan a producción. Y puedo demostrarlo.",
   lead: "Full Stack Developer — React, Next.js, TypeScript, PostgreSQL. Cinco años construyendo productos empresariales en EdTech, e-commerce, ERP y facturación electrónica, con equipos remotos de EE.UU. y Latinoamérica. Diseño flujos de desarrollo asistidos por IA y los trato como lo que son: ingeniería.",
   evidence: [

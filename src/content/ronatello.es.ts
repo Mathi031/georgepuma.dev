@@ -95,6 +95,10 @@ export const miniCase: MiniCase = {
     id: "cierre",
     heading: "Lo que dejó",
     body: "La prueba de que el starter kit extraído de Cleo Spa funciona: el mismo esqueleto de roles, RLS y CI, del brief a producción en 12 días. Lo que allá fue una extracción, aquí fue plazo.",
+    pending:
+      "La regla más delicada del sistema — que una reserva vencida devuelva su cupo — tiene " +
+      "un test en pgTAP que la cubre entera, y el CI todavía no lo ejecuta: un verde que no " +
+      "comprueba lo que más importa. Es un paso de workflow, y es el siguiente.",
     liveHref: "https://ronatello.pe",
     liveLabel: "Ver el sitio en vivo",
     backLabel: "Volver a proyectos",

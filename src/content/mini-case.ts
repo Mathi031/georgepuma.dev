@@ -28,6 +28,11 @@ export type MiniCase = {
     id: string;
     heading: string;
     body: string;
+    /**
+     * Lo que queda por cerrar. Opcional: si el proyecto no lo declara, no se
+     * renderiza ni la etiqueta ni la regla que la separa del cuerpo.
+     */
+    pending?: string;
     liveHref: string;
     liveLabel: string;
     /**

@@ -93,6 +93,10 @@ export const miniCase: MiniCase = {
     id: "closing",
     heading: "What it left behind",
     body: "The proof that the starter kit extracted from Cleo Spa works: the same skeleton of roles, RLS and CI, from brief to production in 12 days. There it was extraction work; here it was a deadline.",
+    pending:
+      "The system's most delicate rule — an expired booking giving its capacity back — has a " +
+      "pgTAP test that covers it end to end, and CI doesn't run it yet: a green build that " +
+      "doesn't check what matters most. It's one workflow step, and it's next.",
     liveHref: "https://ronatello.pe",
     liveLabel: "See the live site",
     backLabel: "Back to projects",

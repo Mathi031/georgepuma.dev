@@ -133,6 +133,14 @@ export function MiniCase({ locale, project, c }: MiniCaseProps) {
               {c.close.heading}
             </h2>
             <p className="mt-4 mb-7 max-w-[65ch] text-body leading-[1.75]">{c.close.body}</p>
+            {c.close.pending ? (
+              <div className="mb-7 border-t border-rule pt-5">
+                <h3 className="font-mono text-metadata uppercase text-muted">
+                  {s.ui.miniCase.pendingLabel}
+                </h3>
+                <p className="mt-step-8 max-w-[65ch] text-body-small">{c.close.pending}</p>
+              </div>
+            ) : null}
             <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
               <a
                 href={c.close.liveHref}
