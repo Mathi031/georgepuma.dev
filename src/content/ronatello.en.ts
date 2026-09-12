@@ -34,7 +34,7 @@ export const miniCase: MiniCase = {
   },
   shots: {
     id: "screens",
-    heading: "The product, as it is",
+    heading: "The product, unretouched",
     frames: [
       {
         image: {
@@ -56,7 +56,7 @@ export const miniCase: MiniCase = {
           alt: "Bookings table: code, promotion, customer with buttons to call or open WhatsApp, delivery and status; expired ones show a final-status note kept as history.",
         },
         caption:
-          "Bookings: an expired one becomes a record only — kept as history, with the phone still visible in case the customer needs to be contacted.",
+          "Bookings: an expired one becomes a record only — kept as history, with the phone number still visible in case the customer needs a call.",
       },
       {
         image: {
@@ -76,11 +76,11 @@ export const miniCase: MiniCase = {
     heading: "Three decisions that hold up the rest",
     items: [
       {
-        title: "A promotion knows when it is alive",
+        title: "A promotion knows when it's live",
         text: "Every promotion carries a validity range and a capacity, and its status is read from there: active or ended. It can be unpublished early, but an ended one does not disappear — it stays in the table as a history of what was offered.",
       },
       {
-        title: "An expired booking is a record, not a pending item",
+        title: "An expired booking is a record, not a to-do",
         text: "Bookings deduct capacity from their promotion and expire if nobody replies in time. An expired, delivered or cancelled booking moves to a final status: it is kept as history, no longer accepts actions, and the customer's phone stays visible in case they need to be contacted.",
       },
       {
@@ -92,7 +92,7 @@ export const miniCase: MiniCase = {
   close: {
     id: "closing",
     heading: "What it left behind",
-    body: "The proof that the starter kit extracted from Cleo Spa works: the same skeleton of roles, RLS and CI, from brief to production in 12 days. What was an extraction there was a deadline here.",
+    body: "The proof that the starter kit extracted from Cleo Spa works: the same skeleton of roles, RLS and CI, from brief to production in 12 days. There it was extraction work; here it was a deadline.",
     liveHref: "https://ronatello.pe",
     liveLabel: "See the live site",
     backLabel: "Back to projects",

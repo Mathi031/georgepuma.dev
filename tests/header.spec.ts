@@ -168,8 +168,29 @@ test.describe("hero", () => {
     const primary = page.locator('main a[href="#trabajo"]');
     await expect(primary).toHaveCount(1);
     await expect(primary).toHaveText("Ver el trabajo →");
-    await expect(page.locator('main a[href="/cv-george-puma.pdf"]')).toHaveText("CV en PDF ↓");
+    await expect(page.locator('main a[href="/cv-george-puma.pdf"]')).toHaveText(
+      "CV en PDF\u00a0↓",
+    );
   });
+
+  // Cada idioma descarga su propio PDF. El href no basta: un enlace a un
+  // archivo que no existe pasaría igual, así que se pide el archivo.
+  for (const [route, href, label] of [
+    ["/", "/cv-george-puma.pdf", "CV en PDF\u00a0↓"],
+    ["/en", "/cv-george-puma-en.pdf", "Résumé (PDF)\u00a0↓"],
+  ] as const) {
+    test(`el CV de ${route} apunta a ${href} y el archivo existe`, async ({ page, request }) => {
+      await page.goto(route);
+      const cv = page.locator(`main a[href="${href}"]`);
+      await expect(cv).toHaveCount(1);
+      await expect(cv).toHaveText(label);
+      await expect(cv).toHaveAttribute("download", "");
+
+      const res = await request.get(href);
+      expect(res.status(), `estado de ${href}`).toBe(200);
+      expect(res.headers()["content-type"], `tipo de ${href}`).toContain("pdf");
+    });
+  }
 
   test("los iconos de GitHub, LinkedIn y Email tienen nombre accesible y target 44x44", async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 800 });

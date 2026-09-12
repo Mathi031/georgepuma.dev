@@ -138,7 +138,7 @@ export default async function HomePage({
             </ButtonLink>
             <ButtonLink
               variant="secondary"
-              href={identity.cvUrl}
+              href={hero.ctas.cvUrl}
               download
               className="w-full md:w-auto"
             >
@@ -392,8 +392,15 @@ export default async function HomePage({
                   <h3 className="mt-step-8 text-h3 font-semibold">
                     {job.company} — {job.role}
                   </h3>
+                  {/* La jerarquía va por peso y color, no por tamaño: a 390 el
+                      20/17 anterior no se distinguía. */}
                   {job.lines.map((line, i) => (
-                    <p key={line} className={`mt-step-16 max-w-[66ch] ${i === 0 ? "text-lead" : "text-body"}`}>
+                    <p
+                      key={line}
+                      className={`mt-step-16 max-w-[66ch] ${
+                        i === 0 ? "text-body font-medium" : "text-body-small text-muted"
+                      }`}
+                    >
                       {line}
                     </p>
                   ))}

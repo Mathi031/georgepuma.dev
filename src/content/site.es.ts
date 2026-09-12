@@ -50,7 +50,7 @@ export const hero = {
   // línea; GMT‑5 lleva guion U+2011 (no ruptura) en vez de un "-" normal.
   status: "Full stack · contrato o indefinido · remoto · Arequipa, Perú · GMT‑5",
   headline: "Construyo productos web que llegan a producción. Y puedo demostrarlo.",
-  lead: "Full Stack Developer — React, Next.js, TypeScript, PostgreSQL. Desde 2022 construyendo productos empresariales en EdTech, e-commerce, ERP y facturación electrónica, con equipos remotos de EE.UU. y Latinoamérica. Diseño flujos de desarrollo asistidos por IA y los trato como lo que son: ingeniería.",
+  lead: "Full Stack Developer — React, Next.js, TypeScript, PostgreSQL. Cinco años construyendo productos empresariales en EdTech, e-commerce, ERP y facturación electrónica, con equipos remotos de EE.UU. y Latinoamérica. Diseño flujos de desarrollo asistidos por IA y los trato como lo que son: ingeniería.",
   evidence: [
     { value: "500+ escuelas", source: "LMS K‑12 en producción; principal contribuidor de frontend y API" },
     { value: "2 negocios", source: "usan a diario software que diseñé y construí de extremo a extremo" },
@@ -60,6 +60,7 @@ export const hero = {
   ctas: {
     work: "Ver el trabajo →",
     cv: "CV en PDF ↓",
+    cvUrl: "/cv-george-puma.pdf",
   },
 };
 
@@ -343,7 +344,7 @@ export const stack = {
   },
   growing: {
     label: "En crecimiento",
-    items: ["Go", "Kotlin / Compose", "NestJS", "GCS", "Cloudflare R2"],
+    items: ["Go", "NestJS", "GCS", "Cloudflare R2"],
   },
 };
 

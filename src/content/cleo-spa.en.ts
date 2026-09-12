@@ -34,7 +34,7 @@ export const miniCase: MiniCase = {
   },
   shots: {
     id: "screens",
-    heading: "The product, as it is",
+    heading: "The product, unretouched",
     frames: [
       {
         image: {
@@ -75,16 +75,16 @@ export const miniCase: MiniCase = {
     heading: "Three decisions that hold up the rest",
     items: [
       {
-        title: "Stock is not edited, it is recorded",
-        text: "Every movement goes in as a new row with a signed quantity, location, date and author. A correction does not rewrite the past: it goes in as one more adjustment. The balance of any product is the sum of its ledger, so the question «who moved this and when» always has an answer.",
+        title: "Stock isn't edited, it's recorded",
+        text: "Every movement goes in as a new row with a signed quantity, location, date and author. A correction does not rewrite the past: it goes in as one more adjustment. The balance of any product is the sum of its ledger, so the question “who moved this and when” always has an answer.",
       },
       {
         title: "FEFO batches, and the warning before expiry",
-        text: "Stock is tracked by batch and outgoing movements consume the one that expires first. The panel opens with two alerts — below minimum and batches about to expire — because an expiry is found late or not at all.",
+        text: "Stock is tracked by batch and outgoing movements consume the one that expires first. The panel opens with two alerts — below minimum and batches about to expire — because expired stock gets found late or not at all.",
       },
       {
         title: "Three roles, the same boundary in two layers",
-        text: "Owner, cashier and stylist. Permissions live in the database with default-deny RLS on 16 tables, and the application repeats that boundary: the interface does not offer what the database is going to reject. Having the rule at the bottom is what makes it hold even when the panel gets it wrong.",
+        text: "Owner, cashier and stylist. Permissions live in the database with default-deny RLS on 16 tables, and the application repeats that boundary: the interface does not offer what the database is going to reject. Having the rule at the bottom is what makes it hold even when the UI gets it wrong.",
       },
     ],
   },

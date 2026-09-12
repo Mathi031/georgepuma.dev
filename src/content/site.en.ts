@@ -32,7 +32,7 @@ export const ui = {
   evidenceAria: "Verifiable evidence",
   linksAria: "Main links",
   contact:
-    "I am looking for full stack or frontend roles, preferably remote. If you think I fit your team, write to me — I always reply.",
+    "I'm looking for full stack or frontend roles, ideally remote. If you think I'd fit your team, get in touch — I always reply.",
   pipelineKicker: "pipeline · PR reviewer",
   meta: {
     // El título no se traduce: nombre, rol y tecnologías son los mismos.
@@ -46,17 +46,18 @@ export const ui = {
 
 export const hero = {
   // nbsp alrededor de "·" y guion U+2011 en GMT‑5: mismo motivo que en español.
-  status: "Full stack · contract or permanent · remote · Arequipa, Peru · GMT‑5",
+  status: "Full stack · contract or full-time · remote · Arequipa, Peru · GMT‑5",
   headline: "I build web products that ship to production. And I can prove it.",
-  lead: "Full Stack Developer — React, Next.js, TypeScript, PostgreSQL. Building enterprise products since 2022 in EdTech, e-commerce, ERP and electronic invoicing, with remote teams in the US and Latin America. I design AI-assisted development workflows and treat them as what they are: engineering.",
+  lead: "Full Stack Developer — React, Next.js, TypeScript, PostgreSQL. Five years building enterprise products in EdTech, e-commerce, ERP and electronic invoicing, with remote teams in the US and Latin America. I design AI-assisted development workflows and treat them as what they are: engineering.",
   evidence: [
-    { value: "500+ schools", source: "K‑12 LMS in production; main frontend and API contributor" },
-    { value: "2 businesses", source: "use software I designed and built end to end, every day" },
-    { value: "WCAG 2.1 AA", source: "contract requirement, met and covered by tests" },
+    { value: "500+ schools", source: "K‑12 LMS in production; primary contributor to the frontend and API" },
+    { value: "2 businesses", source: "run daily on software I designed and built end to end" },
+    { value: "WCAG 2.1 AA", source: "contractual requirement, met and covered by tests" },
   ] satisfies EvidenceItem[],
   ctas: {
     work: "See the work →",
-    cv: "CV (PDF) ↓",
+    cv: "Résumé (PDF) ↓",
+    cvUrl: "/cv-george-puma-en.pdf",
   },
 };
 
@@ -64,15 +65,15 @@ export const anchorProject: Project = {
   slug: "notable-learning",
   name: "Notable Learning",
   level: "destacado",
-  meta: "Main contributor · Junto AI · Feb – Jun 2026",
+  meta: "Primary contributor · Junto AI · Feb – Jun 2026",
   summary:
     "K‑12 LMS for 500+ schools in the US and 10 countries: content editor, video, 5-role RBAC and FERPA compliance over a 29-entity schema.",
   decision:
-    "I designed the editor around its failure modes before writing code, and the file upload ended up as a three-step flow: a signed URL with the limits in the signature, server-side validation of the real bytes and an explicit finalize step.",
+    "I designed the editor around its failure modes before writing code, and the file upload ended up as a three-step flow: a signed URL with the limits baked into the signature, server-side validation of the real bytes and an explicit finalize step.",
   proofs: [
     { value: "29 entities", context: "schema with 5-role RBAC and FERPA" },
     { value: "Jun 12, 2026", context: "delivered on the committed date" },
-    { value: "WCAG 2.1 AA", context: "contract requirement, verified with jest-axe" },
+    { value: "WCAG 2.1 AA", context: "contractual requirement, verified with jest-axe" },
   ],
   evidence: [],
   stack: ["TypeScript", "React 19", "Next.js 16", "Prisma", "PostgreSQL", "GCS", "Mux"],
@@ -147,9 +148,9 @@ export const ronatello: Project = {
   badge: "IN PRODUCTION",
   meta: "Direct client · Arequipa",
   summary:
-    "Second client on the same starter kit as Cleo Spa: promotions, bookings and admin panel, from brief to deployment in 12 days, with a CI that spins up a real Supabase stack.",
+    "Second client built on the same starter kit as Cleo Spa: promotions, bookings and an admin panel, from brief to deployment in 12 days, with CI that spins up a real Supabase stack.",
   proofs: [
-    { value: "12 days", context: "from brief to production: 24 routes, 9 public plus admin panel" },
+    { value: "12 days", context: "from brief to production: 24 routes, 9 public, plus an admin panel" },
   ],
   evidence: [
     { value: "12 days", source: "brief → production" },
@@ -175,7 +176,7 @@ export const ronatello: Project = {
     avif2x: "/screenshots/ronatello-16x10@2x.avif",
     width: 304,
     height: 190,
-    alt: "Middle strip of the promotions page: header with logo, headline «Tonight's promos», text and the first row of combo cards with price and WhatsApp button, cut off at the bottom.",
+    alt: "Middle strip of the promotions page: header with logo, headline “Las promos de esta noche”, text and the first row of combo cards with price and WhatsApp button, cut off at the bottom.",
   },
 };
 
@@ -184,7 +185,7 @@ export const studioEquilibrio: Project = {
   name: "Studio Equilibrio",
   level: "menor",
   badge: "DEMO",
-  meta: "No client · production standard · 2.5 weeks",
+  meta: "No client · production-grade · 2.5 weeks",
   summary:
     "Demo SaaS for fitness studios — bookings, memberships, billing with PDF receipts and analytics — built end to end from a business brief.",
   proofs: [
@@ -214,7 +215,7 @@ export const studioEquilibrio: Project = {
     avif2x: "/screenshots/studio-equilibrio-16x10@2x.avif",
     width: 304,
     height: 190,
-    alt: "Live home page of Studio Equilibrio: top bar with the studio name, chat icon and hamburger menu; chip «Studio Equilibrio · Bienestar & Fitness»; headline «Tu energía, en equilibrio»; subtitle «Energía y calma, en balance»; text about booking classes; chips for Yoga, Pilates, Funcional, Cycling, Barre and Meditación; «Ver clases» button cut off at the bottom edge.",
+    alt: "Live home page of Studio Equilibrio: top bar with the studio name, chat icon and hamburger menu; chip “Studio Equilibrio · Bienestar & Fitness”; headline “Tu energía, en equilibrio”; subtitle “Energía y calma, en balance”; text about booking classes; chips for Yoga, Pilates, Funcional, Cycling, Barre and Meditación; “Ver clases” button cut off at the bottom edge.",
   },
 };
 
@@ -240,7 +241,7 @@ export const gridProjects: Project[] = [
     stack: ["Go", "Cloudflare R2", "S3 API"],
     link: {
       href: "https://github.com/Mathi031/projsync",
-      label: "See the repository ↗",
+      label: "View the repository ↗",
       external: true,
     },
   },
@@ -251,12 +252,12 @@ export const projects: Project[] = [anchorProject, ...gridProjects];
 export const experience: ExperienceItem[] = [
   {
     company: "Junto AI",
-    role: "Full Stack Developer (per-project contract)",
+    role: "Full Stack Developer (project-based contract)",
     period: "Feb 2026 – Jun 2026",
     location: "Remote · US / Costa Rica",
     lines: [
-      "Main contributor to Notable Learning, a K-12 LMS in production for 500+ schools.",
-      "Weekly deliveries reviewed by the CTO; project delivered on time.",
+      "Primary contributor to Notable Learning, a K-12 LMS in production for 500+ schools.",
+      "Weekly deliverables reviewed by the CTO; delivered on schedule.",
     ],
   },
   {
@@ -266,7 +267,7 @@ export const experience: ExperienceItem[] = [
     location: "Remote · Venezuela",
     lines: [
       "Management module built from scratch for a Next.js ERP, consistent with the existing architecture.",
-      "Worked with the backend team on diagnosing Spring Boot microservices.",
+      "Worked with the backend team diagnosing Spring Boot microservices.",
     ],
   },
   {
@@ -284,13 +285,13 @@ export const experience: ExperienceItem[] = [
     period: "Mar 2023 – Dec 2023",
     location: "Remote · US",
     lines: [
-      "Migration of a desktop financial system to the web in React + TypeScript (AR/AP, Invoices).",
-      "Responsible for the new notifications and campaigns module.",
+      "Migration of a desktop financial system to the web in React + TypeScript (AR/AP, invoicing).",
+      "Owned the new notifications and campaigns module.",
     ],
   },
   {
     company: "Footloose",
-    role: "Analyst Programmer",
+    role: "Programmer Analyst",
     period: "Feb 2022 – Jun 2023",
     location: "Remote · Peru",
     lines: [
@@ -301,42 +302,42 @@ export const experience: ExperienceItem[] = [
 
 export const stack = {
   primary: {
-    label: "Primary",
+    label: "Core",
     items: ["TypeScript", "React", "Next.js", "Node.js", "Tailwind CSS", "PostgreSQL", "Prisma"],
   },
   solid: {
-    label: "Solid",
+    label: "Strong",
     items: ["Playwright", "Jest", "NextAuth", "Supabase", "VTEX IO", "SQL Server", "Git / CI-CD"],
   },
   growing: {
-    label: "Growing",
-    items: ["Go", "Kotlin / Compose", "NestJS", "GCS", "Cloudflare R2"],
+    label: "Exploring",
+    items: ["Go", "NestJS", "GCS", "Cloudflare R2"],
   },
 };
 
 export const aiWorkflow = {
   intro: {
-    lead: "I do not use AI as autocomplete: I design systems with it.",
-    rest: "My main workflow is Claude Code — specialized subagents, MCP servers and custom commands — and I treat agent configuration as what it is: engineering, with its rules, its edge cases and its maintenance.",
+    lead: "I don't use AI as autocomplete: I design systems with it.",
+    rest: "My main workflow runs on Claude Code — specialized subagents, MCP servers and custom commands — and I treat agent configuration as what it is: engineering, with rules, edge cases and maintenance.",
   },
   highlight:
-    "The example that shows it best: an automated PR reviewer for Notable Learning. It validated that each branch matched a real Linear ticket, loaded the project conventions from a context repo, invoked subagents depending on what the diff touched (security, tests, architecture) and reviewed in two stages: first it checked whether previous blocking comments were actually resolved, citing file and line; then it did its own review with project criteria — multi-tenant isolation, roles as enums, Zod validation, zero PII in logs. All in a single consolidated comment, with severities and suggested fixes.",
+    "The best example: an automated PR reviewer for Notable Learning. It validated that each branch matched a real Linear ticket, loaded the project conventions from a context repo, invoked subagents depending on what the diff touched (security, tests, architecture) and reviewed in two stages: first it checked whether previous blocking comments were actually resolved, citing file and line; then it did its own review against project criteria — multi-tenant isolation, roles as enums, Zod validation, zero PII in logs. All in a single consolidated comment, with severities and suggested fixes.",
   honestyIntro:
-    "I designed it and operated it on my own PRs; the team reported that human reviews arrived with the obvious work already flagged.",
+    "I designed it and ran it on my own PRs; the team reported that human reviews now arrived with the obvious issues already flagged.",
   honestyQuote:
-    "I learned more from its failures than from its successes: a noisy automated reviewer is worse than none, so half of the design is conditions for staying silent.",
+    "I learned more from its failures than its successes: a noisy automated reviewer is worse than none, so half the design is the conditions for staying silent.",
   pipeline: ["webhook", "validation", "context", "subagents", "two stages", "single comment"],
   pipelineNote:
-    "All the analysis ends in one consolidated comment — a bot that comments five times is noise.",
-  lead: "Quality and workflow are part of the product, not a later step.",
+    "Every analysis ends in one consolidated comment — a bot that comments five times is noise.",
+  lead: "Quality and workflow are part of the product, not an afterthought.",
   kicker: "AI-assisted workflow",
   quality: {
     kicker: "Quality as practice",
     items: [
-      "E2E tests with Playwright for the flows that cannot fail.",
+      "E2E tests with Playwright for the flows that can't fail.",
       "Accessibility verified automatically (axe, jest-axe) on every component and page.",
-      "Business rules in the database (default-deny RLS), repeated in the application.",
-      "“What I would leave better” written at the close of every project.",
+      "Business rules in the database (default-deny RLS), mirrored in the application.",
+      "“What I'd improve” written at the close of every project.",
     ],
   },
 };

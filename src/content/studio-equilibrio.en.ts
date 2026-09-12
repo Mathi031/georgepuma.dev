@@ -35,7 +35,7 @@ export const miniCase: MiniCase = {
   },
   shots: {
     id: "screens",
-    heading: "The product, as it is",
+    heading: "The product, unretouched",
     frames: [
       {
         image: {
@@ -77,7 +77,7 @@ export const miniCase: MiniCase = {
     heading: "Three decisions that hold up the rest",
     items: [
       {
-        title: "Capacity lives in the class, not in good faith",
+        title: "Capacity lives in the class, not on trust",
         text: "Every class in the schedule declares its capacity and occupancy is read right there. Booking means taking a finite spot, and the weekly schedule — class, time, coach and capacity — is the source of truth for what can be sold.",
       },
       {
@@ -85,7 +85,7 @@ export const miniCase: MiniCase = {
         text: "Memberships and packages generate charges with a due date, and the billing screen sorts them by what demands action: overdue, failed, due, collected. Every payment is recorded and leaves its PDF receipt — billing is not an end-of-month report, it is daily operation.",
       },
       {
-        title: "A demo held to the production standard",
+        title: "A demo held to production standards",
         text: "Built end to end from a business brief and covered by 30 E2E tests with Playwright, with LCP < 2 s measured on mobile over 4G. That is the point of the demo: the standard does not drop because there is no client.",
       },
     ],
@@ -93,7 +93,7 @@ export const miniCase: MiniCase = {
   close: {
     id: "closing",
     heading: "What it left behind",
-    body: "The piece of the grid that shows the full range without a client in between: from the business brief to a navigable product — bookings, memberships, billing and analytics — operable end to end in the live demo.",
+    body: "The piece of the grid that shows full range without a client in the loop: from the business brief to a navigable product — bookings, memberships, billing and analytics — operable end to end in the live demo.",
     liveHref: "https://studio-equilibrio-demo.vercel.app",
     liveLabel: "See the live demo",
     backLabel: "Back to projects",

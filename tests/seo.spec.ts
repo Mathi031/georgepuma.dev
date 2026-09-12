@@ -143,6 +143,36 @@ for (const locale of locales) {
   }
 }
 
+// Decisión del usuario en el cambio #5: la antigüedad se dice en años, no con
+// el año de inicio. "Cinco años" / "five years" se conservan a propósito, así
+// que el test fija esa forma en vez de prohibirla: si alguien vuelve a
+// sustituirla por "Desde 2022" / "since 2022", esto falla.
+test("la home declara la antigüedad en años, en la meta y en el hero", async ({ page }) => {
+  const EXPECTED: Record<string, RegExp> = {
+    es: /cinco años/i,
+    en: /five years/i,
+  };
+  // El año de inicio obliga al lector a hacer la resta; el número se lee de
+  // golpe. La forma es la misma en la meta y en el texto visible: un solo dato
+  // no puede decirse de dos maneras en la misma página.
+  const START_YEAR = /desde 2022|since 2022/i;
+
+  for (const locale of locales) {
+    await page.goto(path(locale, "/"));
+    const { description } = await capture(page);
+    const d = description ?? "";
+    expect(d, `descripción de ${locale}`).toMatch(EXPECTED[locale]!);
+    expect(d, `descripción de ${locale} no usa el año de inicio`).not.toMatch(START_YEAR);
+    // Límite de corte de Google: por encima de 155 la descripción se trunca.
+    expect(d.length, `largo de la descripción de ${locale}`).toBeLessThan(155);
+
+    // El lead del hero es el primer párrafo tras el h1.
+    const lead = (await page.locator("main h1 + p").first().innerText()).trim();
+    expect(lead, `lead de ${locale}`).toMatch(EXPECTED[locale]!);
+    expect(lead, `lead de ${locale} no usa el año de inicio`).not.toMatch(START_YEAR);
+  }
+});
+
 test("cada ruta se describe distinto en cada idioma", async ({ page }) => {
   for (const href of indexedRoutes) {
     const captured: Captured[] = [];

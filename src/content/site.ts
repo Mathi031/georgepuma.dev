@@ -96,7 +96,6 @@ export const identity = {
     { name: "LinkedIn", href: linkedin },
     { name: "Email", href: `mailto:${email}` },
   ] as const,
-  cvUrl: "/cv-george-puma.pdf",
   url: "https://georgepuma.dev",
   siteName: "georgepuma.dev",
   /**

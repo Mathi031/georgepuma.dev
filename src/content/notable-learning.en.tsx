@@ -15,7 +15,7 @@ export const caseStudy: CaseStudy = {
     description:
       "K-12 LMS for 500+ schools: a content editor designed around its failure modes and a four-layer PDF bug that ended in a streaming proxy.",
   },
-  kicker: "Case study · Main contributor · Feb – Jun 2026",
+  kicker: "Case study · Primary contributor · Feb – Jun 2026",
   pathSegments: ["projects", "notable-learning"],
   lead: (
     <>
@@ -39,7 +39,7 @@ export const caseStudy: CaseStudy = {
       },
       {
         term: "role",
-        text: "Main contributor: full frontend and API layer, with weekly deliveries reviewed by the CTO.",
+        text: "Primary contributor: full frontend and API layer, with weekly deliverables reviewed by the CTO.",
       },
       {
         term: "scale",
@@ -53,8 +53,8 @@ export const caseStudy: CaseStudy = {
     heading: "Context and role",
     body: [
       <>
-        I was the main contributor by volume of work in Phase 1: 380+ commits
-        across 100+ tickets, with weekly deliveries reviewed by the CTO and
+        I was the primary contributor by volume of work in Phase 1: 380+ commits
+        across 100+ tickets, with weekly deliverables reviewed by the CTO and
         production deploys with manual approval. My contract scope covered the UI
         component library, the content editor for teachers, the student and
         teacher dashboards, the multi-institution admin panel, and the video
@@ -86,11 +86,11 @@ export const caseStudy: CaseStudy = {
     ),
     principles: [
       {
-        title: "The perception of saving matters as much as the saving itself",
+        title: "Perceived saving matters as much as actual saving",
         text: "A teacher who loses twenty minutes of work to an accidental reload or a dropped connection never trusts the product again. The save state had to be visible and honest: a discreet but always-present signal confirms when changes are safe, and toasts explain what happened when something fails — unexpected errors as part of the design, not as a patch added later.",
       },
       {
-        title: "Early file upload creates orphans",
+        title: "Uploading files early creates orphans",
         text: "If every image is uploaded to the bucket at the moment the teacher inserts it, every abandoned draft leaves objects taking up storage forever. An explicit confirmation and cleanup strategy was needed.",
       },
       {
@@ -103,8 +103,8 @@ export const caseStudy: CaseStudy = {
         The team approved the approach and I implemented it. The final version of
         the file upload became a three-step flow that solves the three problems at
         once: an <em>initiate</em> route that issues a signed upload URL with the
-        type and maximum size fixed cryptographically in the signature — enforced
-        by GCS, not by the client —, a direct upload from the browser to the bucket
+        type and maximum size fixed cryptographically in the signature (enforced
+        by GCS, not by the client), a direct upload from the browser to the bucket
         (the bytes never pass through the application server), and a{" "}
         <em>finalize</em> route that re-reads the first bytes of the object to
         validate on the server that the content is really a PDF, and deletes the
@@ -118,7 +118,7 @@ export const caseStudy: CaseStudy = {
     heading: "The war: the PDF that would not render",
     intro: (
       <>
-        The bug that cost me the most in the project looked trivial: PDFs uploaded
+        The bug that cost me the most time on the project looked trivial: PDFs uploaded
         by teachers did not show in the viewer. Blank screen. The confusing part
         was that images and videos, served by the same architecture — private
         bucket, authorized route, redirect to a signed URL — worked perfectly. The
@@ -140,7 +140,7 @@ export const caseStudy: CaseStudy = {
       {
         label: "layer 3",
         title: "A hypothesis of mine that made things worse",
-        text: "In an earlier attempt I had enabled withCredentials in the viewer — an option that tells the browser “include the cookies in this request” — with the theory that the viewer arrived without the session cookie. The theory was false, and the option had a hidden cost: when a request travels with cookies, the browser demands that every server in the chain respond with an explicit permission for credentialed requests, including GCS, which never sends it. My fix introduced a new blocker while trying to solve the original one. I had to undo my own change and verify it live against a real signed URL, watching the full negotiation pass in green. It looked solved. It was not.",
+        text: "In an earlier attempt I had enabled withCredentials in the viewer — an option that tells the browser “include the cookies in this request” — with the theory that the viewer arrived without the session cookie. The theory was false, and the option had a hidden cost: when a request travels with cookies, the browser demands that every server in the chain respond with an explicit permission for credentialed requests, including GCS, which never sends it. My fix introduced a new blocker while trying to solve the original one. I had to undo my own change and verify it live against a real signed URL, watching the full negotiation pass in green. It looked solved. It wasn't.",
       },
       {
         label: "layer 4",
@@ -175,7 +175,7 @@ export const caseStudy: CaseStudy = {
       <>
         Two details made this bug harder than normal. First, I had no access to
         the bucket configuration: CORS changes were applied by the infrastructure
-        owners. My job was to diagnose without being able to touch, and to hand
+        owners. My job was to diagnose without being able to touch anything, and to hand
         them exact instructions — what to change, in which environment and why —
         documented in the PR itself next to the reproducible command. Second, I
         used Claude as a research tool to explore the Fetch and CORS
@@ -193,7 +193,7 @@ export const caseStudy: CaseStudy = {
       <>
         What remained is a test that explicitly asserts the <em>absence</em> of{" "}
         <em>withCredentials</em> — the most direct guard against repeating the
-        failed attempt —, a suite of 13 tests over the proxy route (ranges,
+        failed attempt — a suite of 13 tests over the proxy route (ranges,
         conditionals, 304 responses without overwritten headers), server-side
         validation of the real file content, and upload limits enforced by the
         cryptographic signature instead of by the client.
@@ -204,7 +204,7 @@ export const caseStudy: CaseStudy = {
   },
   better: {
     id: "better",
-    heading: "What I would leave better",
+    heading: "What I'd improve",
     body: (
       <>
         The bucket CORS configuration lives outside the repository and is applied
