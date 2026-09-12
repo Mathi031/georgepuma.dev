@@ -33,6 +33,12 @@ export type ProjectImage = {
   width: number;
   height: number;
   alt: string;
+  /**
+   * Descriptor 2x del mismo recorte (srcset "src 1x, src2x 2x"). Opcional:
+   * las capturas sin recorte dedicado (Cleo, projsync) no lo llevan.
+   */
+  src2x?: string;
+  avif2x?: string;
 };
 
 /**
@@ -43,16 +49,31 @@ export type ProjectLink =
   | { href: string; label: string; external: true }
   | { href: InternalRoute; label: string; external: false };
 
+/** Métrica con prueba (sección 5.12): numeral + línea de contexto obligatoria. */
+export type ProjectProof = { value: string; context: string };
+
 export type Project = {
   slug: string;
   name: string;
-  role: string;
+  /** Jerarquía visual de la card en #trabajo (CAMBIO #4). */
+  level: "destacado" | "destacado-secundario" | "menor";
+  /** Badge de estado (EN PRODUCCIÓN / DEMO / OPEN SOURCE). Sin badge = Notable. */
+  badge?: string;
+  /** Línea de meta bajo el título: rol/cliente · contexto · fechas. Antes `role`. */
+  meta: string;
   summary: string;
+  /** Frase de decisión técnica, solo en la card destacada (Notable). */
+  decision?: string;
+  /** Pruebas de la card: numeral + contexto. Sustituye a `evidence` en #trabajo. */
+  proofs: ProjectProof[];
+  /** @deprecated conservado solo porque MiniCase y notable-learning lo leen. */
   evidence: EvidenceItem[];
   stack: string[];
   link: ProjectLink;
   /** Captura curada del producto. Opcional: la card no reserva hueco sin ella. */
   image?: ProjectImage;
+  /** Recorte 16:10 para la card "menor" de #trabajo; si falta, se usa `image`. */
+  crop?: ProjectImage;
 };
 
 export type ExperienceItem = {

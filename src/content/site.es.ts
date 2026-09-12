@@ -71,19 +71,26 @@ export const hero = {
 export const anchorProject: Project = {
   slug: "notable-learning",
   name: "Notable Learning",
-  role: "Principal contribuidor · Feb – Jun 2026",
+  level: "destacado",
+  meta: "Principal contribuidor · Junto AI · feb – jun 2026",
   summary:
-    "LMS institucional K-12 para 500+ escuelas en EE.UU. y 10 países. Frontend completo y capa de API: editor de contenido, video, RBAC de 5 roles y cumplimiento FERPA sobre un esquema de 29 entidades.",
-  evidence: [
-    { value: "500+ escuelas", source: "10 países" },
-    { value: "380+ commits", source: "100+ tickets" },
-    { value: "entregado en fecha", source: "jun 2026" },
-    { value: "FERPA", source: "datos de menores" },
+    "LMS K‑12 para 500+ escuelas en EE.UU. y 10 países: editor de contenido, video, RBAC de 5 roles y cumplimiento FERPA sobre un esquema de 29 entidades.",
+  decision:
+    "Diseñé el editor contra sus modos de fallo antes de escribir código, y la subida de archivos acabó como un flujo de tres pasos: URL firmada con los límites en la firma, validación en servidor sobre los bytes reales y finalización explícita.",
+  proofs: [
+    { value: "29 entidades", context: "esquema con RBAC de 5 roles y FERPA" },
+    // nbsp entre día, mes y año: la fecha no se parte en dos líneas (sección 4).
+    { value: "12 jun 2026", context: "entregado en la fecha comprometida" },
+    { value: "WCAG 2.1 AA", context: "requisito contractual, verificado con jest-axe" },
   ],
+  // evidence: ya no la lee la home (usa `proofs`); notable-learning/page.tsx
+  // tiene sus propias chips (c.chips) y no la toca. Se conserva vacía porque
+  // el tipo Project la exige (MiniCase.tsx la usa en otros proyectos).
+  evidence: [],
   stack: ["TypeScript", "React 19", "Next.js 16", "Prisma", "PostgreSQL", "GCS", "Mux"],
   link: {
     href: "/proyectos/notable-learning",
-    label: "Leer el caso de estudio",
+    label: "Leer el caso de estudio →",
     external: false,
   },
 };
@@ -121,9 +128,15 @@ export const schemaFigure = {
 export const cleoSpa: Project = {
   slug: "cleo-spa",
   name: "Cleo Spa",
-  role: "Cliente directo · en producción",
+  level: "destacado-secundario",
+  badge: "EN PRODUCCIÓN",
+  meta: "Cliente directo · Arequipa",
   summary:
     "Inventario, catálogo público y reservas para un salón de belleza en Arequipa: ledger de stock inmutable con lotes FEFO, RLS default-deny en 16 tablas y panel con tres roles operativos (dueña, cajera, estilista). La herramienta que el personal usa a diario — no una vitrina.",
+  proofs: [
+    { value: "16 tablas", context: "con RLS default-deny: los permisos viven en la base de datos" },
+    { value: "ledger insert-only", context: "cada corrección es un ajuste, nunca una edición" },
+  ],
   evidence: [
     { value: "ledger insert-only", source: "correcciones = ajustes" },
     { value: "3 roles", source: "permisos en BD y app" },
@@ -132,7 +145,7 @@ export const cleoSpa: Project = {
   // La tarjeta lleva al mini-caso; el enlace al sitio en vivo vive dentro.
   link: {
     href: "/proyectos/cleo-spa",
-    label: "Leer el mini-caso",
+    label: "Leer el mini-caso →",
     external: false,
   },
   image: {
@@ -147,9 +160,14 @@ export const cleoSpa: Project = {
 export const ronatello: Project = {
   slug: "ronatello",
   name: "Ronatello",
-  role: "Cliente directo · 12 días a producción",
+  level: "menor",
+  badge: "EN PRODUCCIÓN",
+  meta: "Cliente directo · Arequipa",
   summary:
-    "Sitio de producción para una licorería de barrio recién abierta en Arequipa: promociones con vigencia, reservas con cupo y panel de administración propio. Las reglas de negocio viven en Postgres (RLS), el CI levanta un stack Supabase real, y fue del brief al despliegue en 12 días reutilizando un starter kit extraído de Cleo Spa.",
+    "Segundo cliente sobre el mismo starter kit que Cleo Spa: promociones, reservas y panel de administración, del brief al despliegue en 12 días, con un CI que levanta un stack Supabase real.",
+  proofs: [
+    { value: "12 días", context: "de brief a producción: 24 rutas, 9 públicas y panel admin" },
+  ],
   evidence: [
     { value: "12 días", source: "brief → producción" },
     { value: "24 rutas", source: "9 públicas + panel admin" },
@@ -158,7 +176,7 @@ export const ronatello: Project = {
   // La tarjeta lleva al mini-caso; el enlace al sitio en vivo vive dentro.
   link: {
     href: "/proyectos/ronatello",
-    label: "Leer el mini-caso",
+    label: "Leer el mini-caso →",
     external: false,
   },
   image: {
@@ -168,14 +186,31 @@ export const ronatello: Project = {
     height: 384,
     alt: "Página de promociones: tarjetas de combos con precio, estado de disponibilidad y botón para pedir por WhatsApp.",
   },
+  // Recorte 16:10 para la card "menor" (CAMBIO #4); `image` sigue siendo la
+  // captura completa que consume el mini-caso.
+  crop: {
+    src: "/screenshots/ronatello-16x10.webp",
+    avif: "/screenshots/ronatello-16x10.avif",
+    src2x: "/screenshots/ronatello-16x10@2x.webp",
+    avif2x: "/screenshots/ronatello-16x10@2x.avif",
+    width: 304,
+    height: 190,
+    alt: "Franja central de la página de promociones: cabecera con logo, titular «Las promos de esta noche», texto y la primera fila de tarjetas de combos con precio y botón de WhatsApp, cortadas por abajo.",
+  },
 };
+
 
 export const studioEquilibrio: Project = {
   slug: "studio-equilibrio",
   name: "Studio Equilibrio",
-  role: "Diseño a producción, en solitario · 2.5 semanas",
+  level: "menor",
+  badge: "DEMO",
+  meta: "Sin cliente · estándar de producción · 2,5 semanas",
   summary:
     "SaaS demo para estudios de fitness — reservas, membresías, facturación con recibos PDF y analítica — construido de extremo a extremo a partir de un brief comercial.",
+  proofs: [
+    { value: "LCP < 2 s", context: "en móvil sobre 4G; 30 pruebas E2E con Playwright" },
+  ],
   evidence: [
     { value: "LCP < 2 s", source: "móvil, 4G" },
     { value: "30 pruebas E2E", source: "Playwright" },
@@ -184,7 +219,7 @@ export const studioEquilibrio: Project = {
   // La tarjeta lleva al mini-caso; el enlace al demo en vivo vive dentro.
   link: {
     href: "/proyectos/studio-equilibrio",
-    label: "Leer el mini-caso",
+    label: "Leer el mini-caso →",
     external: false,
   },
   image: {
@@ -194,7 +229,19 @@ export const studioEquilibrio: Project = {
     height: 384,
     alt: "Portada del estudio: titular sobre la reserva de clases, filtros por disciplina y contador de disciplinas y coaches.",
   },
+  // Recorte 16:10 para la card "menor" (CAMBIO #4); `image` sigue siendo la
+  // captura completa que consume el mini-caso.
+  crop: {
+    src: "/screenshots/studio-equilibrio-16x10.webp",
+    avif: "/screenshots/studio-equilibrio-16x10.avif",
+    src2x: "/screenshots/studio-equilibrio-16x10@2x.webp",
+    avif2x: "/screenshots/studio-equilibrio-16x10@2x.avif",
+    width: 304,
+    height: 190,
+    alt: "Portada en vivo de Studio Equilibrio: barra superior con el nombre del estudio, icono de chat y menú hamburguesa; chip «Studio Equilibrio · Bienestar & Fitness»; titular «Tu energía, en equilibrio»; subtítulo «Energía y calma, en balance»; texto sobre reservar clases; chips de Yoga, Pilates, Funcional, Cycling, Barre y Meditación; botón «Ver clases» cortado en el borde inferior.",
+  },
 };
+
 
 export const gridProjects: Project[] = [
   cleoSpa,
@@ -203,26 +250,28 @@ export const gridProjects: Project[] = [
   {
     slug: "projsync",
     name: "projsync",
-    role: "Proyecto propio · open source",
+    level: "menor",
+    badge: "OPEN SOURCE",
+    meta: "Proyecto propio · Go",
     summary:
       "CLI en Go que sincroniza la configuración de agentes de IA entre máquinas con cifrado de extremo a extremo (age), almacenamiento content-addressed (BLAKE3) y scanner de secretos previo a cada push.",
+    proofs: [
+      { value: "E2E cifrado", context: "age (X25519) · BLAKE3 · Cloudflare R2 · MIT" },
+    ],
     evidence: [
       { value: "E2E cifrado", source: "age · X25519" },
       { value: "MIT", source: "código abierto" },
     ],
     stack: ["Go", "Cloudflare R2", "S3 API"],
     link: {
+      // nbsp entre la última palabra y la flecha (sección 4): mismo patrón
+      // que hero.ctas. Enlace externo: sale del sitio.
       href: "https://github.com/Mathi031/projsync",
-      label: "Ver el repositorio",
+      label: "Ver el repositorio ↗",
       external: true,
     },
-    image: {
-      src: "/screenshots/projsync.webp",
-      avif: "/screenshots/projsync.avif",
-      width: 768,
-      height: 384,
-      alt: "Repositorio en GitHub: árbol de archivos del proyecto en Go y comienzo del README que describe la sincronización cifrada.",
-    },
+    // Sin `image`: la card de projsync en #trabajo es `rule` (regla
+    // superior, sin captura) — CAMBIO #4, decisión E.
   },
 ];
 

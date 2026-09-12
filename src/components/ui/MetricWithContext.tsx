@@ -29,7 +29,7 @@ export function MetricWithContext({
   className?: string;
 }) {
   return (
-    <div className={`break-safe ${className}`}>
+    <div data-metric className={`break-safe ${className}`}>
       <p className={`font-mono font-medium text-primary ${numeralSize[size]}`}>{value}</p>
       <p className="mt-step-8 text-body-small text-muted">{context}</p>
     </div>
@@ -40,19 +40,41 @@ export function MetricWithContext({
  * Disposición en lista para casos de estudio: columna de dato de 320 px.
  * 320 y no 280 porque el dato más largo del sitio mide 306 px.
  * En móvil la columna desaparece y el dato queda sobre el contexto.
+ *
+ * `layout="row"` (CAMBIO #4): tres columnas desde 768, apiladas con regla
+ * entre filas en móvil — mismo patrón que la fila de evidencia del hero.
+ * Numeral a text-numeral-row (17px) en vez del text-numeral-list de la lista.
  */
 export function MetricList({
   items,
+  layout = "list",
   className = "",
 }: {
   items: { value: string; context: string }[];
+  layout?: "list" | "row";
   className?: string;
 }) {
+  if (layout === "row") {
+    return (
+      <dl
+        className={`grid grid-safe gap-x-step-24 divide-y divide-rule md:grid-cols-3 md:divide-y-0 ${className}`}
+      >
+        {items.map((m) => (
+          <div key={m.value} data-metric className="break-safe min-w-0 py-step-16 md:py-0">
+            <dt className="font-mono text-numeral-row font-medium text-primary">{m.value}</dt>
+            <dd className="mt-step-8 text-body-small text-muted">{m.context}</dd>
+          </div>
+        ))}
+      </dl>
+    );
+  }
+
   return (
     <dl className={className}>
       {items.map((m) => (
         <div
           key={m.value}
+          data-metric
           className="grid-safe grid gap-step-8 border-t border-rule py-step-24 md:grid-cols-[320px_1fr] md:gap-step-24"
         >
           <dt className="break-safe font-mono text-numeral-list font-medium text-primary">

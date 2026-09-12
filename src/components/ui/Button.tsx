@@ -55,3 +55,12 @@ export function ButtonLink({
     </a>
   );
 }
+
+/**
+ * Mismas clases de ButtonLink, para componer sobre `Link` de next-intl
+ * (que necesita ser el propio elemento con prefijo de locale, no envolver
+ * un <a>). ponytail: helper de una línea en vez de un tercer componente.
+ */
+export function buttonLinkClass(variant: Variant = "primary") {
+  return `${base} ${variants[variant]}`;
+}
