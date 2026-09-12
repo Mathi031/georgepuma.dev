@@ -10,7 +10,8 @@ import { expect, test, type Locator, type Page } from "@playwright/test";
  *     propio article es la raíz de la card (borde, regla y hover viven ahí);
  *   - cada métrica lleva `data-metric` en su raíz, con el numeral en el
  *     primer hijo y el contexto en el segundo;
- *   - SchemaFigure emite un único SVG (role=img) para todos los anchos.
+ *   - SchemaFigure emite dos SVG (role=img), horizontal y vertical, y solo
+ *     uno es visible en cada ancho (ver schema-figure.spec.ts).
  */
 
 const SECTION = "#trabajo";
@@ -176,7 +177,7 @@ test.describe("layout en 1280", () => {
     expect(ratio).toBeGreaterThanOrEqual(0.55);
     expect(ratio).toBeLessThanOrEqual(0.6);
 
-    const figure = notable.locator("svg[role=img]");
+    const figure = notable.locator("svg[role=img]:visible");
     await expect(figure).toBeVisible();
     const h3Box = await box(h3);
     const figBox = await box(figure);
@@ -248,7 +249,7 @@ test.describe("layout en 390", () => {
     }
 
     const notable = card(page, "Notable Learning");
-    const figure = notable.locator("svg[role=img]");
+    const figure = notable.locator("svg[role=img]:visible");
     await expect(figure).toBeVisible();
     const b = await box(figure);
     expect(b.x).toBeGreaterThanOrEqual(0);

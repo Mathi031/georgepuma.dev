@@ -194,7 +194,7 @@ export default async function HomePage({
                 </Link>
               )}
             </div>
-            <SchemaFigure id="schema-home" className="pt-step-16" {...schemaFigure} />
+            <SchemaFigure id="schema-home" vertical className="pt-step-16" {...schemaFigure} />
           </Card>
 
           <Card
