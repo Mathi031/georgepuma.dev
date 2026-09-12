@@ -8,7 +8,6 @@ import { Link } from "@/i18n/navigation";
 
 type MiniCaseProps = {
   locale: Locale;
-  /** Ficha del proyecto en site.*.ts: nombre, evidencias y stack salen de ahí. */
   project: Project;
   c: MiniCaseContent;
 };
@@ -17,13 +16,9 @@ const h2 = "display-md text-display-md font-semibold";
 const sectionGap = "mt-14 sm:mt-16";
 
 /**
- * Plantilla de mini-caso: misma jerarquía y mismos dispositivos que el caso
- * de estudio (cabecera de ruta, ficha TL;DR en accent-muted, encabezados con kicker)
- * pero en una pantalla y media. Los tres mini-casos la comparten para que se
- * lean como un mismo formato y no como tres páginas parecidas.
- *
- * El nombre, las fichas de evidencia y el stack no se duplican aquí: vienen
- * de site.*.ts, que es lo que ya afirma la tarjeta del grid.
+ * Los tres mini-casos comparten esta plantilla para que se lean como un mismo
+ * formato. Nombre, evidencias y stack vienen de site.*.ts, lo mismo que ya
+ * afirma la tarjeta del grid, para no duplicar datos.
  */
 export function MiniCase({ locale, project, c }: MiniCaseProps) {
   const s = site[locale];
@@ -82,8 +77,8 @@ export function MiniCase({ locale, project, c }: MiniCaseProps) {
             <div className="mt-10 h-px bg-rule sm:mt-12" />
           </header>
 
-          {/* Las capturas van antes que las decisiones: en un mini-caso la
-              evidencia entra primero y el argumento la explica. */}
+          {/* Las capturas van antes que las decisiones: la evidencia entra
+              primero y el argumento la explica. */}
           <section className={sectionGap} aria-labelledby={c.shots.id}>
             <p aria-hidden="true" className="mb-2 font-mono text-micro text-muted">
               <span className="text-primary">/</span>
@@ -146,8 +141,7 @@ export function MiniCase({ locale, project, c }: MiniCaseProps) {
               >
                 <span aria-hidden="true">↗</span> {c.close.liveLabel}
               </a>
-              {/* Link de next-intl: pone el prefijo del locale, así que desde
-                  /en vuelve a la home inglesa. */}
+              {/* Link de next-intl: desde /en vuelve a la home inglesa. */}
               <Link
                 href={{ pathname: "/", hash: sectionIds.work }}
                 className="text-small font-medium underline decoration-rule underline-offset-[5px] transition-colors hover:text-primary hover:decoration-primary"

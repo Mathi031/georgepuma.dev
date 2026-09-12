@@ -38,11 +38,7 @@ const h2 = "display-md text-display-md font-semibold";
 const body = "text-body leading-[1.75] max-w-[65ch]";
 const sectionGap = "mt-14 sm:mt-16";
 
-/**
- * Encabezado de sección del caso: kicker de ruta (eco del dispositivo
- * SectionHeading/breadcrumb) sobre el titular narrativo. El kicker es
- * decorativo — el outline de accesibilidad lo llevan los h2.
- */
+// El kicker es decorativo: la estructura la llevan los h2.
 function CaseHeading({ id, heading }: { id: string; heading: string }) {
   return (
     <>
@@ -97,8 +93,6 @@ export default async function NotableLearningPage({
             <p className="mt-5 max-w-[60ch] text-title leading-[1.7]">
               {c.lead}
             </p>
-            {/* Ficha TL;DR: la lectura de cinco segundos del caso — y su
-                momento de acento. El resultado lo afirman las chips. */}
             <section
               aria-label={c.tldr.heading}
               className="rounded-sm mt-8 bg-accent-muted px-6 py-3 sm:px-8 sm:py-4"

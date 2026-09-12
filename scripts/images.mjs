@@ -72,14 +72,14 @@ const SOURCES = [
   { in: "cleo-spa-usuarios.png", out: "cleo-spa-usuarios", target: "screen", region: { width: 1560 } },
   { in: "cleo-spa-catalogo.png", out: "cleo-spa-catalogo", target: "screen" },
 
-  // --- Pantallas internas de Ronatello (mini-caso) ---
+  // Pantallas internas de Ronatello (mini-caso).
   { in: "ronatello-catalogo.png", out: "ronatello-catalogo", target: "screen" },
   { in: "ronatello-dashboard.png", out: "ronatello-dashboard", target: "screen" },
   { in: "ronatello-editar-promocion.png", out: "ronatello-editar-promocion", target: "screen", region: { top: 0, height: 1600 } },
   { in: "ronatello-promociones.png", out: "ronatello-promociones", target: "screen" },
   { in: "ronatello-reservas.png", out: "ronatello-reservas", target: "screen" },
 
-  // --- Pantallas internas de Studio Equilibrio (mini-caso) ---
+  // Pantallas internas de Studio Equilibrio (mini-caso).
   { in: "studio-equilibrio-alertas.png", out: "studio-equilibrio-alertas", target: "screen" },
   { in: "studio-equilibrio-asistencia.png", out: "studio-equilibrio-asistencia", target: "screen" },
   { in: "studio-equilibrio-cobros.png", out: "studio-equilibrio-cobros", target: "screen", region: { top: 0, height: 1600 } },
@@ -95,8 +95,8 @@ const CODECS = [
 ];
 
 /**
- * Recortes 16:10 para las cards "menor" del CAMBIO #4 (--crops, gateado
- * aparte: no toca la lista SOURCES ni sus derivados existentes).
+ * Recortes 16:10 para las cards "menor" (--crops, gateado aparte: no toca la
+ * lista SOURCES ni sus derivados existentes).
  *
  * `in2x`/`in1x` son los dos tamaños de salida (608×380 y 304×190). El
  * origen se recorta a `region` (en px del archivo fuente) y se reescala a

@@ -3,23 +3,24 @@ import { Divider } from "@/components/ui/Divider";
 type SectionHeadingProps = {
   id: string;
   label: string;
-  /** Numeral de sección en mono ("01"). Opcional: no todas lo llevan. */
   index?: string;
+  /** Texto de la meta cuando difiere del H2. */
+  kicker?: string;
+  lead?: string;
 };
 
 /**
- * Encabezado de sección (secciones 2 y 5.13 de la spec): regla `rule-strong`
- * de 1 px, 24 px por encima del H2, con la meta numerada entre ambos.
- *
- * La regla es decorativa: la estructura la aporta el propio encabezado, que es
- * quien recibe el id al que apunta el aria-labelledby de la sección.
+ * La regla es decorativa: la estructura la aporta el H2, que es quien recibe
+ * el id al que apunta el aria-labelledby de la sección.
  */
-export function SectionHeading({ id, label, index }: SectionHeadingProps) {
+export function SectionHeading({ id, label, index, kicker, lead }: SectionHeadingProps) {
   return (
     <div className="mb-step-48">
       <Divider strong />
       {index ? (
-        <p className="mt-step-24 font-mono text-metadata uppercase text-muted">{index}</p>
+        <p className="mt-step-24 font-mono text-metadata uppercase text-muted">
+          {index}&nbsp;·&nbsp;{kicker ?? label}
+        </p>
       ) : null}
       <h2
         id={id}
@@ -27,6 +28,7 @@ export function SectionHeading({ id, label, index }: SectionHeadingProps) {
       >
         {label}
       </h2>
+      {lead ? <p className="mt-step-24 max-w-[66ch] text-lead">{lead}</p> : null}
     </div>
   );
 }

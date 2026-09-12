@@ -9,7 +9,7 @@ export const ui = {
   skipLink: "Saltar al contenido",
   sectionsAria: "Secciones",
   langAria: "Idioma",
-  brandAria: "George Puma — inicio",
+  brandAria: "georgepuma.dev — inicio",
   availability: "DISPONIBLE AHORA",
   nav: {
     work: "Trabajo",
@@ -19,8 +19,9 @@ export const ui = {
   },
   headings: {
     work: "Trabajo",
-    method: "Método",
+    method: "Cómo trabajo",
     experience: "Experiencia",
+    experienceKicker: "Trayectoria",
     stack: "Stack",
     contact: "Contacto",
   },
@@ -55,7 +56,7 @@ export const hero = {
     { value: "2 negocios", source: "usan a diario software que diseñé y construí de extremo a extremo" },
     { value: "WCAG 2.1 AA", source: "requisito contractual, cumplido y cubierto por tests" },
   ] satisfies EvidenceItem[],
-  // nbsp entre flecha y palabra (sección 4): el token no se parte en dos líneas.
+  // nbsp entre flecha y palabra: el token no se parte en dos líneas.
   ctas: {
     work: "Ver el trabajo →",
     cv: "CV en PDF ↓",
@@ -79,13 +80,11 @@ export const anchorProject: Project = {
     "Diseñé el editor contra sus modos de fallo antes de escribir código, y la subida de archivos acabó como un flujo de tres pasos: URL firmada con los límites en la firma, validación en servidor sobre los bytes reales y finalización explícita.",
   proofs: [
     { value: "29 entidades", context: "esquema con RBAC de 5 roles y FERPA" },
-    // nbsp entre día, mes y año: la fecha no se parte en dos líneas (sección 4).
+    // nbsp entre día, mes y año: la fecha no se parte en dos líneas.
     { value: "12 jun 2026", context: "entregado en la fecha comprometida" },
     { value: "WCAG 2.1 AA", context: "requisito contractual, verificado con jest-axe" },
   ],
-  // evidence: ya no la lee la home (usa `proofs`); notable-learning/page.tsx
-  // tiene sus propias chips (c.chips) y no la toca. Se conserva vacía porque
-  // el tipo Project la exige (MiniCase.tsx la usa en otros proyectos).
+  // Vacía: la home usa `proofs` y el caso sus propias chips; el tipo la exige.
   evidence: [],
   stack: ["TypeScript", "React 19", "Next.js 16", "Prisma", "PostgreSQL", "GCS", "Mux"],
   link: {
@@ -106,6 +105,7 @@ export const schemaFigure = {
   title: "Esquema del sistema de Notable Learning",
   desc: "LMS multi-institución: 500+ escuelas en 10 países sobre un esquema de 29 entidades agrupadas por dominio — cursos, video, usuarios, instituciones y archivos — con RBAC de 5 roles y cumplimiento FERPA.",
   labels: {
+    kicker: "Esquema",
     schema: "29 entidades",
     rbac: "RBAC · 5 roles",
     compliance: "FERPA",
@@ -116,7 +116,16 @@ export const schemaFigure = {
       institutions: "instituciones",
       files: "archivos",
     },
+    // Solo hechos ya publicados en el resumen, el stack y el caso de estudio.
+    details: {
+      courses: "editor de contenido",
+      video: "Mux",
+      institutions: ["multi-tenant", "500+ escuelas"] as [string, string],
+      files: "GCS · PDF por proxy de streaming",
+    },
   },
+  caption:
+    "Cinco dominios sobre 29 entidades. El nodo destacado, instituciones, es la raíz multi-tenant de cada query.",
 };
 
 /**
@@ -186,8 +195,7 @@ export const ronatello: Project = {
     height: 384,
     alt: "Página de promociones: tarjetas de combos con precio, estado de disponibilidad y botón para pedir por WhatsApp.",
   },
-  // Recorte 16:10 para la card "menor" (CAMBIO #4); `image` sigue siendo la
-  // captura completa que consume el mini-caso.
+  // `image` sigue siendo la captura completa que consume el mini-caso.
   crop: {
     src: "/screenshots/ronatello-16x10.webp",
     avif: "/screenshots/ronatello-16x10.avif",
@@ -229,8 +237,7 @@ export const studioEquilibrio: Project = {
     height: 384,
     alt: "Portada del estudio: titular sobre la reserva de clases, filtros por disciplina y contador de disciplinas y coaches.",
   },
-  // Recorte 16:10 para la card "menor" (CAMBIO #4); `image` sigue siendo la
-  // captura completa que consume el mini-caso.
+  // `image` sigue siendo la captura completa que consume el mini-caso.
   crop: {
     src: "/screenshots/studio-equilibrio-16x10.webp",
     avif: "/screenshots/studio-equilibrio-16x10.avif",
@@ -264,18 +271,14 @@ export const gridProjects: Project[] = [
     ],
     stack: ["Go", "Cloudflare R2", "S3 API"],
     link: {
-      // nbsp entre la última palabra y la flecha (sección 4): mismo patrón
-      // que hero.ctas. Enlace externo: sale del sitio.
+      // nbsp entre la última palabra y la flecha, como en hero.ctas.
       href: "https://github.com/Mathi031/projsync",
       label: "Ver el repositorio ↗",
       external: true,
     },
-    // Sin `image`: la card de projsync en #trabajo es `rule` (regla
-    // superior, sin captura) — CAMBIO #4, decisión E.
   },
 ];
 
-/** Forma completa, ancla primero — conserva el contrato Record<Locale, typeof es>. */
 export const projects: Project[] = [anchorProject, ...gridProjects];
 
 export const experience: ExperienceItem[] = [
@@ -358,4 +361,15 @@ export const aiWorkflow = {
   pipeline: ["webhook", "validación", "contexto", "subagentes", "dos etapas", "comentario único"],
   pipelineNote:
     "Todo el análisis termina en un solo comentario consolidado — un bot que comenta cinco veces es ruido.",
+  lead: "La calidad y el flujo de trabajo son parte del producto, no un paso posterior.",
+  kicker: "Flujo asistido por IA",
+  quality: {
+    kicker: "Calidad como práctica",
+    items: [
+      "Tests E2E con Playwright para los flujos que no pueden fallar.",
+      "Accesibilidad verificada automáticamente (axe, jest-axe) en cada componente y página.",
+      "Reglas de negocio en la base de datos (RLS default-deny), repetidas en la aplicación.",
+      "“Lo que dejaría mejor” escrito al cierre de cada proyecto.",
+    ],
+  },
 };

@@ -1,13 +1,6 @@
 /**
- * Bloque de código (sección 5.16 de la spec). Como máximo dos tonos más
- * `primary` para una única línea destacada: sin resaltado de sintaxis, que
- * metería colores fuera del sistema.
- *
- * `highlight` recibe números de línea en base 1. La línea destacada no se marca
- * solo con color: lleva también fondo `accent-muted`.
- *
- * overflow-x-auto porque el código no se parte: desplaza el contenedor, nunca
- * la página.
+ * Sin resaltado de sintaxis: metería colores fuera del sistema. `highlight`
+ * recibe números de línea en base 1.
  */
 export function CodeBlock({
   code,

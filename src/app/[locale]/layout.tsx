@@ -56,9 +56,9 @@ export default async function LocaleLayout({
   }
   setRequestLocale(locale);
 
-  // El idioma del texto, que no siempre es el de la ruta: /en sirve español
-  // hasta que exista su traducción, y declararlo `en` haría que un lector de
-  // pantalla lo pronunciara con fonética inglesa (WCAG 3.1.1).
+  // El idioma del texto, no el de la ruta: con enContentReady en false, /en
+  // sirve español, y declararlo `en` haría que un lector de pantalla lo
+  // pronunciara con fonética inglesa (WCAG 3.1.1).
   const contentLang = enContentReady ? locale : routing.defaultLocale;
 
   return (

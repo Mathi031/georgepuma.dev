@@ -25,8 +25,8 @@ const mono = font("@fontsource-variable/jetbrains-mono/files/jetbrains-mono-lati
 
 const { bg, text, "text-secondary": muted, primary } = palette;
 
-// es: espejo de hero.headline / hero.thesis / hero.evidence en src/content.
-// en: solo vive aquí — el sitio aún se renderiza en español en /en.
+// Espejo de hero.headline / hero.thesis / hero.evidence en src/content, que
+// no se importa: este script corre fuera de Next.
 const COPY = {
   es: {
     headline: "Construyo productos web que llegan a producción",

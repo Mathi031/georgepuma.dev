@@ -7,7 +7,7 @@ import { LocaleSwitcher } from "@/components/LocaleSwitcher";
 import { ScreenshotFrame } from "@/components/ScreenshotFrame";
 import { SectionHeading } from "@/components/SectionHeading";
 import { SocialIcon } from "@/components/SocialIcon";
-import { SchemaFigure, SchemaFigureVertical } from "@/components/figures/SchemaFigure";
+import { SchemaFigure } from "@/components/figures/SchemaFigure";
 import { Badge } from "@/components/ui/Badge";
 import { ButtonLink, buttonLinkClass } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
@@ -22,7 +22,7 @@ import {
 import { Link } from "@/i18n/navigation";
 import { pageMetadata, personJsonLd } from "@/lib/seo";
 
-const container = "mx-auto max-w-[880px] px-5 sm:px-9";
+const container = "mx-auto max-w-(--container-page) px-5 sm:px-9 xl:px-10";
 const sectionGap = "pt-24 sm:pt-32";
 /**
  * Nombre accesible del enlace de una card: tres cards dicen "Leer el
@@ -66,8 +66,7 @@ export default async function HomePage({
     aiWorkflow,
   } = content[locale as Locale];
 
-  // Menores: los tres proyectos del grid salvo Cleo Spa, que es la destacada
-  // secundaria. La card "menor" usa `crop` (16:10) si el proyecto lo trae.
+  // Cleo Spa queda fuera: es la destacada secundaria y se renderiza aparte.
   const minorProjects = gridProjects
     .filter((p) => p.slug !== "cleo-spa")
     .map((p) => ({ ...p, capture: p.crop ?? p.image }));
@@ -82,7 +81,7 @@ export default async function HomePage({
         <nav
           aria-label={ui.sectionsAria}
           data-section-nav
-          className="order-3 flex w-full flex-wrap gap-x-step-16 [@media(min-width:361px)]:gap-x-step-24 md:order-none md:w-auto"
+          className="order-3 flex w-full flex-wrap gap-x-step-16 [@media(min-width:361px)]:gap-x-step-24 md:order-none md:ml-auto md:w-auto md:pr-step-24"
         >
           {(
             [
@@ -106,24 +105,26 @@ export default async function HomePage({
       </header>
 
       <main id="contenido">
-        {/* ── Hero ───────────────────────────────────────────── */}
+        {/* A ancho completo del contenedor: la regla y la fila de pruebas
+            alinean con las secciones de abajo; solo H1 y lead llevan límite
+            de lectura. */}
         <section className={`${container} pt-16 sm:pt-24`}>
-          <div className="flex flex-wrap items-center gap-step-12">
-            <Badge variant="accent">{ui.availability}</Badge>
-            <p className="font-mono text-metadata text-muted">{hero.status}</p>
-          </div>
-          <h1 className="mt-step-24 max-w-[20ch] text-balance font-display text-h1 font-semibold">
+          <div>
+          <p className="font-mono text-metadata uppercase text-muted">{hero.status}</p>
+          <Badge variant="accent" className="mt-step-16">
+            {ui.availability}
+          </Badge>
+          <h1 className="mt-step-32 max-w-[680px] font-display text-h1 font-semibold">
             {hero.headline}
           </h1>
           <p className="mt-step-32 max-w-[66ch] text-lead">{hero.lead}</p>
-          {/* Regla entre filas solo en móvil: en desktop las tres columnas del
-              grid ya se distinguen por el espacio horizontal. */}
+          <hr className="mt-step-48 border-rule" />
           <ul
             aria-label={ui.evidenceAria}
-            className="mt-step-48 grid grid-safe gap-x-step-24 divide-y divide-rule md:grid-cols-3 md:divide-y-0"
+            className="mt-step-32 grid grid-safe gap-x-step-24 gap-y-step-32 md:grid-cols-3"
           >
             {hero.evidence.map((e) => (
-              <li key={e.value} className="min-w-0 py-step-16 md:py-0">
+              <li key={e.value} className="min-w-0">
                 <MetricWithContext value={e.value} context={e.source} size="hero" />
               </li>
             ))}
@@ -143,7 +144,7 @@ export default async function HomePage({
             >
               {hero.ctas.cv}
             </ButtonLink>
-            <ul className="flex gap-step-8 xl:ml-auto">
+            <ul className="mt-step-16 flex gap-step-16 md:mt-0 md:ml-auto">
               {identity.social.map((s) => (
                 <li key={s.name}>
                   <a
@@ -158,52 +159,44 @@ export default async function HomePage({
               ))}
             </ul>
           </nav>
+          </div>
         </section>
 
-        {/* ── Proyectos ──────────────────────────────────────── */}
         <section
           aria-labelledby={`${sectionIds.work}-h`}
-          className={`mx-auto max-w-(--container-page) px-5 sm:px-9 xl:px-10 ${sectionGap} scroll-mt-6`}
+          className={`${container} ${sectionGap} scroll-mt-6`}
           id={sectionIds.work}
         >
           <SectionHeading id={`${sectionIds.work}-h`} label={ui.headings.work} index="01" />
 
-          {/* Notable Learning — destacada: la card ES el article (borde, regla
-              y raíz de a11y viven en él). Grid 7/5 en xl, apilada antes. */}
           <Card
             as="article"
             data-level="destacado"
-            className="mt-step-32 grid grid-safe gap-x-step-48 gap-y-step-32 px-step-32 pb-step-32 pt-step-32 xl:grid-cols-[7fr_5fr]"
+            className="mt-step-32 grid grid-safe gap-x-step-48 gap-y-step-32 xl:grid-cols-[7fr_5fr]"
           >
-            <div className="min-w-0">
-              <h3 className="text-h3-featured font-semibold">{anchorProject.name}</h3>
-              <p className="mt-step-8 font-mono text-metadata uppercase text-muted">{anchorProject.meta}</p>
-              <p className="mt-step-16 max-w-[62ch] text-body-small">{anchorProject.summary}</p>
+            <div className="min-w-0 pt-step-16">
+              <p className="font-mono text-metadata uppercase text-muted">{anchorProject.meta}</p>
+              <h3 className="mt-step-8 text-h3-featured font-semibold">{anchorProject.name}</h3>
+              <p className="mt-step-16 max-w-[62ch] text-body">{anchorProject.summary}</p>
               {anchorProject.decision ? (
-                <p className="mt-step-16 max-w-[62ch] text-body-small">{anchorProject.decision}</p>
+                <p className="mt-step-16 max-w-[62ch] text-body">{anchorProject.decision}</p>
               ) : null}
-              <MetricList layout="row" items={anchorProject.proofs} className="mt-step-32" />
-              <TagList items={anchorProject.stack} className="mt-step-32" />
+              <hr className="mt-step-32 border-rule" />
+              <MetricList layout="row" items={anchorProject.proofs} className="mt-step-24" />
+              <TagList items={anchorProject.stack} className="mt-step-24" />
               {!anchorProject.link.external && (
                 <Link
                   href={anchorProject.link.href}
                   aria-label={linkName(anchorProject.link.label, anchorProject.name)}
-                  className={`${buttonLinkClass("tertiary")} mt-step-32`}
+                  className={`${buttonLinkClass("tertiary")} mt-step-24`}
                 >
                   {anchorProject.link.label}
                 </Link>
               )}
             </div>
-            {/* xl: ocupa la columna 5/12; <430: SchemaFigure conmuta sola al
-                vertical por CSS (max-[430px]). */}
-            <div className="min-w-0">
-              <SchemaFigure id="schema-home" {...schemaFigure} />
-              <SchemaFigureVertical id="schema-home" {...schemaFigure} />
-            </div>
+            <SchemaFigure id="schema-home" className="pt-step-16" {...schemaFigure} />
           </Card>
 
-          {/* Cleo Spa — destacada secundaria: grid 6/6, captura a la derecha
-              desde xl, debajo a ancho completo antes. */}
           <Card
             as="article"
             data-level="destacado-secundario"
@@ -234,8 +227,6 @@ export default async function HomePage({
             ) : null}
           </Card>
 
-          {/* Menores: fila de tres desde xl, dos columnas 768–1024, una en
-              móvil. projsync sin captura, card `rule`; las otras `surface`. */}
           <ul className="mt-step-32 grid grid-safe grid-cols-1 gap-step-24 sm:grid-cols-2 xl:grid-cols-3">
             {minorProjects.map((p) => (
               <li key={p.slug} className="min-w-0">
@@ -291,122 +282,145 @@ export default async function HomePage({
           </ul>
         </section>
 
-        {/* ── IA ─────────────────────────────────────────────── */}
         <section
           aria-labelledby={`${sectionIds.method}-h`}
           className={`${container} ${sectionGap} scroll-mt-6`}
           id={sectionIds.method}
         >
-          <SectionHeading id={`${sectionIds.method}-h`} label={ui.headings.method} index="02" />
-          <div className="max-w-[65ch] space-y-5 text-body leading-[1.75]">
-            <p>
-              <strong className="font-medium">{aiWorkflow.intro.lead}</strong>{" "}
-              {aiWorkflow.intro.rest}
-            </p>
-            <p>{aiWorkflow.highlight}</p>
-            <p>{aiWorkflow.honestyIntro}</p>
+          <SectionHeading
+            id={`${sectionIds.method}-h`}
+            label={ui.headings.method}
+            kicker={ui.nav.method}
+            index="02"
+            lead={aiWorkflow.lead}
+          />
+
+          <div className="grid grid-safe gap-x-step-48 gap-y-step-24 border-t border-rule pt-step-48 lg:grid-cols-[288px_1fr]">
+            <p className="font-mono text-metadata uppercase text-muted">{aiWorkflow.kicker}</p>
+            <div className="min-w-0">
+              <div className="max-w-[66ch] space-y-step-24 text-body">
+                <p>
+                  <strong className="font-medium">{aiWorkflow.intro.lead}</strong>{" "}
+                  {aiWorkflow.intro.rest}
+                </p>
+                <p>{aiWorkflow.highlight}</p>
+                <p>{aiWorkflow.honestyIntro}</p>
+              </div>
+
+              <blockquote className="mt-step-32 max-w-[60ch] border-l border-text pl-step-32">
+                <p className="text-h3-featured font-normal">{aiWorkflow.honestyQuote}</p>
+              </blockquote>
+
+              {/* En HTML y no con PipelineFigure: aquí el texto es texto. */}
+              <figure className="mt-step-48">
+                <ol aria-label={ui.pipelineKicker} className="flex flex-col md:flex-row md:items-stretch">
+                  {aiWorkflow.pipeline.map((step, i) => {
+                    const last = i === aiWorkflow.pipeline.length - 1;
+                    return (
+                      <li key={step} className="flex min-w-0 flex-col md:flex-auto md:flex-row">
+                        {i > 0 && (
+                          <span aria-hidden="true" className="flex flex-none items-center justify-center self-center md:w-step-16">
+                            <svg
+                              width="24"
+                              height="24"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              className="rotate-90 md:rotate-0"
+                            >
+                              <path d="M0 12h23M18 7l5 5-5 5" />
+                            </svg>
+                          </span>
+                        )}
+                        <span
+                          className={`flex min-w-0 items-center px-step-12 py-step-12 font-mono text-metadata uppercase md:flex-auto md:justify-center md:text-center ${
+                            last
+                              ? "border-[1.25px] border-primary bg-accent-muted text-primary"
+                              : "border-[1.25px] border-text bg-surface"
+                          }`}
+                        >
+                          {step}
+                        </span>
+                      </li>
+                    );
+                  })}
+                </ol>
+                <figcaption className="mt-step-16 text-caption text-muted">{aiWorkflow.pipelineNote}</figcaption>
+              </figure>
+            </div>
           </div>
 
-          {/* La pull quote sigue siendo el segundo momento tipográfico del
-              sitio, pero ya no invierte a papel sobre tinta: el sistema es
-              light-only y la elevación se construye con surface + borde, sin
-              sombra ni bloque oscuro. La regla de acento marca el arranque. */}
-          <div className="mt-10 rounded-md border border-rule bg-surface px-6 py-8 sm:mt-12 sm:px-10 sm:py-10">
-            <blockquote className="max-w-[36rem]">
-              <span aria-hidden="true" className="mb-5 block h-0.5 w-9 bg-primary" />
-              <p className="display-md text-display-md font-medium leading-[1.45]">
-                {aiWorkflow.honestyQuote}
-              </p>
-            </blockquote>
-          </div>
-
-          <div className="mt-10 sm:mt-12">
-            <p className="mb-3.5 font-mono text-micro tracking-[0.04em] text-muted">
-              {ui.pipelineKicker}
-            </p>
-            <p className="flex flex-wrap items-center gap-x-2.5 gap-y-2 font-mono text-micro">
-              {aiWorkflow.pipeline.map((step, i) => (
-                <span key={step} className="contents">
-                  {i > 0 && (
-                    <span aria-hidden="true" className="text-primary">
-                      →
-                    </span>
-                  )}
-                  <span
-                    className={
-                      i === aiWorkflow.pipeline.length - 1
-                        ? "border border-primary px-2.5 py-1.5 text-primary"
-                        : "border border-rule px-2.5 py-1.5"
-                    }
-                  >
-                    {step}
+          <div className="mt-step-48 grid grid-safe gap-x-step-48 gap-y-step-24 border-t border-rule pt-step-48 lg:grid-cols-[288px_1fr]">
+            <p className="font-mono text-metadata uppercase text-muted">{aiWorkflow.quality.kicker}</p>
+            <ol className="min-w-0 space-y-step-16">
+              {aiWorkflow.quality.items.map((item, i) => (
+                <li key={item} className="grid grid-cols-[48px_1fr] gap-x-step-8 text-body">
+                  <span aria-hidden="true" className="font-mono text-numeral-list font-medium leading-[1.65] text-primary">
+                    {String(i + 1).padStart(2, "0")}
                   </span>
-                </span>
+                  <span className="max-w-[66ch]">{item}</span>
+                </li>
               ))}
-            </p>
-            <p className="mt-3.5 max-w-[58ch] text-small leading-[1.6] text-muted">
-              {aiWorkflow.pipelineNote}
-            </p>
+            </ol>
           </div>
         </section>
 
-        {/* ── Experiencia ────────────────────────────────────── */}
         <section
           aria-labelledby={`${sectionIds.experience}-h`}
           className={`${container} ${sectionGap} scroll-mt-6`}
           id={sectionIds.experience}
         >
-          <SectionHeading id={`${sectionIds.experience}-h`} label={ui.headings.experience} index="03" />
-          <ol>
-            {experience.map((job, i) => (
-              <li
-                key={job.company}
-                className={`grid gap-1 border-rule py-7 sm:grid-cols-[10.5rem_1fr] sm:gap-6 ${i > 0 ? "border-t" : ""}`}
-              >
-                <p className="font-mono text-micro leading-[1.7] text-muted">{job.period}</p>
-                <div>
-                  <h3 className="text-title font-semibold">
-                    {job.company} <span className="font-normal text-muted">— {job.role}</span>
+          <SectionHeading
+            id={`${sectionIds.experience}-h`}
+            label={ui.headings.experience}
+            kicker={ui.headings.experienceKicker}
+            index="03"
+          />
+
+          {/* Sin accordion por puesto: ese contenido (contexto, alcance,
+              resultado, tecnologías) no existe aún. */}
+          <div className="grid grid-safe gap-x-step-48 gap-y-step-48 xl:grid-cols-[8fr_4fr]">
+            <ol className="min-w-0 md:border-l md:border-text">
+              {experience.map((job) => (
+                <li
+                  key={job.company}
+                  className="border-t border-rule py-10 last:pb-0 md:ml-step-32 md:first:border-t-0 md:first:pt-0"
+                >
+                  <p className="relative font-mono text-metadata uppercase text-muted md:before:absolute md:before:top-1/2 md:before:-left-[36px] md:before:size-[7px] md:before:-translate-y-1/2 md:before:rounded-full md:before:bg-text">
+                    {job.period}&nbsp;·&nbsp;{job.location}
+                  </p>
+                  <h3 className="mt-step-8 text-h3 font-semibold">
+                    {job.company} — {job.role}
                   </h3>
-                  <p className="mt-0.5 font-mono text-micro text-muted">{job.location}</p>
-                  {job.lines.map((line) => (
-                    <p key={line} className="mt-2 max-w-[56ch] text-small">
+                  {job.lines.map((line, i) => (
+                    <p key={line} className={`mt-step-16 max-w-[66ch] ${i === 0 ? "text-lead" : "text-body"}`}>
                       {line}
                     </p>
                   ))}
-                </div>
-              </li>
-            ))}
-          </ol>
+                </li>
+              ))}
+            </ol>
+
+            <div id={sectionIds.stack} className="min-w-0 self-start border-t border-rule pt-10 scroll-mt-6">
+              <h3 className="font-mono text-metadata uppercase text-muted">{ui.headings.stack}</h3>
+              <dl className="mt-step-24 space-y-step-24">
+                {[stack.primary, stack.solid, stack.growing].map((group) => (
+                  <div key={group.label}>
+                    <dt className="font-mono text-metadata uppercase text-muted">{group.label}</dt>
+                    <dd className="mt-step-8 font-mono text-body-small">{group.items.join(" · ")}</dd>
+                  </div>
+                ))}
+              </dl>
+            </div>
+          </div>
         </section>
 
-        {/* ── Stack ──────────────────────────────────────────── */}
-        <section
-          aria-labelledby={`${sectionIds.stack}-h`}
-          className={`${container} ${sectionGap} scroll-mt-6`}
-          id={sectionIds.stack}
-        >
-          <SectionHeading id={`${sectionIds.stack}-h`} label={ui.headings.stack} index="04" />
-          <dl>
-            {[stack.primary, stack.solid, stack.growing].map((group, i) => (
-              <div
-                key={group.label}
-                className={`grid gap-1 border-rule py-5 sm:grid-cols-[10.5rem_1fr] sm:gap-6 ${i > 0 ? "border-t" : ""}`}
-              >
-                <dt className="font-mono text-micro leading-[1.7] text-muted">{group.label}</dt>
-                <dd className="font-mono text-small leading-[1.9]">{group.items.join(" · ")}</dd>
-              </div>
-            ))}
-          </dl>
-        </section>
-
-        {/* ── Contacto ───────────────────────────────────────── */}
         <section
           aria-labelledby={`${sectionIds.contact}-h`}
           className={`${container} ${sectionGap} scroll-mt-6 pb-20 sm:pb-24`}
           id={sectionIds.contact}
         >
-          <SectionHeading id={`${sectionIds.contact}-h`} label={ui.headings.contact} index="05" />
+          <SectionHeading id={`${sectionIds.contact}-h`} label={ui.headings.contact} index="04" />
           <p className="mb-7 max-w-[55ch] text-body">
             {ui.contact}
           </p>

@@ -16,17 +16,13 @@
     U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
-/* Design System georgepuma.dev v1 — dirección C2, "Cuaderno técnico".
-   Fuente de verdad: docs/design/design-system.md. Sistema light-only: no hay
-   modo oscuro, ni light-dark(), ni variante dark:.
+/* Sistema light-only: no hay modo oscuro, ni light-dark(), ni variante dark:.
 
    @theme inline (no @theme a secas) porque los alias de uso referencian otros
    tokens con var(); en un @theme normal el valor no se resuelve en el punto de
    declaración. */
 @theme inline {
-  /* ── 1. Color ────────────────────────────────────────────────
-     Nombres canónicos según la sección 1 de la spec. Los ratios se verifican
-     por par en tests/contrast.spec.ts. */
+  /* Color. Los ratios de contraste se verifican por par en tests/contrast.spec.ts. */
   --color-bg: #f6f6f4;
   --color-surface: #ffffff;
   --color-surface-muted: #edeeea;
@@ -44,22 +40,19 @@
   --color-info: var(--color-primary);
   --color-focus: #1b3a5c;
 
-  /* Alias de uso: mismo color, clase legible. Evitan text-text y
-     border-border sin duplicar el hex ni perder el nombre de la spec. */
+  /* Alias de uso: evitan text-text y border-border sin duplicar el hex. */
   --color-ink: var(--color-text);
   --color-muted: var(--color-text-secondary);
   --color-rule: var(--color-border);
 
-  /* ── 2. Tipografía ───────────────────────────────────────────
-     Tres familias. Hanken Grotesk solo para h1/h2 (display). */
+  /* Tipografía. Hanken Grotesk solo para h1/h2. */
   --font-display: "Hanken Grotesk Variable", system-ui, sans-serif;
   --font-sans: "Inter Variable", system-ui, sans-serif;
   --font-mono: "JetBrains Mono Variable", ui-monospace, monospace;
 
   /* --text-*: initial cierra el contrato: si un tamaño no está aquí, no
      existe en el sitio. Los valores móviles van en media queries más abajo,
-     no en clamp(): la spec fija números exactos por rango y prohíbe unidades
-     vw en el h1. */
+     no en clamp(): son números exactos por rango, sin unidades vw. */
   --text-*: initial;
 
   --text-h1: 2.875rem; /* 46px */
@@ -104,8 +97,7 @@
   --text-footnote: 0.8125rem; /* 13px */
   --text-footnote--line-height: 1.5;
 
-  /* Numeral mono en tres tamaños: hero 20, fila 17, lista 15. La spec no da
-     line-height para el de lista; se usa el de fila. */
+  /* Numeral mono en tres tamaños: hero 20, fila 17, lista 15. */
   --text-numeral: 1.25rem; /* 20px */
   --text-numeral--line-height: 1.3;
   --text-numeral-row: 1.0625rem; /* 17px */
@@ -113,12 +105,10 @@
   --text-numeral-list: 0.9375rem; /* 15px */
   --text-numeral-list--line-height: 1.4;
 
-  /* Alias en retirada. Las secciones que aún no se han reescrito (hero, nav,
-     casos) usan la escala vieja y esta fase no puede reestructurarlas. Sin
+  /* Alias en retirada: las páginas de caso aún usan la escala vieja. Sin
      estos alias la clase desaparece en silencio y el texto cae al tamaño
-     heredado sin fallar el build. Cada fase que reescriba una sección retira
-     su uso; cuando grep -rE "text-(micro|small|title|display)" src/ salga
-     vacío, este bloque se borra.
+     heredado sin fallar el build. Cuando grep -rE "text-(micro|small|title|display)"
+     src/ salga vacío, este bloque se borra.
        micro -> metadata (12.5)   small -> body-small (15)
        title -> body (17)         display-md -> h3-featured (22)
        display -> h1 (46) */
@@ -135,14 +125,11 @@
   --text-display--line-height: 1.1;
   --text-display--letter-spacing: -0.015em;
 
-  /* ── 3. Layout, spacing, radios ──────────────────────────────
-     Escala cerrada de la spec con nombre propio (step-*). No se cierra el
-     namespace con --spacing-*: initial porque las secciones existentes usan
-     la escala por defecto (px-5, gap-x-5, mt-7...) y cerrarlo no falla el
-     build: Tailwind descarta la clase en silencio y el espaciado se pierde.
-     Las primitivas nuevas usan solo step-*; cuando ninguna sección use la
-     escala por defecto, se añade --spacing-*: initial y el contrato queda
-     cerrado de verdad. */
+  /* Spacing con nombre propio (step-*). No se cierra el namespace con
+     --spacing-*: initial porque las páginas de caso usan la escala por defecto
+     (px-5, gap-x-5, mt-7...) y cerrarlo no falla el build: Tailwind descarta
+     la clase en silencio y el espaciado se pierde. Cuando nada use la escala
+     por defecto, se añade --spacing-*: initial. */
   --spacing-step-4: 0.25rem;
   --spacing-step-8: 0.5rem;
   --spacing-step-12: 0.75rem;
@@ -160,11 +147,10 @@
   --container-page: 1200px;
 }
 
-/* ── Motion ────────────────────────────────────────────────────
-   Los cuatro tokens de la sección 3 valen 0s por defecto y solo toman su
-   valor real bajo no-preference: las utilidades motion-* que los consumen
-   quedan instantáneas en reduce sin duplicar reglas. --motion-accordion
-   espera al accordion (sección 5.15), que es de una fase posterior. */
+/* Motion: los tokens valen 0s por defecto y solo toman su valor real bajo
+   no-preference, así las utilidades motion-* quedan instantáneas en reduce
+   sin duplicar reglas. --motion-accordion espera al accordion, que aún no
+   existe. */
 :root {
   --motion-link: 0s;
   --motion-card: 0s;
@@ -200,9 +186,8 @@ body {
   color: var(--color-text);
 }
 
-/* ── Foco ──────────────────────────────────────────────────────
-   Siempre outline de 2 px con offset 2 px, nunca solo cambio de color:
-   es el único indicador que no se confunde con el hover. */
+/* Foco: siempre outline, nunca solo cambio de color. Es el único indicador
+   que no se confunde con el hover. */
 :focus-visible {
   outline: 2px solid var(--color-focus);
   outline-offset: 2px;
@@ -214,8 +199,7 @@ body {
   color: var(--color-text);
 }
 
-/* ── 4. Regla de no ruptura tipográfica ────────────────────────
-   nowrap solo en tres tokens: flecha+palabra, GMT-5 y fechas. Ningún
+/* nowrap solo en tres tokens: flecha+palabra, GMT-5 y fechas. Ningún
    contenedor de meta, tag, numeral o métrica lo lleva. */
 @utility nowrap-token {
   white-space: nowrap;
@@ -228,13 +212,12 @@ body {
   overflow-wrap: anywhere;
 }
 
-/* Todo contenedor de grid lleva min-width: 0 (sección 4). */
+/* Todo contenedor de grid lleva min-width: 0. */
 @utility grid-safe {
   min-width: 0;
 }
 
-/* ── Familia display ───────────────────────────────────────────
-   .display / .display-md existen porque el markup actual las usa. Antes
+/* .display / .display-md existen porque las páginas de caso las usan. Antes
    fijaban el eje wdth de Archivo; Hanken Grotesk no tiene ese eje, así que
    ahora solo seleccionan la familia display. Se retiran con los alias. */
 .display,
@@ -242,9 +225,8 @@ body {
   font-family: var(--font-display);
 }
 
-/* ── Tamaños móviles ───────────────────────────────────────────
-   La spec fija tamaños por rango, no con vw. Solo h1, h2, h3-featured, h3 y
-   lead cambian. Los alias en retirada se mueven con su equivalente. */
+/* Tamaños móviles por rango, no con vw. Solo h1, h2, h3-featured, h3 y lead
+   cambian. Los alias en retirada se mueven con su equivalente. */
 @media (max-width: 767px) {
   .text-h1,
   .text-display {

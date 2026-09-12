@@ -1,16 +1,17 @@
 import { expect, test } from "@playwright/test";
 
 /**
- * Matriz de pares del sistema de color (sección 1 de la spec). Los tokens se
- * leen resueltos en runtime con una sonda y el ratio WCAG se calcula aquí, así
- * que el test verifica el color que el navegador pinta de verdad, no el hex
- * escrito en el CSS.
+ * Matriz de pares del sistema de color. Los tokens se leen resueltos en
+ * runtime con una sonda y el ratio WCAG se calcula aquí, así que el test
+ * verifica el color que el navegador pinta de verdad, no el hex escrito en el
+ * CSS.
  *
- * El mínimo de cada par es el ratio que la propia spec declara, con un margen
- * de una centésima: si alguien retoca un hex "un poco", el par deja de cumplir
+ * El mínimo de cada par es el ratio documentado en /sistema, con un margen de
+ * una centésima: si alguien retoca un hex "un poco", el par deja de cumplir
  * su promesa documentada y no solo el umbral genérico de AA.
  *
- * El margen existe porque la spec redondea a dos decimales y el cálculo real no:
+ * El margen existe porque los ratios documentados van a dos decimales y el
+ * cálculo real no:
  * success/bg da 6.0078 y la tabla dice 6.01, blanco/primary da 11.6256 y la
  * tabla dice 11.63. Comparar contra el valor impreso fallaría por redondeo, no
  * por contraste.
@@ -25,7 +26,7 @@ type Pair = {
 
 // El array es data a propósito: los pares nuevos del sistema se añaden aquí.
 const pairs: Pair[] = [
-  // Pares documentados en la sección 1 con su ratio declarado.
+  // Pares documentados con su ratio declarado.
   { fg: "--color-text", bg: "--color-bg", min: 16.39 },
   { fg: "--color-text-secondary", bg: "--color-bg", min: 6.25 },
   { fg: "--color-primary", bg: "--color-bg", min: 10.74 },
@@ -37,8 +38,8 @@ const pairs: Pair[] = [
   // Blanco sobre primary y primary-hover: el texto del botón primario.
   { fg: "--color-surface", bg: "--color-primary", min: 11.63 },
   { fg: "--color-surface", bg: "--color-primary-hover", min: 7.13 },
-  // Pares que la spec no tabula pero que las primitivas necesitan: texto
-  // sobre las dos superficies (cards y bloques de código).
+  // Pares sin ratio documentado que las primitivas necesitan: texto sobre
+  // las dos superficies (cards y bloques de código).
   { fg: "--color-text", bg: "--color-surface", min: 4.5 },
   { fg: "--color-text", bg: "--color-surface-muted", min: 4.5 },
   { fg: "--color-text-secondary", bg: "--color-surface", min: 4.5 },

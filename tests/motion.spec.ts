@@ -2,7 +2,7 @@ import { expect, test } from "@playwright/test";
 
 /**
  * Toda transición del sistema vive dentro de prefers-reduced-motion:
- * no-preference (sección 3 de la spec). Los tokens --motion-* valen 0s bajo
+ * no-preference. Los tokens --motion-* valen 0s bajo
  * reduce, y las primitivas los consumen vía las utilidades motion-*.
  *
  * Se afirma en las dos direcciones. Bajo reduce, ningún interactivo de la

@@ -18,7 +18,6 @@ export type MiniCase = {
   /** Clave de pathnames de esta página; la usan LocaleSwitcher y el sitemap. */
   route: InternalRoute;
   kicker: string;
-  /** Segmentos de la ruta tal y como se muestran en la cabecera. */
   pathSegments: [string, string];
   lead: string;
   /** Ficha TL;DR. El resultado lo afirman las fichas de evidencia del proyecto. */
@@ -29,7 +28,6 @@ export type MiniCase = {
     id: string;
     heading: string;
     body: string;
-    /** Enlace al producto en vivo: sale de la tarjeta del grid y aterriza aquí. */
     liveHref: string;
     liveLabel: string;
     /**

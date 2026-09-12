@@ -1,11 +1,10 @@
 import { defineRouting } from "next-intl/routing";
 
 /**
- * El contenido inglés todavía no existe: los *.en.* re-exportan el español
- * salvo las descripciones de metadatos. Mientras sea false, /en se sirve pero
- * no se indexa; ponerlo en true es todo lo que hace falta para abrirlo.
+ * Con false, /en se sirve pero no se indexa: lang, hreflang, sitemap y robots
+ * dependen de esto.
  */
-export const enContentReady = false;
+export const enContentReady = true;
 
 export const routing = defineRouting({
   locales: ["es", "en"],

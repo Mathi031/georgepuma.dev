@@ -1,5 +1,5 @@
 type PipelineFigureProps = {
-  /** Prefijo de ids aria: la figura podría repetirse en una misma página. */
+  /** Prefijo de los ids de title/desc. */
   id: string;
   title: string;
   desc: string;
@@ -9,11 +9,8 @@ type PipelineFigureProps = {
 };
 
 /**
- * Figura del pipeline de diagnóstico (la "guerra" del caso): capas apiladas
- * que se destapan en orden y desembocan en la resolución, en primary — la voz
- * de lo verificado. Misma filosofía que SchemaFigure: SVG inline a mano con
- * los tokens del sitio, title/desc accesibles, sin motion, y viewBox angosto
- * (360) para que el texto nunca baje del paso micro en mobile.
+ * SVG inline con los tokens del sitio, como SchemaFigure. ViewBox angosto (360)
+ * para que el texto no baje de 12 px en móvil.
  */
 export function PipelineFigure({
   id,

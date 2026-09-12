@@ -11,8 +11,7 @@
  * @fontsource-variable/archivo (wawoff2 + fontkit getVariation, one-off fuera
  * del repo — Chromium no exporta contornos), y Archivo ya no es una dependencia
  * del proyecto. Redibujar la "G" en Hanken Grotesk exige repetir ese proceso
- * manual, que queda fuera de la fase fundacional: hasta entonces el favicon
- * lleva la letra vieja con la paleta nueva.
+ * manual: hasta entonces el favicon lleva la letra vieja con la paleta nueva.
  *
  * Uso: pnpm icons
  */

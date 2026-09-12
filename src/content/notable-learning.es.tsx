@@ -16,7 +16,7 @@ type SectionText = { id: string; heading: string };
 type Item = { title: string; text: string };
 
 export type CaseStudy = {
-  /** Igual que MiniCase: el título se compone en la página, no aquí. */
+  /** El título se compone en la página con el nombre del proyecto. */
   meta: { description: string };
   kicker: string;
   pathSegments: [string, string];
@@ -33,7 +33,6 @@ export type CaseStudy = {
   war: SectionText & {
     intro: ReactNode;
     layers: (Item & { label: string })[];
-    /** Copy de la figura del pipeline (PipelineFigure); los pasos son las capas. */
     figure: { title: string; desc: string; resolution: string };
     after: ReactNode[];
   };

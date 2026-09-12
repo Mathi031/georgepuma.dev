@@ -1,9 +1,8 @@
 import { expect, test } from "@playwright/test";
 
 /**
- * El foco tiene que verse, y tiene que verse distinto del hover. La spec lo
- * fija en un outline de 2 px con offset 2 px sobre todos los interactivos
- * (secciones 5 y 7); el hover, en cambio, solo cambia color.
+ * El foco tiene que verse, y tiene que verse distinto del hover: outline de
+ * 2 px con offset 2 px sobre todos los interactivos; el hover solo cambia color.
  *
  * Este test recorre con Tab las primitivas de la página de referencia y afirma
  * que cada una pinta un outline real. No basta con leer la hoja de estilos: el

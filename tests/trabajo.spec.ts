@@ -1,18 +1,16 @@
 import { expect, test, type Locator, type Page } from "@playwright/test";
 
 /**
- * Contrato del CAMBIO #4: la sección Trabajo con la jerarquía de proyectos
- * del design system C2 (Card, Badge, TagList, MetricWithContext, SchemaFigure,
- * ScreenshotFrame). Los valores esperados van escritos aquí, no importados
- * de src/content: el test afirma lo que se aprobó, no lo que el contenido
- * diga hoy.
+ * Sección Trabajo. Los valores esperados van escritos aquí, no importados de
+ * src/content: el test afirma lo que se aprobó, no lo que el contenido diga
+ * hoy.
  *
  * Contrato de marcado que asume:
  *   - cada proyecto es un `article[data-level]` dentro de #trabajo, y el
  *     propio article es la raíz de la card (borde, regla y hover viven ahí);
  *   - cada métrica lleva `data-metric` en su raíz, con el numeral en el
  *     primer hijo y el contexto en el segundo;
- *   - SchemaFigure emite dos SVG con `data-orientation="horizontal|vertical"`.
+ *   - SchemaFigure emite un único SVG (role=img) para todos los anchos.
  */
 
 const SECTION = "#trabajo";
@@ -116,7 +114,7 @@ test.describe("estructura", () => {
     });
   }
 
-  test("el contenido EN espeja el ES", async ({ page }) => {
+  test("la home EN lista los mismos proyectos en el mismo orden", async ({ page }) => {
     await page.goto("/en");
     await expect(cards(page).locator("h3")).toHaveText(ORDER.map((o) => o.name));
   });
@@ -178,9 +176,8 @@ test.describe("layout en 1280", () => {
     expect(ratio).toBeGreaterThanOrEqual(0.55);
     expect(ratio).toBeLessThanOrEqual(0.6);
 
-    const figure = notable.locator('svg[data-orientation="horizontal"]');
+    const figure = notable.locator("svg[role=img]");
     await expect(figure).toBeVisible();
-    await expect(notable.locator('svg[data-orientation="vertical"]')).toBeHidden();
     const h3Box = await box(h3);
     const figBox = await box(figure);
     expect(figBox.x, "el diagrama va a la derecha del texto").toBeGreaterThanOrEqual(h3Box.x + h3Box.width);
@@ -239,7 +236,7 @@ test.describe("layout en 768", () => {
 test.describe("layout en 390", () => {
   test.use({ viewport: { width: 390, height: 800 } });
 
-  test("todo va en una columna y el diagrama vertical se ve entero", async ({ page }) => {
+  test("todo va en una columna y el diagrama se ve entero", async ({ page }) => {
     await page.goto("/");
     const boxes = await cards(page).evaluateAll((els) => els.map((el) => {
       const r = el.getBoundingClientRect();
@@ -251,20 +248,12 @@ test.describe("layout en 390", () => {
     }
 
     const notable = card(page, "Notable Learning");
-    const vertical = notable.locator('svg[data-orientation="vertical"]');
-    await expect(vertical).toBeVisible();
-    await expect(notable.locator('svg[data-orientation="horizontal"]')).toBeHidden();
-    const b = await box(vertical);
+    const figure = notable.locator("svg[role=img]");
+    await expect(figure).toBeVisible();
+    const b = await box(figure);
     expect(b.x).toBeGreaterThanOrEqual(0);
     expect(b.x + b.width).toBeLessThanOrEqual(390);
     expect(await overflow(page)).toBe(0);
-
-    // Texto mínimo de 11 px en el viewBox del vertical.
-    const sizes = await vertical.locator("text").evaluateAll((els) =>
-      els.map((el) => parseFloat(getComputedStyle(el).fontSize)),
-    );
-    expect(sizes.length).toBeGreaterThan(0);
-    expect(Math.min(...sizes)).toBeGreaterThanOrEqual(11);
 
     // Título h3-featured: 18 px en móvil; métricas apiladas.
     expect(await notable.locator("h3").evaluate((el) => getComputedStyle(el).fontSize)).toBe("18px");

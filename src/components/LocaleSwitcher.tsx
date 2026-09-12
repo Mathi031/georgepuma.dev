@@ -6,17 +6,15 @@ type Href = ComponentProps<typeof Link>["href"];
 
 type LocaleSwitcherProps = {
   locale: Locale;
-  /** Clave de pathnames de la página actual ("/", "/proyectos/notable-learning"). */
+  /** Clave de pathnames de la página actual, no la URL localizada. */
   href: Href;
-  /** aria-label localizado ("Idioma" / "Language"). */
   aria: string;
 };
 
 /**
- * Selector ES / EN (sección 5.6 de la spec). El activo no es un enlace:
- * navegar al idioma en el que ya estás no hace nada, así que es un <span> con
- * aria-current. Ambos llevan target de 44x44 porque en móvil es uno de los
- * controles más pequeños del header.
+ * El idioma activo no es un enlace: navegar al idioma en el que ya estás no
+ * hace nada, así que es un <span> con aria-current. Ambos llevan target de
+ * 44x44 porque en móvil es uno de los controles más pequeños del header.
  */
 export function LocaleSwitcher({ locale, href, aria }: LocaleSwitcherProps) {
   const item = (l: Locale) =>

@@ -3,10 +3,9 @@ import { join } from "node:path";
 import { expect, test, type Locator, type Page } from "@playwright/test";
 
 /**
- * Contrato del CAMBIO #3: header, nav, hero y footer según el design system
- * C2 (secciones 5.5, 5.6, 5.20 y 6 de la spec). Los valores esperados van
- * escritos aquí y no importados de src/content: el test afirma lo que el
- * autor aprobó, no lo que el contenido diga hoy.
+ * Header, nav, hero y footer. Los valores esperados van escritos aquí y no
+ * importados de src/content: el test afirma lo que se aprobó, no lo que el
+ * contenido diga hoy.
  */
 
 const MIN_TARGET = 44;
@@ -16,16 +15,15 @@ const NAV = {
   en: ["Work", "How I work", "Experience", "Contact"],
 };
 const NAV_HREFS = ["#trabajo", "#metodo", "#experiencia", "#contacto"];
-const BRAND_ARIA = { es: "George Puma — inicio", en: "George Puma — home" };
+const BRAND_ARIA = { es: "georgepuma.dev — inicio", en: "georgepuma.dev — home" };
 const BADGE = { es: "DISPONIBLE AHORA", en: "AVAILABLE NOW" };
 const HOME = { es: "/", en: "/en" };
 
-/** Los H2 no se traducen: el contenido EN espeja el ES hasta que exista traducción. */
+/** H2 de la home en español; la ruta /en se cubre por locale más abajo. */
 const HEADINGS: Record<string, string> = {
   trabajo: "Trabajo",
-  metodo: "Método",
+  metodo: "Cómo trabajo",
   experiencia: "Experiencia",
-  stack: "Stack",
   contacto: "Contacto",
 };
 
@@ -60,10 +58,10 @@ async function overflow(page: Page) {
 
 for (const locale of ["es", "en"] as const) {
   test.describe(`header en ${HOME[locale]}`, () => {
-    test("el brand es el nombre, enlaza a la home y lleva su aria-label", async ({ page }) => {
+    test("el brand es el dominio, enlaza a la home y lleva su aria-label", async ({ page }) => {
       await page.goto(HOME[locale]);
       const b = brand(page, locale);
-      await expect(b).toHaveText("George Puma");
+      await expect(b).toHaveText("georgepuma.dev");
       await expect(b).toHaveAttribute("href", HOME[locale]);
     });
 
@@ -173,10 +171,10 @@ test.describe("hero", () => {
     await expect(page.locator('main a[href="/cv-george-puma.pdf"]')).toHaveText("CV en PDF ↓");
   });
 
-  test("los iconos de GitHub y LinkedIn tienen nombre accesible y target 44x44", async ({ page }) => {
+  test("los iconos de GitHub, LinkedIn y Email tienen nombre accesible y target 44x44", async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 800 });
     await page.goto("/");
-    for (const name of ["GitHub", "LinkedIn"]) {
+    for (const name of ["GitHub", "LinkedIn", "Email"]) {
       const link = page.locator("main").getByRole("link", { name, exact: true });
       await expect(link).toHaveCount(1);
       await expectTarget(link, name);

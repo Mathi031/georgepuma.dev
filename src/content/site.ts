@@ -23,10 +23,7 @@ export type InternalRoute = keyof typeof routing.pathnames;
 export type EvidenceItem = { value: string; source: string };
 
 export type ProjectImage = {
-  /**
-   * Fallback bajo public/, p. ej. "/screenshots/cleo-spa.webp". WebP y no
-   * PNG: lo entiende todo navegador que ejecute este sitio, y pesa la mitad.
-   */
+  /** Fallback WebP: lo entiende todo navegador y pesa la mitad que PNG. */
   src: string;
   /** AVIF del mismo render, preferido por <picture>. Lo emite `pnpm images`. */
   avif?: string;
@@ -49,30 +46,25 @@ export type ProjectLink =
   | { href: string; label: string; external: true }
   | { href: InternalRoute; label: string; external: false };
 
-/** Métrica con prueba (sección 5.12): numeral + línea de contexto obligatoria. */
 export type ProjectProof = { value: string; context: string };
 
 export type Project = {
   slug: string;
   name: string;
-  /** Jerarquía visual de la card en #trabajo (CAMBIO #4). */
   level: "destacado" | "destacado-secundario" | "menor";
-  /** Badge de estado (EN PRODUCCIÓN / DEMO / OPEN SOURCE). Sin badge = Notable. */
   badge?: string;
-  /** Línea de meta bajo el título: rol/cliente · contexto · fechas. Antes `role`. */
+  /** Rol/cliente · contexto · fechas. */
   meta: string;
   summary: string;
-  /** Frase de decisión técnica, solo en la card destacada (Notable). */
+  /** Solo en la card destacada. */
   decision?: string;
-  /** Pruebas de la card: numeral + contexto. Sustituye a `evidence` en #trabajo. */
   proofs: ProjectProof[];
   /** @deprecated conservado solo porque MiniCase y notable-learning lo leen. */
   evidence: EvidenceItem[];
   stack: string[];
   link: ProjectLink;
-  /** Captura curada del producto. Opcional: la card no reserva hueco sin ella. */
   image?: ProjectImage;
-  /** Recorte 16:10 para la card "menor" de #trabajo; si falta, se usa `image`. */
+  /** Recorte 16:10 para la card "menor"; si falta, se usa `image`. */
   crop?: ProjectImage;
 };
 
@@ -87,26 +79,25 @@ export type ExperienceItem = {
 const repo = "https://github.com/Mathi031/georgepuma.dev";
 const github = "https://github.com/Mathi031";
 const linkedin = "https://www.linkedin.com/in/mathi031/";
+const email = "george@georgepuma.dev";
 
 export const identity = {
   name: "George Puma",
   fullName: "George Miguel Puma Salcedo",
   title: "Full Stack Developer",
-  email: "george@georgepuma.dev",
+  email,
   github,
   repo,
-  /** URL de Actions del workflow de CI, para el enlace del footer. */
   ci: `${repo}/actions/workflows/ci.yml`,
   linkedin,
-  /** Enlaces de marca del hero (íconos GitHub/LinkedIn). Nombres no traducibles. */
+  /** Nombres no traducibles. */
   social: [
     { name: "GitHub", href: github },
     { name: "LinkedIn", href: linkedin },
+    { name: "Email", href: `mailto:${email}` },
   ] as const,
   cvUrl: "/cv-george-puma.pdf",
-  /** Dominio de producción. Base de metadataBase, canonical y JSON-LD. */
   url: "https://georgepuma.dev",
-  /** og:site_name y la firma del header. */
   siteName: "georgepuma.dev",
   /**
    * La ciudad que ya declara la línea meta del hero. Va como `homeLocation`

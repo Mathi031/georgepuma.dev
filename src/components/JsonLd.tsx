@@ -1,7 +1,5 @@
-/**
- * Datos estructurados con <script> nativo, no next/script: es datos, no código.
- * El escapado de `<` impide que una cadena del contenido cierre la etiqueta.
- */
+// <script> nativo y no next/script: es datos, no código. El escapado de `<`
+// impide que una cadena del contenido cierre la etiqueta.
 export function JsonLd({ data }: { data: object }) {
   return (
     <script

@@ -7,13 +7,11 @@ import { sectionIds } from "@/content/site";
 const NAV_IDS = [sectionIds.work, sectionIds.method, sectionIds.experience, sectionIds.contact];
 
 /**
- * Estado activo de la nav (sección 5.6 de la spec): sin scroll listeners,
- * un único IntersectionObserver decide qué ancla lleva aria-current. El
- * rootMargin desplaza la franja de detección a un tercio superior de la
- * ventana, que es donde el ojo suele estar leyendo la sección "actual".
- * Cuando ninguna sección cruza la franja (el hero, por ejemplo) no hay ítem
- * activo: el estado no se queda pegado a la última sección visitada.
- * Sin JavaScript no hay aria-current — degradación aceptada por el contrato.
+ * Un único IntersectionObserver decide qué ancla lleva aria-current, sin scroll
+ * listeners. El rootMargin desplaza la franja de detección al tercio superior
+ * de la ventana, donde el ojo suele estar leyendo. Si ninguna sección cruza la
+ * franja (el hero) no hay ítem activo: el estado no se queda pegado a la última
+ * sección visitada.
  */
 export function ActiveSection() {
   useEffect(() => {
