@@ -72,14 +72,14 @@ const SOURCES = [
   { in: "cleo-spa-usuarios.png", out: "cleo-spa-usuarios", target: "screen", region: { width: 1560 } },
   { in: "cleo-spa-catalogo.png", out: "cleo-spa-catalogo", target: "screen" },
 
-  // --- Pantallas internas de Ronatello (mini-caso) ---
+  // Pantallas internas de Ronatello (mini-caso).
   { in: "ronatello-catalogo.png", out: "ronatello-catalogo", target: "screen" },
   { in: "ronatello-dashboard.png", out: "ronatello-dashboard", target: "screen" },
   { in: "ronatello-editar-promocion.png", out: "ronatello-editar-promocion", target: "screen", region: { top: 0, height: 1600 } },
   { in: "ronatello-promociones.png", out: "ronatello-promociones", target: "screen" },
   { in: "ronatello-reservas.png", out: "ronatello-reservas", target: "screen" },
 
-  // --- Pantallas internas de Studio Equilibrio (mini-caso) ---
+  // Pantallas internas de Studio Equilibrio (mini-caso).
   { in: "studio-equilibrio-alertas.png", out: "studio-equilibrio-alertas", target: "screen" },
   { in: "studio-equilibrio-asistencia.png", out: "studio-equilibrio-asistencia", target: "screen" },
   { in: "studio-equilibrio-cobros.png", out: "studio-equilibrio-cobros", target: "screen", region: { top: 0, height: 1600 } },
@@ -93,6 +93,62 @@ const CODECS = [
   { format: "avif", start: 62, floor: 30 },
   { format: "webp", start: 82, floor: 45 },
 ];
+
+/**
+ * Recortes 16:10 para las cards "menor" (--crops, gateado aparte: no toca la
+ * lista SOURCES ni sus derivados existentes).
+ *
+ * `in2x`/`in1x` son los dos tamaños de salida (608×380 y 304×190). El
+ * origen se recorta a `region` (en px del archivo fuente) y se reescala a
+ * cada tamaño; sin upscale porque la región ya es ≥608 de ancho en ambos
+ * casos.
+ */
+const CROPS = [
+  // Origen ya 16:10 (1216×760): sin recorte, solo reescalado.
+  { in: "studio-equilibrio-home-16x10.png", out: "studio-equilibrio-16x10" },
+  // La portada viva (raw/ronatello-home-16x10.png) muestra hoy un estado
+  // vacío en móvil y no sirve; se recorta el WebP curado, anclado arriba-centro.
+  // Origen lossy de 768 de ancho: el @2x son sus 608 px reales sin reescalar,
+  // así que aporta el doble de píxeles que el 1x pero no la nitidez de un PNG.
+  // Recapturar desde raw/ cuando la portada vuelva a tener promociones.
+  {
+    in: "../public/screenshots/ronatello.webp",
+    out: "ronatello-16x10",
+    region: { left: 80, top: 0, width: 608, height: 380 },
+  },
+];
+
+async function runCrops() {
+  let failed = false;
+  for (const c of CROPS) {
+    const inputPath = join(rawDir, c.in);
+    if (!existsSync(inputPath)) {
+      console.error(`✗ falta ${inputPath}`);
+      failed = true;
+      continue;
+    }
+    const full = sharp(inputPath);
+    const meta = await full.metadata();
+    const region = c.region ?? { left: 0, top: 0, width: meta.width, height: meta.height };
+    const cropped = full.extract(region);
+
+    for (const [suffix, width] of [["@2x", 608], ["", 304]]) {
+      const height = Math.round(width / 1.6);
+      const resized = cropped.clone().resize(width, height, { fit: "cover" });
+      for (const codec of CODECS) {
+        const { buffer, quality, overBudget } = await encode(resized, codec);
+        writeFileSync(join(outDir, `${c.out}${suffix}.${codec.format}`), buffer);
+        if (overBudget) {
+          failed = true;
+          console.error(`✗ ${c.out}${suffix}.${codec.format}: ${kb(buffer.length)} incluso a q${quality}`);
+        } else {
+          console.log(`✓ public/screenshots/${c.out}${suffix}.${codec.format} — ${kb(buffer.length)} (q${quality}, ${width}×${height})`);
+        }
+      }
+    }
+  }
+  process.exit(failed ? 1 : 0);
+}
 
 /**
  * Baja la calidad hasta entrar en presupuesto. Descender desde un techo es
@@ -109,6 +165,18 @@ async function encode(pipeline, { format, start, floor }) {
 }
 
 const kb = (bytes) => `${(bytes / 1024).toFixed(1)} KB`;
+
+if (process.argv.includes("--crops")) {
+  if (!existsSync(rawDir)) {
+    console.error(`No existe ${rawDir}.`);
+    process.exit(1);
+  }
+  mkdirSync(outDir, { recursive: true });
+  await runCrops();
+  // runCrops ya llama a process.exit; esta línea es inalcanzable pero deja
+  // claro que --crops termina aquí sin caer al pipeline de SOURCES.
+  process.exit(0);
+}
 
 if (!existsSync(rawDir)) {
   console.error(`No existe ${rawDir}. Coloca ahí las capturas sin comprimir y vuelve a correr.`);

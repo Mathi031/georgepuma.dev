@@ -4,7 +4,7 @@ import { routing } from "./i18n/routing";
 
 const handleI18nRouting = createMiddleware(routing);
 
-export default function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const nonce = btoa(crypto.randomUUID());
   const csp = [
     "default-src 'self'",
@@ -38,5 +38,11 @@ export default function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: "/((?!api|_next|_vercel|.*\\..*).*)",
+  // /sistema (referencia visual interna, fuera de [locale]) queda fuera del
+  // routing de next-intl; si no, se trata como locale desconocido y da 404.
+  // Efecto colateral asumido: este proxy es el único que pone la CSP, así
+  // que /sistema se sirve sin ella (noindex, sin entradas de usuario ni scripts
+  // propios). Si aparecen más rutas fuera de [locale], mover la CSP a
+  // next.config.ts en vez de seguir excluyendo aquí.
+  matcher: "/((?!api|_next|_vercel|sistema|.*\\..*).*)",
 };

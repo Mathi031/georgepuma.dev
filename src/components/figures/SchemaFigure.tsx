@@ -1,167 +1,241 @@
 type DomainKey = "courses" | "video" | "users" | "institutions";
 
-type SchemaFigureProps = {
-  /** Prefijo de ids aria: la figura puede aparecer más de una vez por sitio. */
+type Labels = {
+  kicker: string;
+  schema: string;
+  rbac: string;
+  compliance: string;
+  domains: Record<DomainKey, string> & { files: string };
+  /** Segunda línea de cada nodo. Usuarios usa `rbac`. */
+  details: { courses: string; video: string; institutions: [string, string]; files: string };
+};
+
+type SchemaSvgProps = {
+  /** Prefijo de los ids de title/desc. */
   id: string;
   title: string;
   desc: string;
-  labels: {
-    schema: string;
-    rbac: string;
-    compliance: string;
-    /** Rótulos de dominio del grid — vienen del contenido, nunca hardcodeados. */
-    domains: Record<DomainKey, string> & { files: string };
-  };
+  labels: Labels;
   className?: string;
 };
 
-/** Cuadrantes de 3×2 entidades; archivos va aparte como fila inferior. */
-const QUADRANTS: { key: DomainKey; x: number; y: number }[] = [
-  { key: "courses", x: 38, y: 52 },
-  { key: "video", x: 186, y: 52 },
-  { key: "users", x: 38, y: 123 },
-  { key: "institutions", x: 186, y: 123 },
-];
-const QUAD_W = 136;
-const QUAD_H = 61;
+type SchemaFigureProps = SchemaSvgProps & {
+  caption: string;
+  /**
+   * Añade el SVG vertical y conmuta por CSS en 431 px (Tailwind compila
+   * `max-[431px]` como `width < 431px`, así que 430 ya va en vertical). Solo
+   * la home lo usa: la página del caso conserva el horizontal en todo ancho.
+   */
+  vertical?: boolean;
+};
+
+const NODE_H = 91;
+const NODE_GAP = 117;
+
+// Horizontal: cuatro nodos 2×2 dentro del contenedor y archivos fuera, debajo.
+const H_NODE_W = 190;
+const H_COL = [28, 262] as const;
+const H_ROW = [28, 145] as const;
+const H_FILES_Y = 308;
+
+// Vertical: una columna de cuatro nodos en un viewBox de 360, el ancho que a
+// 360 px de viewport (320 útiles) deja los 12,5 del viewBox en 11,1 px.
+const V_NODE_W = 312;
+const V_X = 24;
+const V_ROWS = [28, 145, 262, 379] as const;
+const V_FILES_Y = 542;
+
+const mono = { fontFamily: "var(--font-mono)", fontSize: 12.5 } as const;
 
 /**
- * Figura del sistema de Notable Learning: el esquema de 29 entidades y los
- * cinco roles de acceso, sin nombrar nada que no esté publicado (NDA). Las
- * entidades se agrupan por dominio con rótulos en micro-mono; los dominios
- * (cursos, video, usuarios, instituciones, archivos) son los que ya describe
- * el caso de estudio. SVG inline a mano para heredar los tokens del sitio
- * (currentColor y var(--color-*)) en ambos temas. Sin motion: es una figura,
- * no un adorno. El viewBox es angosto (360) a propósito: el texto interno
- * nunca baja del paso micro en mobile.
+ * Nodo de dominio. Los colores van por var(): estos atributos no pasan por
+ * Tailwind, así que un token borrado no falla el build, cae al valor inicial y
+ * el trazo se vuelve invisible. Lo cubre tests/tokens.spec.ts.
  */
-export function SchemaFigure({ id, title, desc, labels, className }: SchemaFigureProps) {
-  const roles = Array.from({ length: 5 }, (_, i) => 20 + i * 66);
-
-  // Celda-entidad: trazo en tinta para que el grid compita en presencia con
-  // las capturas reales; el relleno muted conserva el tono original.
-  const cell = (x: number, y: number, key: string) => (
-    <rect
-      key={key}
-      x={x}
-      y={y}
-      width="10"
-      height="10"
-      fill="var(--color-muted)"
-      fillOpacity="0.45"
-      stroke="currentColor"
-      strokeOpacity="0.8"
-    />
+function node(
+  key: string,
+  x: number,
+  y: number,
+  w: number,
+  label: string,
+  details: readonly string[],
+  highlight = false,
+) {
+  const ink = highlight ? "var(--color-primary)" : "currentColor";
+  const sub = highlight ? "var(--color-primary)" : "var(--color-text-secondary)";
+  return (
+    <g key={key}>
+      <rect
+        x={x + 0.5}
+        y={y + 0.5}
+        width={w}
+        height={NODE_H}
+        fill={highlight ? "var(--color-accent-muted)" : "var(--color-surface)"}
+        stroke={ink}
+        strokeWidth="1.25"
+      />
+      <text x={x + 24} y={y + 32} {...mono} fontWeight="500" letterSpacing="0.07em" fill={ink}>
+        {label.toUpperCase()}
+      </text>
+      {details.map((d, i) => (
+        <text key={d} x={x + 24} y={y + 54 + i * 19} {...mono} fill={sub}>
+          {d}
+        </text>
+      ))}
+    </g>
   );
+}
 
-  const domainLabel = (x: number, y: number, text: string) => (
-    <text
-      x={x}
-      y={y}
-      fontFamily="var(--font-mono)"
-      fontSize="8"
-      letterSpacing="0.08em"
-      fill="currentColor"
-    >
-      {text}
-    </text>
+/** Flecha vertical de y1 a y2 en x. */
+function arrow(x: number, y1: number, y2: number) {
+  return (
+    <g key={`a-${x}`} stroke="currentColor">
+      <line x1={x} y1={y1} x2={x} y2={y2} />
+      <path d={`M${x - 4} ${y2 - 6}l4 6 4-6`} />
+    </g>
   );
+}
+
+/** SVG horizontal: viewBox de 480, el de escritorio y de la página del caso. */
+export function SchemaSvg({ id, title, desc, labels, className }: SchemaSvgProps) {
+  const cx = (i: 0 | 1) => H_COL[i] + H_NODE_W / 2 + 0.5;
+  const cy = (i: 0 | 1) => H_ROW[i] + NODE_H / 2 + 0.5;
+  const nodesBottom = H_ROW[1] + NODE_H + 1;
 
   return (
     <svg
       role="img"
       aria-labelledby={`${id}-t`}
       aria-describedby={`${id}-d`}
-      viewBox="0 36 360 324"
+      viewBox="0 0 480 350"
       fill="none"
-      className={`h-auto w-full max-w-[360px] ${className ?? ""}`}
+      className={className}
     >
       <title id={`${id}-t`}>{title}</title>
       <desc id={`${id}-d`}>{desc}</desc>
 
-      {/* El esquema: 29 entidades sobre 30 posiciones (24 en cuadrantes + 5
-          en la fila de archivos; la que falta queda punteada), agrupadas por
-          dominio. La escala (500+ escuelas · 10 países) ya la afirma la ficha
-          de evidencia. */}
-      <rect x="28" y="42" width="304" height="200" stroke="var(--color-line)" />
-      {QUADRANTS.map((q) => (
-        <g key={q.key}>
-          <rect x={q.x} y={q.y} width={QUAD_W} height={QUAD_H} stroke="var(--color-muted)" />
-          {domainLabel(q.x + 12, q.y + 13, labels.domains[q.key])}
-          {Array.from({ length: 6 }, (_, i) =>
-            cell(q.x + 12 + (i % 3) * 51, q.y + 21 + Math.floor(i / 3) * 22, `${q.key}-${i}`),
-          )}
-        </g>
-      ))}
-      <g>
-        <rect x="38" y="194" width="284" height="39" stroke="var(--color-muted)" />
-        {domainLabel(50, 207, labels.domains.files)}
-        {Array.from({ length: 5 }, (_, i) => cell(50 + i * 50, 215, `files-${i}`))}
-        <rect
-          x={50 + 5 * 50}
-          y="215"
-          width="10"
-          height="10"
-          stroke="var(--color-copper)"
-          strokeDasharray="2 2"
-        />
+      <rect x="0.5" y="0.5" width="479" height="277" fill="var(--color-bg)" stroke="var(--color-border)" />
+
+      <g stroke="currentColor">
+        <line x1={H_COL[0] + H_NODE_W + 1} y1={cy(0)} x2={H_COL[1]} y2={cy(0)} />
+        <line x1={H_COL[0] + H_NODE_W + 1} y1={cy(1)} x2={H_COL[1]} y2={cy(1)} />
+        <line x1={cx(0)} y1={H_ROW[0] + NODE_H + 1} x2={cx(0)} y2={H_ROW[1]} />
+        <line x1={cx(1)} y1={H_ROW[0] + NODE_H + 1} x2={cx(1)} y2={H_ROW[1]} />
       </g>
-      <text
-        x="28"
-        y="262"
-        fontFamily="var(--font-mono)"
-        fontSize="12.5"
-        fontWeight="500"
-        fill="currentColor"
-      >
-        {labels.schema}
-      </text>
 
-      {/* Acceso: cinco roles, sin nombre (NDA). */}
-      {roles.map((x) => (
-        <line
-          key={`c-${x}`}
-          x1="180"
-          y1="242"
-          x2={x + 28}
-          y2="286"
-          stroke="var(--color-line)"
-        />
-      ))}
-      {roles.map((x) => (
-        <g key={`r-${x}`}>
-          <rect x={x} y="286" width="56" height="26" stroke="var(--color-muted)" />
-          <circle cx={x + 28} cy="296" r="3" stroke="var(--color-muted)" />
-          <path
-            d={`M${x + 21} 307a7 7 0 0 1 14 0`}
-            stroke="var(--color-muted)"
-          />
-        </g>
-      ))}
-      <text
-        x="20"
-        y="342"
-        fontFamily="var(--font-mono)"
-        fontSize="12.5"
-        fontWeight="500"
-        fill="currentColor"
-      >
-        {labels.rbac}
-      </text>
+      {node("courses", H_COL[0], H_ROW[0], H_NODE_W, labels.domains.courses, [labels.details.courses])}
+      {node("video", H_COL[1], H_ROW[0], H_NODE_W, labels.domains.video, [labels.details.video])}
+      {node("users", H_COL[0], H_ROW[1], H_NODE_W, labels.domains.users, [labels.rbac])}
+      {node("institutions", H_COL[1], H_ROW[1], H_NODE_W, labels.domains.institutions, labels.details.institutions, true)}
 
-      {/* Cumplimiento: FERPA con mini-corchetes de calibración. */}
+      {arrow(cx(0), nodesBottom, H_FILES_Y)}
+      {arrow(cx(1), nodesBottom, H_FILES_Y)}
+
+      <rect
+        x={H_COL[0] + 0.5}
+        y={H_FILES_Y + 0.5}
+        width={H_COL[1] + H_NODE_W - H_COL[0]}
+        height="40"
+        fill="var(--color-surface)"
+        stroke="currentColor"
+        strokeWidth="1.25"
+      />
+      <text x={H_COL[0] + 24} y={H_FILES_Y + 25} {...mono} fontWeight="500" letterSpacing="0.07em" fill="currentColor">
+        {labels.domains.files.toUpperCase()}
+      </text>
       <text
-        x="322"
-        y="342"
+        x={H_COL[1] + H_NODE_W - 24}
+        y={H_FILES_Y + 25}
         textAnchor="end"
-        fontFamily="var(--font-mono)"
-        fontSize="12.5"
-        fill="var(--color-muted)"
+        {...mono}
+        fill="var(--color-text-secondary)"
       >
-        {labels.compliance}
+        {labels.details.files}
       </text>
-      <path d="M270 328h-6v6" stroke="var(--color-copper)" />
-      <path d="M328 346h6v-6" stroke="var(--color-copper)" />
     </svg>
+  );
+}
+
+/**
+ * SVG vertical para móvil: misma información en una columna. Los ids llevan
+ * el sufijo `-v` porque convive en el DOM con el horizontal; el que está
+ * oculto por CSS (display: none) no entra en el árbol de accesibilidad.
+ */
+export function SchemaSvgVertical({ id, title, desc, labels, className }: SchemaSvgProps) {
+  const cx = V_X + V_NODE_W / 2 + 0.5;
+  const last = V_ROWS[V_ROWS.length - 1]!;
+  const nodesBottom = last + NODE_H + 1;
+
+  return (
+    <svg
+      role="img"
+      aria-labelledby={`${id}-v-t`}
+      aria-describedby={`${id}-v-d`}
+      viewBox="0 0 360 604"
+      fill="none"
+      className={className}
+    >
+      <title id={`${id}-v-t`}>{title}</title>
+      <desc id={`${id}-v-d`}>{desc}</desc>
+
+      {/* 27 y no 28: nodesBottom ya incluye el +1 del borde; el margen bajo el
+          último nodo queda en 28, el mismo que arriba. */}
+      <rect x="0.5" y="0.5" width="359" height={nodesBottom + 27} fill="var(--color-bg)" stroke="var(--color-border)" />
+
+      <g stroke="currentColor">
+        {V_ROWS.slice(0, -1).map((y) => (
+          <line key={y} x1={cx} y1={y + NODE_H + 1} x2={cx} y2={y + NODE_GAP} />
+        ))}
+      </g>
+
+      {node("courses", V_X, V_ROWS[0], V_NODE_W, labels.domains.courses, [labels.details.courses])}
+      {node("video", V_X, V_ROWS[1], V_NODE_W, labels.domains.video, [labels.details.video])}
+      {node("users", V_X, V_ROWS[2], V_NODE_W, labels.domains.users, [labels.rbac])}
+      {node("institutions", V_X, V_ROWS[3], V_NODE_W, labels.domains.institutions, labels.details.institutions, true)}
+
+      {arrow(cx, nodesBottom, V_FILES_Y)}
+
+      {/* Archivos en dos líneas: el detalle no cabe a la derecha del rótulo. */}
+      <rect
+        x={V_X + 0.5}
+        y={V_FILES_Y + 0.5}
+        width={V_NODE_W}
+        height="61"
+        fill="var(--color-surface)"
+        stroke="currentColor"
+        strokeWidth="1.25"
+      />
+      <text x={V_X + 24} y={V_FILES_Y + 25} {...mono} fontWeight="500" letterSpacing="0.07em" fill="currentColor">
+        {labels.domains.files.toUpperCase()}
+      </text>
+      <text x={V_X + 24} y={V_FILES_Y + 48} {...mono} fill="var(--color-text-secondary)">
+        {labels.details.files}
+      </text>
+    </svg>
+  );
+}
+
+/**
+ * Figura completa: fila de rótulos, SVG y pie. Con `vertical`, ambos SVG van
+ * al DOM y cada rama declara su display (trampa 1: `hidden` sin prefijo
+ * perdería contra un `block` de variante).
+ */
+export function SchemaFigure({ id, title, desc, labels, caption, className, vertical = false }: SchemaFigureProps) {
+  const svg = { id, title, desc, labels };
+  return (
+    <figure className={`min-w-0 ${className ?? ""}`}>
+      <p className="flex justify-between gap-step-16 font-mono text-metadata uppercase text-muted">
+        <span>
+          {labels.kicker}&nbsp;·&nbsp;{labels.schema}
+        </span>
+        <span>{labels.compliance}</span>
+      </p>
+      <SchemaSvg
+        {...svg}
+        className={`mt-step-8 h-auto w-full ${vertical ? "block max-[431px]:hidden" : "block"}`}
+      />
+      {vertical && <SchemaSvgVertical {...svg} className="mt-step-8 hidden h-auto w-full max-[431px]:block" />}
+      <figcaption className="mt-step-16 text-caption text-muted">{caption}</figcaption>
+    </figure>
   );
 }

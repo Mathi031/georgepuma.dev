@@ -13,11 +13,11 @@
 import type { InternalRoute, ProjectImage } from "./site";
 
 export type MiniCase = {
-  meta: { title: string; description: string };
+  /** El título se compone con el nombre del proyecto y `ui.meta.caseSuffix`. */
+  meta: { description: string };
   /** Clave de pathnames de esta página; la usan LocaleSwitcher y el sitemap. */
   route: InternalRoute;
   kicker: string;
-  /** Segmentos de la ruta tal y como se muestran en la cabecera. */
   pathSegments: [string, string];
   lead: string;
   /** Ficha TL;DR. El resultado lo afirman las fichas de evidencia del proyecto. */
@@ -28,10 +28,17 @@ export type MiniCase = {
     id: string;
     heading: string;
     body: string;
-    /** Enlace al producto en vivo: sale de la tarjeta del grid y aterriza aquí. */
+    /**
+     * Lo que queda por cerrar. Opcional: si el proyecto no lo declara, no se
+     * renderiza ni la etiqueta ni la regla que la separa del cuerpo.
+     */
+    pending?: string;
     liveHref: string;
     liveLabel: string;
-    backHref: string;
+    /**
+     * Sin href: lo construye el componente con Link, que pone el prefijo de
+     * locale. Uno literal aquí mandaba a la home española desde /en.
+     */
     backLabel: string;
   };
 };

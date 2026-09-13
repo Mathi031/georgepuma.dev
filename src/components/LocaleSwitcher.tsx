@@ -6,17 +6,23 @@ type Href = ComponentProps<typeof Link>["href"];
 
 type LocaleSwitcherProps = {
   locale: Locale;
-  /** Clave de pathnames de la página actual ("/", "/proyectos/notable-learning"). */
+  /** Clave de pathnames de la página actual, no la URL localizada. */
   href: Href;
-  /** aria-label localizado ("Idioma" / "Language"). */
   aria: string;
 };
 
-/** Selector ES / EN: texto plano, el locale activo en cobre. */
+/**
+ * El idioma activo no es un enlace: navegar al idioma en el que ya estás no
+ * hace nada, así que es un <span> con aria-current. Ambos llevan target de
+ * 44x44 porque en móvil es uno de los controles más pequeños del header.
+ */
 export function LocaleSwitcher({ locale, href, aria }: LocaleSwitcherProps) {
   const item = (l: Locale) =>
     l === locale ? (
-      <span aria-current="true" className="font-medium text-copper">
+      <span
+        aria-current="true"
+        className="inline-flex min-h-11 min-w-11 items-center justify-center font-medium text-ink"
+      >
         {l.toUpperCase()}
       </span>
     ) : (
@@ -24,16 +30,18 @@ export function LocaleSwitcher({ locale, href, aria }: LocaleSwitcherProps) {
         href={href}
         locale={l}
         hrefLang={l}
-        className="text-muted transition-colors hover:text-copper"
+        className="inline-flex min-h-11 min-w-11 items-center justify-center text-muted motion-link hover:text-primary"
       >
         {l.toUpperCase()}
       </Link>
     );
 
   return (
-    <nav aria-label={aria} className="font-mono text-micro">
+    <nav aria-label={aria} className="flex items-center font-mono text-label">
       {item("es")}
-      <span aria-hidden="true" className="text-muted"> / </span>
+      <span aria-hidden="true" className="text-muted">
+        /
+      </span>
       {item("en")}
     </nav>
   );

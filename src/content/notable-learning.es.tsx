@@ -5,15 +5,19 @@
  */
 
 import type { ReactNode } from "react";
-import Link from "next/link";
 import { FootnoteRef } from "@/components/FootnoteRef";
+// Link de next-intl y no el de next/link: pone el prefijo del locale, así que
+// desde la versión inglesa este enlace no lleva a la home española.
+import { Link } from "@/i18n/navigation";
 import type { EvidenceItem } from "./site";
+import { sectionIds } from "./site";
 
 type SectionText = { id: string; heading: string };
 type Item = { title: string; text: string };
 
 export type CaseStudy = {
-  meta: { title: string; description: string };
+  /** El título se compone en la página con el nombre del proyecto. */
+  meta: { description: string };
   kicker: string;
   pathSegments: [string, string];
   lead: ReactNode;
@@ -29,23 +33,20 @@ export type CaseStudy = {
   war: SectionText & {
     intro: ReactNode;
     layers: (Item & { label: string })[];
-    /** Copy de la figura del pipeline (PipelineFigure); los pasos son las capas. */
     figure: { title: string; desc: string; resolution: string };
     after: ReactNode[];
   };
   guards: SectionText & { body: ReactNode; quote: string };
   better: SectionText & { body: ReactNode };
-  close: SectionText & { body: ReactNode; backHref: string; backLabel: string };
+  /** Sin `backHref`: el destino lo construye la página con Link. Ver MiniCase. */
+  close: SectionText & { body: ReactNode; backLabel: string };
   notesLabel: string;
   backToRefAria: (n: number) => string;
   notes: string[];
 };
 
-// ponytail: los hrefs al home llevan el prefijo de locale hardcodeado por
-// archivo ("/#ia" aquí, "/en#ai" en el .en) — el contenido ya es por locale.
 export const caseStudy: CaseStudy = {
   meta: {
-    title: "Notable Learning — caso de estudio",
     description:
       "LMS K-12 para 500+ escuelas: un editor de contenido diseñado por sus modos de fallo y un bug de PDF de cuatro capas que terminó en un proxy de streaming.",
   },
@@ -260,13 +261,15 @@ export const caseStudy: CaseStudy = {
         El proyecto se entregó en fecha — 12 de junio — y el contrato concluyó con
         la entrega. De este proyecto también salió el revisor automatizado de PRs
         que construí sobre Claude Code:{" "}
-        <Link href="/#ia" className="text-ink underline decoration-line underline-offset-4 transition-colors hover:text-copper hover:decoration-copper">
+        <Link
+          href={{ pathname: "/", hash: sectionIds.method }}
+          className="text-ink underline decoration-rule underline-offset-4 transition-colors hover:text-primary hover:decoration-primary"
+        >
           la otra mitad de esta historia
         </Link>
         .
       </>
     ),
-    backHref: "/#proyectos",
     backLabel: "Ver todos los proyectos",
   },
   notesLabel: "notas",

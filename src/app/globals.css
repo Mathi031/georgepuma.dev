@@ -1,180 +1,285 @@
 @import "tailwindcss";
 
-@theme {
-  /* Paleta por token con light-dark(): cada hex se escribe una sola vez.
-     Sin override manda prefers-color-scheme (color-scheme: light dark en
-     :root). Ojo: el build (Lightning CSS) compila light-dark() a un polyfill
-     con var(--lightningcss-light/dark) — cubre navegadores sin soporte, pero
-     los tokens se resuelven en el elemento que los declara, no en el que los
-     usa. El cobre se aclara en oscuro: #9c4a21 no llega a 4.5:1 sobre fondo
-     oscuro. Los ratios AA se verifican con axe (tests/a11y.spec.ts) y por
-     par en la matriz de tests/contrast.spec.ts, ambos en los dos temas. */
-  --color-paper: light-dark(#f7f7f5, #1c1814);
-  --color-ink: light-dark(#16181d, #eceae6);
-  --color-muted: light-dark(#575c63, #a8a49d);
-  --color-line: light-dark(#e4e3df, #474135);
-  --color-copper: light-dark(#9c4a21, #d97b4a);
-  /* Superficie cobre: mix sRGB de copper sobre paper — 6% en claro, 10% en
-     oscuro, precalculado a hex fijo (determinista para tests y scripts).
-     Recalcular a mano si cambia copper o paper. */
-  --color-copper-surface: light-dark(#f2ede8, #2f2219);
+/* Hanken Grotesk e Inter se declaran aquí en vez de importar su CSS de
+   Fontsource: Turbopack renombra los .woff2 de node_modules con un hash, así
+   que su URL no cabe en un <link rel="preload">. Servidas desde /public la
+   ruta es estable. Se precargan las dos porque Hanken es la del H1 e Inter la
+   del lead, que es el elemento LCP en las tres rutas de referencia. Solo el
+   subset latino: el contenido es ES/EN y las flechas (U+2190-2197) no están en
+   ningún subset de estas fuentes, así que ya caían al sistema. Los binarios
+   salen de @fontsource-variable/*, que siguen en package.json como origen. */
+@font-face {
+  font-family: "Hanken Grotesk Variable";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  src: url("/fonts/hanken-grotesk-latin-wght-normal.woff2") format("woff2-variations");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304,
+    U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
 
-  --font-sans: "Archivo Variable", system-ui, sans-serif;
-  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+@font-face {
+  font-family: "Inter Variable";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  src: url("/fonts/inter-latin-wght-normal.woff2") format("woff2-variations");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304,
+    U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
 
-  /* Escala tipográfica: seis voces y nada por debajo de micro.
-     --text-*: initial borra la escala por defecto de Tailwind — el contrato
-     es cerrado: si un tamaño no está aquí, no existe en el sitio. */
+/* Sistema light-only: no hay modo oscuro, ni light-dark(), ni variante dark:.
+
+   @theme inline (no @theme a secas) porque los alias de uso referencian otros
+   tokens con var(); en un @theme normal el valor no se resuelve en el punto de
+   declaración. */
+@theme inline {
+  /* Color. Los ratios de contraste se verifican por par en tests/contrast.spec.ts. */
+  --color-bg: #f6f6f4;
+  --color-surface: #ffffff;
+  --color-surface-muted: #edeeea;
+  --color-border: #d9dad6;
+  --color-border-hover: #dedfda;
+  --color-rule-strong: #17181c;
+  --color-text: #17181c;
+  --color-text-secondary: #585b66;
+  --color-primary: #1b3a5c;
+  --color-primary-hover: #2b5a8c;
+  --color-accent-muted: #e4ebf3;
+  --color-success: #196b45;
+  --color-warning: #7d5400;
+  --color-error: #b3261e;
+  --color-info: var(--color-primary);
+  --color-focus: #1b3a5c;
+
+  /* Alias de uso: evitan text-text y border-border sin duplicar el hex. */
+  --color-ink: var(--color-text);
+  --color-muted: var(--color-text-secondary);
+  --color-rule: var(--color-border);
+
+  /* Tipografía. Hanken Grotesk solo para h1/h2. */
+  --font-display: "Hanken Grotesk Variable", system-ui, sans-serif;
+  --font-sans: "Inter Variable", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono Variable", ui-monospace, monospace;
+
+  /* --text-*: initial cierra el contrato: si un tamaño no está aquí, no
+     existe en el sitio. Los valores móviles van en media queries más abajo,
+     no en clamp(): son números exactos por rango, sin unidades vw. */
   --text-*: initial;
-  --text-display: clamp(2.125rem, 5.8vw, 3.5rem);
-  --text-display--line-height: 1.05;
-  --text-display--letter-spacing: -0.02em;
-  --text-display-md: clamp(1.3125rem, 3vw, 1.75rem);
-  --text-display-md--line-height: 1.35;
-  --text-display-md--letter-spacing: -0.01em;
-  --text-title: 1.0625rem;
-  --text-title--line-height: 1.5;
-  --text-body: 1rem;
-  --text-body--line-height: 1.7;
-  --text-small: 0.90625rem;
-  --text-small--line-height: 1.65;
+
+  --text-h1: 2.875rem; /* 46px */
+  --text-h1--line-height: 1.1;
+  --text-h1--letter-spacing: -0.015em;
+
+  --text-h2: 2rem; /* 32px */
+  --text-h2--line-height: 1.2;
+  --text-h2--letter-spacing: -0.015em;
+
+  --text-h3-featured: 1.375rem; /* 22px */
+  --text-h3-featured--line-height: 1.3;
+  --text-h3-featured--letter-spacing: -0.01em;
+
+  --text-h3: 1.25rem; /* 20px */
+  --text-h3--line-height: 1.4;
+  --text-h3--letter-spacing: -0.01em;
+
+  --text-lead: 1.25rem; /* 20px */
+  --text-lead--line-height: 1.5;
+
+  --text-body: 1.0625rem; /* 17px */
+  --text-body--line-height: 1.65;
+
+  --text-body-small: 0.9375rem; /* 15px */
+  --text-body-small--line-height: 1.6;
+
+  --text-metadata: 0.78125rem; /* 12.5px */
+  --text-metadata--line-height: 1.5;
+  --text-metadata--letter-spacing: 0.07em;
+
+  --text-label: 0.8125rem; /* 13px */
+  --text-label--line-height: 1.4;
+  --text-label--letter-spacing: 0.01em;
+
+  --text-code: 0.875rem; /* 14px */
+  --text-code--line-height: 1.6;
+
+  --text-caption: 0.875rem; /* 14px */
+  --text-caption--line-height: 1.5;
+
+  --text-footnote: 0.8125rem; /* 13px */
+  --text-footnote--line-height: 1.5;
+
+  /* Numeral mono en tres tamaños: hero 20, fila 17, lista 15. */
+  --text-numeral: 1.25rem; /* 20px */
+  --text-numeral--line-height: 1.3;
+  --text-numeral-row: 1.0625rem; /* 17px */
+  --text-numeral-row--line-height: 1.4;
+  --text-numeral-list: 0.9375rem; /* 15px */
+  --text-numeral-list--line-height: 1.4;
+
+  /* Alias en retirada: las páginas de caso aún usan la escala vieja. Sin
+     estos alias la clase desaparece en silencio y el texto cae al tamaño
+     heredado sin fallar el build. Cuando grep -rE "text-(micro|small|title|display)"
+     src/ salga vacío, este bloque se borra.
+       micro -> metadata (12.5)   small -> body-small (15)
+       title -> body (17)         display-md -> h3-featured (22)
+       display -> h1 (46) */
   --text-micro: 0.78125rem;
   --text-micro--line-height: 1.5;
+  --text-small: 0.9375rem;
+  --text-small--line-height: 1.6;
+  --text-title: 1.0625rem;
+  --text-title--line-height: 1.5;
+  --text-display-md: 1.375rem;
+  --text-display-md--line-height: 1.3;
+  --text-display-md--letter-spacing: -0.01em;
+  --text-display: 2.875rem;
+  --text-display--line-height: 1.1;
+  --text-display--letter-spacing: -0.015em;
+
+  /* Spacing con nombre propio (step-*). No se cierra el namespace con
+     --spacing-*: initial porque las páginas de caso usan la escala por defecto
+     (px-5, gap-x-5, mt-7...) y cerrarlo no falla el build: Tailwind descarta
+     la clase en silencio y el espaciado se pierde. Cuando nada use la escala
+     por defecto, se añade --spacing-*: initial. */
+  --spacing-step-4: 0.25rem;
+  --spacing-step-8: 0.5rem;
+  --spacing-step-12: 0.75rem;
+  --spacing-step-16: 1rem;
+  --spacing-step-24: 1.5rem;
+  --spacing-step-32: 2rem;
+  --spacing-step-48: 3rem;
+  --spacing-step-64: 4rem;
+  --spacing-step-96: 6rem;
+  --spacing-step-128: 8rem;
+
+  --radius-sm: 2px; /* chips, badges, capturas, código */
+  --radius-md: 4px; /* botones, cards */
+
+  --container-page: 1200px;
 }
 
+/* Motion: los tokens valen 0s por defecto y solo toman su valor real bajo
+   no-preference, así las utilidades motion-* quedan instantáneas en reduce
+   sin duplicar reglas. */
 :root {
-  color-scheme: light dark;
+  --motion-link: 0s;
+  --motion-card: 0s;
+  --motion-accordion: 0s;
+  --motion-focus: 0s;
 }
 
-/* Toggle manual de tema: el atributo fija color-scheme y la paleta
-   light-dark() se resuelve contra él (el polyfill del build añade sus
-   variables companion a cada regla con color-scheme, así que el override
-   funciona igual compilado). Sin atributo manda el sistema. */
-:root[data-theme="light"] {
-  color-scheme: light;
-}
-
-:root[data-theme="dark"] {
-  color-scheme: dark;
-}
-
-/* Transición de tema: solo colores, nunca bajo movimiento reducido. */
 @media (prefers-reduced-motion: no-preference) {
-  body {
-    transition:
-      background-color 160ms ease-out,
-      color 160ms ease-out;
+  :root {
+    --motion-link: color 120ms ease-out, text-decoration-color 120ms ease-out;
+    --motion-card: border-color 150ms ease-out;
+    --motion-accordion: opacity 200ms ease-out;
+    --motion-focus: outline-color 100ms;
   }
 }
 
-/* Glifos del toggle (sol/luna): única matriz media × atributo del sistema.
-   El botón no guarda estado; el CSS decide qué glifo se ve. */
-.theme-glyph-dark {
-  display: none;
-}
-:root[data-theme="dark"] .theme-glyph-light {
-  display: none;
-}
-:root[data-theme="dark"] .theme-glyph-dark {
-  display: inline-block;
-}
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme]) .theme-glyph-light {
-    display: none;
-  }
-  :root:not([data-theme]) .theme-glyph-dark {
-    display: inline-block;
-  }
+@utility motion-link {
+  transition: var(--motion-link);
 }
 
-/* Bloque invertido (papel sobre tinta): espejo exacto de la paleta con los
-   argumentos de light-dark() intercambiados. Se redeclara por token — girar
-   color-scheme no basta: el polyfill del build resuelve cada token en el
-   elemento que lo declara, y un color-scheme aquí además duplicaría sus
-   flags. Si cambia un hex en @theme, cambia también aquí; la matriz de
-   tests/contrast.spec.ts detecta cualquier desajuste. Una sola inversión
-   por página. */
-.inverted {
-  --color-paper: light-dark(#1c1814, #f7f7f5);
-  --color-ink: light-dark(#eceae6, #16181d);
-  --color-muted: light-dark(#a8a49d, #575c63);
-  --color-line: light-dark(#474135, #e4e3df);
-  --color-copper: light-dark(#d97b4a, #9c4a21);
+@utility motion-card {
+  transition: var(--motion-card);
 }
 
-html {
-  scroll-behavior: smooth;
+/* Cuerpo del accordion. Solo opacity: animar la altura obliga a medirla con
+   JS o a fijar un max-height inventado.
+
+   Sin @starting-style: además de dar el estado inicial al abrir, lo aplicaba
+   también en la carga de la página, así que el ítem abierto por defecto
+   entraba con un fade que dejaba su texto a medio color durante 200 ms. Axe
+   lo medía ahí y lo leía como un fallo de contraste. La transición se dispara
+   igual al abrir, porque el cuerpo pasa de display:none a visible. */
+@utility motion-accordion {
+  transition: var(--motion-accordion);
 }
 
-@media (prefers-reduced-motion: reduce) {
+@media (prefers-reduced-motion: no-preference) {
   html {
-    scroll-behavior: auto;
+    scroll-behavior: smooth;
   }
 }
 
 body {
-  background: var(--color-paper);
-  color: var(--color-ink);
+  background: var(--color-bg);
+  color: var(--color-text);
 }
 
-/* Titulares: Archivo con eje de anchura expandido */
-.display {
-  font-variation-settings: "wdth" 122;
-  letter-spacing: -0.02em;
-}
-
-.display-md {
-  font-variation-settings: "wdth" 110;
-  letter-spacing: -0.01em;
-}
-
-/* Corchetes de calibración: el dispositivo significa "material verificado".
-   Consumidores contados, un solo significado: las fichas de evidencia, el
-   marco de capturas reales (ScreenshotFrame) y las superficies ancla.
-   --corner-size escala las esquinas al tamaño del material. */
-.calibrated {
-  position: relative;
-  --corner-size: 8px;
-}
-.calibrated::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: var(--corner-size);
-  height: var(--corner-size);
-  border-top: 1px solid var(--color-copper);
-  border-left: 1px solid var(--color-copper);
-}
-.calibrated::after {
-  content: "";
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  width: var(--corner-size);
-  height: var(--corner-size);
-  border-bottom: 1px solid var(--color-copper);
-  border-right: 1px solid var(--color-copper);
-}
-
-/* Ficha de evidencia (variante 1c): compone .calibrated en el JSX. */
-.evidence {
-  display: inline-flex;
-  align-items: baseline;
-  gap: 7px;
-  font-family: var(--font-mono);
-  font-size: var(--text-micro);
-  line-height: 1;
-  padding: 9px 13px;
+/* Foco: siempre outline, nunca solo cambio de color. Es el único indicador
+   que no se confunde con el hover. */
+:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+  transition: var(--motion-focus);
 }
 
 ::selection {
-  background: var(--color-copper);
-  color: var(--color-paper);
+  background: var(--color-accent-muted);
+  color: var(--color-text);
 }
 
-:focus-visible {
-  outline: 2px solid var(--color-copper);
-  outline-offset: 3px;
-  border-radius: 1px;
+/* nowrap solo en tres tokens: flecha+palabra, GMT-5 y fechas. Ningún
+   contenedor de meta, tag, numeral o métrica lo lleva. */
+@utility nowrap-token {
+  white-space: nowrap;
+}
+
+/* Red de seguridad para meta y numerales: pueden partir en cualquier punto
+   antes que invadir la columna vecina. */
+@utility break-safe {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+/* Todo contenedor de grid lleva min-width: 0. */
+@utility grid-safe {
+  min-width: 0;
+}
+
+/* .display / .display-md existen porque las páginas de caso las usan. Antes
+   fijaban el eje wdth de Archivo; Hanken Grotesk no tiene ese eje, así que
+   ahora solo seleccionan la familia display. Se retiran con los alias. */
+.display,
+.display-md {
+  font-family: var(--font-display);
+}
+
+/* Tamaños móviles por rango, no con vw. Solo h1, h2, h3-featured, h3 y lead
+   cambian. Los alias en retirada se mueven con su equivalente. */
+@media (max-width: 767px) {
+  .text-h1,
+  .text-display {
+    font-size: 2.125rem; /* 34px */
+  }
+  .text-h2 {
+    font-size: 1.75rem; /* 28px */
+  }
+  .text-h3-featured,
+  .text-h3,
+  .text-display-md {
+    font-size: 1.125rem; /* 18px */
+    line-height: 1.4;
+  }
+  .text-lead {
+    font-size: 1.125rem; /* 18px */
+  }
+}
+
+@media (max-width: 360px) {
+  .text-h1,
+  .text-display {
+    font-size: 1.875rem; /* 30px */
+  }
+}
+
+/* Escalón intermedio (tablet): entre el H1 completo de desktop y el móvil. */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .text-h1,
+  .text-display {
+    font-size: 2.5rem; /* 40px */
+  }
 }

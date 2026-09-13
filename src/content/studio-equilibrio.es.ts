@@ -9,9 +9,8 @@ import type { MiniCase } from "./mini-case";
 
 export const miniCase: MiniCase = {
   meta: {
-    title: "Studio Equilibrio — mini-caso",
     description:
-      "SaaS demo para estudios de fitness: reservas con cupo, membresías y facturación con recibos PDF — construido en solitario de extremo a extremo, con 30 pruebas E2E y LCP < 2 s.",
+      "SaaS demo para estudios de fitness: reservas con cupo, membresías y facturación con recibos PDF. En solitario, con 30 pruebas E2E y LCP < 2 s.",
   },
   route: "/proyectos/studio-equilibrio",
   kicker: "Mini-caso · Diseño a producción, en solitario · 2.5 semanas",
@@ -26,7 +25,7 @@ export const miniCase: MiniCase = {
       },
       {
         term: "rol",
-        text: "Diseño a producción, en solitario: de un brief comercial a una demo de extremo a extremo en 2.5 semanas.",
+        text: "Encargo de Junto AI como demo comercial para captar clientes. Diseño a producción, en solitario: del brief a una demo de extremo a extremo en 2,5 semanas.",
       },
       {
         term: "alcance",
@@ -88,17 +87,16 @@ export const miniCase: MiniCase = {
       },
       {
         title: "Una demo con el estándar de producción",
-        text: "Construida de extremo a extremo a partir de un brief comercial y cubierta por 30 pruebas E2E con Playwright, con LCP < 2 s medido en móvil con 4G. El punto de la demo es ese: el estándar no baja porque no haya cliente.",
+        text: "Construida de extremo a extremo a partir de un brief comercial y cubierta por 30 pruebas E2E con Playwright, con LCP < 2 s medido en móvil con 4G. El punto de la demo es ese: el estándar no baja porque el producto sea una pieza de venta.",
       },
     ],
   },
   close: {
     id: "cierre",
     heading: "Lo que dejó",
-    body: "La pieza del grid que muestra el rango completo sin un cliente de por medio: del brief comercial al producto navegable — reservas, membresías, cobros y analítica — operable de extremo a extremo en la demo en vivo.",
+    body: "La pieza del grid que muestra el rango completo en un encargo acotado: del brief comercial al producto navegable — reservas, membresías, cobros y analítica — operable de extremo a extremo en la demo en vivo.",
     liveHref: "https://studio-equilibrio-demo.vercel.app",
     liveLabel: "Ver el demo en vivo",
-    backHref: "/#proyectos",
     backLabel: "Volver a proyectos",
   },
 };

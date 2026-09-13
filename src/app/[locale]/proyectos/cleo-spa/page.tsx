@@ -3,12 +3,22 @@ import { setRequestLocale } from "next-intl/server";
 import { MiniCase } from "@/components/MiniCase";
 import { miniCase as miniCaseEs } from "@/content/cleo-spa.es";
 import { miniCase as miniCaseEn } from "@/content/cleo-spa.en";
+import { JsonLd } from "@/components/JsonLd";
 import { content as site, type Locale } from "@/content/site";
-import { getPathname } from "@/i18n/navigation";
+import { pageMetadata, techArticleJsonLd } from "@/lib/seo";
 
 const content: Record<Locale, typeof miniCaseEs> = { es: miniCaseEs, en: miniCaseEn };
 
 const pathnameKey = "/proyectos/cleo-spa" as const;
+
+function meta(locale: Locale) {
+  return {
+    locale,
+    href: pathnameKey,
+    title: site[locale].cleoSpa.name + site[locale].ui.meta.caseSuffix,
+    description: content[locale].meta.description,
+  };
+}
 
 export async function generateMetadata({
   params,
@@ -16,17 +26,7 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
   const { locale } = await params;
-  const c = content[locale as Locale];
-  const es = getPathname({ locale: "es", href: pathnameKey });
-  const en = getPathname({ locale: "en", href: pathnameKey });
-  return {
-    title: c.meta.title,
-    description: c.meta.description,
-    alternates: {
-      canonical: locale === "en" ? en : es,
-      languages: { es, en, "x-default": es },
-    },
-  };
+  return pageMetadata(meta(locale as Locale));
 }
 
 export default async function CleoSpaPage({
@@ -38,10 +38,13 @@ export default async function CleoSpaPage({
   setRequestLocale(locale);
 
   return (
-    <MiniCase
-      locale={locale as Locale}
-      project={site[locale as Locale].cleoSpa}
-      c={content[locale as Locale]}
-    />
+    <>
+      <JsonLd data={techArticleJsonLd(meta(locale as Locale))} />
+      <MiniCase
+        locale={locale as Locale}
+        project={site[locale as Locale].cleoSpa}
+        c={content[locale as Locale]}
+      />
+    </>
   );
 }

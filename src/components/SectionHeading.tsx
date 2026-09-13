@@ -1,23 +1,34 @@
+import { Divider } from "@/components/ui/Divider";
+
 type SectionHeadingProps = {
   id: string;
   label: string;
+  index?: string;
+  /** Texto de la meta cuando difiere del H2. */
+  kicker?: string;
+  lead?: string;
 };
 
 /**
- * Encabezado de sección estilo ruta: /proyectos, /ia…
- * La barra cobre + etiqueta mono es el índice del sitio; los nombres
- * propios (proyectos, empresas) llevan la jerarquía visual como h3.
+ * La regla es decorativa: la estructura la aporta el H2, que es quien recibe
+ * el id al que apunta el aria-labelledby de la sección.
  */
-export function SectionHeading({ id, label }: SectionHeadingProps) {
+export function SectionHeading({ id, label, index, kicker, lead }: SectionHeadingProps) {
   return (
-    <div className="mb-8 flex items-center gap-4 sm:mb-10">
-      <h2 id={id} className="font-mono text-micro font-medium tracking-[0.02em]">
-        <span aria-hidden="true" className="text-copper">
-          /
-        </span>
+    <div className="mb-step-48">
+      <Divider strong />
+      {index ? (
+        <p className="mt-step-24 font-mono text-metadata uppercase text-muted">
+          {index}&nbsp;·&nbsp;{kicker ?? label}
+        </p>
+      ) : null}
+      <h2
+        id={id}
+        className={`font-display text-h2 font-semibold ${index ? "mt-step-8" : "mt-step-24"}`}
+      >
         {label}
       </h2>
-      <span aria-hidden="true" className="h-px flex-1 bg-line" />
+      {lead ? <p className="mt-step-24 max-w-[66ch] text-lead">{lead}</p> : null}
     </div>
   );
 }

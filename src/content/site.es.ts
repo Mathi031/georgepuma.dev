@@ -9,43 +9,77 @@ export const ui = {
   skipLink: "Saltar al contenido",
   sectionsAria: "Secciones",
   langAria: "Idioma",
-  themeAria: "Cambiar tema",
-  // Los valores son a la vez id de sección (ancla) y etiqueta visible.
-  sections: {
-    projects: "proyectos",
-    ai: "ia",
-    experience: "experiencia",
-    stack: "stack",
-    contact: "contacto",
+  brandAria: "georgepuma.dev — inicio",
+  availability: "DISPONIBLE AHORA",
+  nav: {
+    work: "Trabajo",
+    method: "Método",
+    experience: "Experiencia",
+    contact: "Contacto",
   },
-  metaLine: ["Arequipa, Perú", "GMT-5", "remoto"],
+  headings: {
+    work: "Trabajo",
+    method: "Cómo trabajo",
+    experience: "Experiencia",
+    experienceKicker: "Trayectoria",
+    stack: "Stack",
+    contact: "Contacto",
+  },
+  footer: {
+    source: "código fuente ↗",
+    ci: "CI ↗",
+  },
+  /** Etiquetas del cuerpo de cada puesto en la trayectoria. */
+  experience: {
+    context: "Contexto",
+    scope: "Alcance",
+    result: "Resultado",
+    tech: "Tecnologías",
+  },
   evidenceAria: "Evidencia verificable",
   linksAria: "Enlaces principales",
-  writeMe: "Escríbeme",
-  cvLabel: "CV en PDF ↓",
-  contact:
-    "Busco roles full stack o frontend, de preferencia remotos. Si crees que encajo en tu equipo, escríbeme — respondo siempre.",
+  contact: {
+    body:
+      "Busco roles full stack o frontend, remotos, por contrato o indefinidos, en equipos " +
+      "que traten la calidad como parte del producto. Inglés B2 (EF SET). GMT‑5: horario " +
+      "completo con EE.UU. y dos o tres horas de solapamiento con Europa. Si crees que " +
+      "encajo en tu equipo, escríbeme — respondo siempre.",
+    // nbsp entre palabra y flecha, igual que en hero.ctas.
+    linkedin: "LinkedIn ↗",
+    github: "GitHub ↗",
+    linksAria: "Enlaces de contacto",
+  },
+  /** Etiquetas compartidas por los tres mini-casos. */
+  miniCase: { pendingLabel: "Pendiente" },
   pipelineKicker: "pipeline · revisor de PRs",
-  footerSource: "código fuente",
   meta: {
+    /** Título de la home. Las subpáginas lo componen con `caseSuffix`. */
+    title: "George Puma — Full Stack Developer (React, Next.js, PostgreSQL)",
     description:
       "Full Stack Developer — React, Next.js, TypeScript. Cinco años construyendo productos web empresariales, con flujos de desarrollo asistidos por IA.",
+    /** Se añade al nombre del proyecto para formar el título de su página. */
+    caseSuffix: " — caso de estudio",
     ogLocale: "es_PE",
   },
 };
 
 export const hero = {
-  headline: "Construyo productos web que llegan a producción.",
-  thesis: "Y puedo demostrarlo.",
-  positioning: {
-    lead: "Full Stack Developer — React, Next.js, TypeScript.",
-    rest: "Cinco años construyendo productos empresariales: EdTech, e-commerce, ERP y facturación electrónica. Diseño flujos de desarrollo asistidos por IA y los trato como lo que son: ingeniería.",
-  },
+  // nbsp alrededor de "·" para que el separador no quede huérfano al partir
+  // línea; GMT‑5 lleva guion U+2011 (no ruptura) en vez de un "-" normal.
+  status: "Full stack · contrato o indefinido · remoto · Perú · GMT‑5",
+  headline: "Construyo productos web que llegan a producción. Y puedo demostrarlo.",
+  lead: "Full Stack Developer — React, Next.js, TypeScript, PostgreSQL. Cinco años construyendo productos empresariales en EdTech, e-commerce, ERP y facturación electrónica, con equipos remotos de EE.UU. y Latinoamérica. Diseño flujos de desarrollo asistidos por IA y los trato como lo que son: ingeniería.",
   evidence: [
-    { value: "500+ escuelas", source: "LMS en producción" },
-    { value: "LCP < 2 s", source: "medido en 4G" },
-    { value: "WCAG 2.1 AA", source: "requisito contractual" },
+    { value: "500+ escuelas", source: "LMS K‑12 en producción; principal contribuidor de frontend y API" },
+    { value: "2 negocios", source: "usan a diario software que diseñé y construí de extremo a extremo" },
+    { value: "WCAG 2.1 AA", source: "requisito contractual, cumplido y cubierto por tests" },
   ] satisfies EvidenceItem[],
+  // nbsp entre flecha y palabra: el token no se parte en dos líneas.
+  ctas: {
+    work: "Ver el trabajo →",
+    cv: "CV en PDF ↓",
+    cvUrl: "/cv-george-puma.pdf",
+  },
 };
 
 /**
@@ -57,19 +91,24 @@ export const hero = {
 export const anchorProject: Project = {
   slug: "notable-learning",
   name: "Notable Learning",
-  role: "Principal contribuidor · Feb – Jun 2026",
+  level: "destacado",
+  meta: "Principal contribuidor · Junto AI · feb – jun 2026",
   summary:
-    "LMS institucional K-12 para 500+ escuelas en EE.UU. y 10 países. Frontend completo y capa de API: editor de contenido, video, RBAC de 5 roles y cumplimiento FERPA sobre un esquema de 29 entidades.",
-  evidence: [
-    { value: "500+ escuelas", source: "10 países" },
-    { value: "380+ commits", source: "100+ tickets" },
-    { value: "entregado en fecha", source: "jun 2026" },
-    { value: "FERPA", source: "datos de menores" },
+    "LMS K‑12 para 500+ escuelas en EE.UU. y 10 países: editor de contenido, video, RBAC de 5 roles y cumplimiento FERPA sobre un esquema de 29 entidades.",
+  decision:
+    "Diseñé el editor contra sus modos de fallo antes de escribir código, y la subida de archivos acabó como un flujo de tres pasos: URL firmada con los límites en la firma, validación en servidor sobre los bytes reales y finalización explícita.",
+  proofs: [
+    { value: "29 entidades", context: "esquema con RBAC de 5 roles y FERPA" },
+    // nbsp entre día, mes y año: la fecha no se parte en dos líneas.
+    { value: "12 jun 2026", context: "entregado en la fecha comprometida" },
+    { value: "WCAG 2.1 AA", context: "requisito contractual, verificado con jest-axe" },
   ],
+  // Vacía: la home usa `proofs` y el caso sus propias chips; el tipo la exige.
+  evidence: [],
   stack: ["TypeScript", "React 19", "Next.js 16", "Prisma", "PostgreSQL", "GCS", "Mux"],
   link: {
     href: "/proyectos/notable-learning",
-    label: "Leer el caso de estudio",
+    label: "Leer el caso de estudio →",
     external: false,
   },
 };
@@ -85,6 +124,7 @@ export const schemaFigure = {
   title: "Esquema del sistema de Notable Learning",
   desc: "LMS multi-institución: 500+ escuelas en 10 países sobre un esquema de 29 entidades agrupadas por dominio — cursos, video, usuarios, instituciones y archivos — con RBAC de 5 roles y cumplimiento FERPA.",
   labels: {
+    kicker: "Esquema",
     schema: "29 entidades",
     rbac: "RBAC · 5 roles",
     compliance: "FERPA",
@@ -95,7 +135,16 @@ export const schemaFigure = {
       institutions: "instituciones",
       files: "archivos",
     },
+    // Solo hechos ya publicados en el resumen, el stack y el caso de estudio.
+    details: {
+      courses: "editor de contenido",
+      video: "Mux",
+      institutions: ["multi-tenant", "500+ escuelas"] as [string, string],
+      files: "GCS · PDF por proxy de streaming",
+    },
   },
+  caption:
+    "Cinco dominios sobre 29 entidades. El nodo destacado, instituciones, es la raíz multi-tenant de cada query.",
 };
 
 /**
@@ -107,9 +156,15 @@ export const schemaFigure = {
 export const cleoSpa: Project = {
   slug: "cleo-spa",
   name: "Cleo Spa",
-  role: "Cliente directo · en producción",
+  level: "destacado-secundario",
+  badge: "EN PRODUCCIÓN",
+  meta: "Cliente directo · Arequipa",
   summary:
     "Inventario, catálogo público y reservas para un salón de belleza en Arequipa: ledger de stock inmutable con lotes FEFO, RLS default-deny en 16 tablas y panel con tres roles operativos (dueña, cajera, estilista). La herramienta que el personal usa a diario — no una vitrina.",
+  proofs: [
+    { value: "16 tablas", context: "con RLS default-deny: los permisos viven en la base de datos" },
+    { value: "ledger insert-only", context: "cada corrección es un ajuste, nunca una edición" },
+  ],
   evidence: [
     { value: "ledger insert-only", source: "correcciones = ajustes" },
     { value: "3 roles", source: "permisos en BD y app" },
@@ -118,7 +173,7 @@ export const cleoSpa: Project = {
   // La tarjeta lleva al mini-caso; el enlace al sitio en vivo vive dentro.
   link: {
     href: "/proyectos/cleo-spa",
-    label: "Leer el mini-caso",
+    label: "Leer el mini-caso →",
     external: false,
   },
   image: {
@@ -133,9 +188,14 @@ export const cleoSpa: Project = {
 export const ronatello: Project = {
   slug: "ronatello",
   name: "Ronatello",
-  role: "Cliente directo · 12 días a producción",
+  level: "menor",
+  badge: "EN PRODUCCIÓN",
+  meta: "Cliente directo · Arequipa",
   summary:
-    "Sitio de producción para una licorería de barrio recién abierta en Arequipa: promociones con vigencia, reservas con cupo y panel de administración propio. Las reglas de negocio viven en Postgres (RLS), el CI levanta un stack Supabase real, y fue del brief al despliegue en 12 días reutilizando un starter kit extraído de Cleo Spa.",
+    "Segundo cliente sobre el mismo starter kit que Cleo Spa: promociones, reservas y panel de administración, del brief al despliegue en 12 días, con un CI que levanta un stack Supabase real.",
+  proofs: [
+    { value: "12 días", context: "de brief a producción: 24 rutas, 9 públicas y panel admin" },
+  ],
   evidence: [
     { value: "12 días", source: "brief → producción" },
     { value: "24 rutas", source: "9 públicas + panel admin" },
@@ -144,7 +204,7 @@ export const ronatello: Project = {
   // La tarjeta lleva al mini-caso; el enlace al sitio en vivo vive dentro.
   link: {
     href: "/proyectos/ronatello",
-    label: "Leer el mini-caso",
+    label: "Leer el mini-caso →",
     external: false,
   },
   image: {
@@ -154,14 +214,30 @@ export const ronatello: Project = {
     height: 384,
     alt: "Página de promociones: tarjetas de combos con precio, estado de disponibilidad y botón para pedir por WhatsApp.",
   },
+  // `image` sigue siendo la captura completa que consume el mini-caso.
+  crop: {
+    src: "/screenshots/ronatello-16x10.webp",
+    avif: "/screenshots/ronatello-16x10.avif",
+    src2x: "/screenshots/ronatello-16x10@2x.webp",
+    avif2x: "/screenshots/ronatello-16x10@2x.avif",
+    width: 304,
+    height: 190,
+    alt: "Franja central de la página de promociones: cabecera con logo, titular «Las promos de esta noche», texto y la primera fila de tarjetas de combos con precio y botón de WhatsApp, cortadas por abajo.",
+  },
 };
+
 
 export const studioEquilibrio: Project = {
   slug: "studio-equilibrio",
   name: "Studio Equilibrio",
-  role: "Diseño a producción, en solitario · 2.5 semanas",
+  level: "menor",
+  badge: "DEMO",
+  meta: "Demo comercial para Junto AI · en solitario · 2,5 semanas",
   summary:
-    "SaaS demo para estudios de fitness — reservas, membresías, facturación con recibos PDF y analítica — construido de extremo a extremo a partir de un brief comercial.",
+    "SaaS demo para estudios de fitness — reservas, membresías, facturación con recibos PDF y analítica — construida de extremo a extremo por encargo de Junto AI, a partir de un brief comercial.",
+  proofs: [
+    { value: "LCP < 2 s", context: "en móvil sobre 4G; 30 pruebas E2E con Playwright" },
+  ],
   evidence: [
     { value: "LCP < 2 s", source: "móvil, 4G" },
     { value: "30 pruebas E2E", source: "Playwright" },
@@ -170,7 +246,7 @@ export const studioEquilibrio: Project = {
   // La tarjeta lleva al mini-caso; el enlace al demo en vivo vive dentro.
   link: {
     href: "/proyectos/studio-equilibrio",
-    label: "Leer el mini-caso",
+    label: "Leer el mini-caso →",
     external: false,
   },
   image: {
@@ -180,7 +256,18 @@ export const studioEquilibrio: Project = {
     height: 384,
     alt: "Portada del estudio: titular sobre la reserva de clases, filtros por disciplina y contador de disciplinas y coaches.",
   },
+  // `image` sigue siendo la captura completa que consume el mini-caso.
+  crop: {
+    src: "/screenshots/studio-equilibrio-16x10.webp",
+    avif: "/screenshots/studio-equilibrio-16x10.avif",
+    src2x: "/screenshots/studio-equilibrio-16x10@2x.webp",
+    avif2x: "/screenshots/studio-equilibrio-16x10@2x.avif",
+    width: 304,
+    height: 190,
+    alt: "Portada en vivo de Studio Equilibrio: barra superior con el nombre del estudio, icono de chat y menú hamburguesa; chip «Studio Equilibrio · Bienestar & Fitness»; titular «Tu energía, en equilibrio»; subtítulo «Energía y calma, en balance»; texto sobre reservar clases; chips de Yoga, Pilates, Funcional, Cycling, Barre y Meditación; botón «Ver clases» cortado en el borde inferior.",
+  },
 };
+
 
 export const gridProjects: Project[] = [
   cleoSpa,
@@ -189,80 +276,158 @@ export const gridProjects: Project[] = [
   {
     slug: "projsync",
     name: "projsync",
-    role: "Proyecto propio · open source",
+    level: "menor",
+    badge: "OPEN SOURCE",
+    meta: "Proyecto propio · Go",
     summary:
       "CLI en Go que sincroniza la configuración de agentes de IA entre máquinas con cifrado de extremo a extremo (age), almacenamiento content-addressed (BLAKE3) y scanner de secretos previo a cada push.",
+    proofs: [
+      { value: "E2E cifrado", context: "age (X25519) · BLAKE3 · Cloudflare R2 · MIT" },
+    ],
     evidence: [
       { value: "E2E cifrado", source: "age · X25519" },
       { value: "MIT", source: "código abierto" },
     ],
     stack: ["Go", "Cloudflare R2", "S3 API"],
     link: {
+      // nbsp entre la última palabra y la flecha, como en hero.ctas.
       href: "https://github.com/Mathi031/projsync",
-      label: "Ver el repositorio",
+      label: "Ver el repositorio ↗",
       external: true,
-    },
-    image: {
-      src: "/screenshots/projsync.webp",
-      avif: "/screenshots/projsync.avif",
-      width: 768,
-      height: 384,
-      alt: "Repositorio en GitHub: árbol de archivos del proyecto en Go y comienzo del README que describe la sincronización cifrada.",
     },
   },
 ];
 
-/** Forma completa, ancla primero — conserva el contrato Record<Locale, typeof es>. */
 export const projects: Project[] = [anchorProject, ...gridProjects];
 
 export const experience: ExperienceItem[] = [
   {
     company: "Junto AI",
-    role: "Full Stack Developer (contrato por proyecto)",
+    role: "Full Stack Developer",
     period: "Feb 2026 – Jun 2026",
+    type: "Contrato por proyecto",
     location: "Remoto · EE.UU. / Costa Rica",
-    lines: [
-      "Principal contribuidor de Notable Learning, LMS K-12 en producción para 500+ escuelas.",
-      "Entregas semanales revisadas por el CTO; proyecto entregado en fecha.",
+    impact:
+      "Principal contribuidor de un LMS K‑12 en producción para 500+ escuelas, entregado en la fecha comprometida.",
+    context:
+      "LMS institucional para EE.UU. y 10 países, con datos de estudiantes menores de edad y cumplimiento FERPA como requisito. Contrato de alcance cerrado, concluido con la entrega.",
+    scope: [
+      "Frontend completo y capa de API: librería de componentes, editor de contenido para docentes, dashboards de estudiante y docente, y panel de administración multi-institución.",
+      "Integraciones de video (Mux) y almacenamiento (Google Cloud Storage), con subida directa en tres pasos y validación del contenido en servidor.",
+      "Revisor automatizado de PRs con Claude Code: webhook, validación contra el ticket de Linear, subagentes según el diff y un único comentario consolidado.",
+    ],
+    result:
+      "Entregado el 12 jun 2026, la fecha comprometida, con entregas semanales revisadas por el CTO y WCAG 2.1 AA verificado con jest-axe en cada componente.",
+    resultLink: { href: "/proyectos/notable-learning", label: "Leer el caso de estudio →" },
+    tech: [
+      "TypeScript",
+      "React 19",
+      "Next.js 16",
+      "Prisma",
+      "PostgreSQL",
+      "NextAuth",
+      "GCS",
+      "Mux",
+      "Linear",
     ],
   },
   {
     company: "Global Resources",
-    role: "Full Stack Developer",
+    role: "Frontend Developer",
     period: "Feb 2025 – Ene 2026",
+    type: "Contrato",
     location: "Remoto · Venezuela",
-    lines: [
-      "Módulo de gestión desde cero para un ERP en Next.js, coherente con la arquitectura existente.",
-      "Colaboración con backend en diagnóstico de microservicios Spring Boot.",
+    impact:
+      "Frontend en Next.js para el sistema de gestión de red de un operador de telecomunicaciones, construido sobre servicios existentes.",
+    context:
+      "El cliente operaba su sistema desde un frontend en Java sobre los mismos servicios y quería una interfaz moderna. Partí de una plantilla mínima con su design system (Mistica) y trabajé con otro frontend, cada uno a cargo de sus módulos.",
+    scope: [
+      "Módulos de consulta de la red: componentes, fuentes, nodos y tipos de componente, sobre APIs en Java y Quarkus con Kafka.",
+      "Ciclo de demo con el cliente en cada iteración: presentación, cambios pedidos, implementación y nueva presentación.",
+      "Ajustes en la API junto al equipo backend cuando el frontend necesitaba otra forma de los datos, y diagnóstico de incidencias en microservicios Spring Boot.",
+      "Pruebas unitarias con Cypress sobre los módulos entregados, al cierre del proyecto.",
+      "Para un segundo cliente de la consultora, cambios de interfaz en un frontend Angular con microfrontends y en una app Flutter.",
+    ],
+    result:
+      "Los módulos se entregaron validados por el cliente en cada iteración, con sus pruebas en el repositorio del equipo.",
+    tech: [
+      "Next.js",
+      "React",
+      "TypeScript",
+      "Mistica",
+      "Cypress",
+      "Angular",
+      "Flutter",
+      "Docker",
+      "Java / Quarkus y Kafka (lado servidor)",
+      "Spring Boot (diagnóstico)",
     ],
   },
   {
     company: "Desis",
-    role: "Software Developer",
+    role: "Programador",
     period: "Oct 2024 – Ene 2025",
+    type: "Empleo",
     location: "Remoto · Chile",
-    lines: [
-      "Facturación electrónica empresarial: optimización de PostgreSQL y procesamiento de grandes volúmenes.",
+    impact:
+      "Tickets de extremo a extremo sobre un sistema de facturación electrónica en producción, en PHP y JavaScript nativos.",
+    context:
+      "Sistema en producción desde hacía años, sin framework. El trabajo llegaba por tickets del área operativa y comercial, y cada cambio pasaba por QA antes de subir a producción.",
+    scope: [
+      "Cambios sobre cualquier parte del sistema: flujo de cotización, emisión de facturas y boletas, visualización de contenido y navegación por teclado.",
+      "Objetos de base de datos en PostgreSQL — índices, funciones, procedimientos y tipos — para sostener las funciones nuevas y mejorar tiempos de consulta.",
+      "Correcciones sobre los tickets devueltos por QA, con el feedback resuelto en el propio ticket.",
     ],
+    result: "Cada cambio llegó a producción tras la validación de QA.",
+    tech: ["PostgreSQL", "PHP", "JavaScript", "HTML", "CSS"],
   },
   {
     company: "AccountTECH",
     role: "Frontend Developer",
     period: "Mar 2023 – Dic 2023",
+    type: "Contrato",
     location: "Remoto · EE.UU.",
-    lines: [
-      "Migración de un sistema financiero de escritorio a web en React + TypeScript (AR/AP, Invoices).",
-      "Responsable del módulo nuevo de notificaciones y campañas.",
+    impact:
+      "Migración a React de un software de gestión inmobiliaria usado por varios clientes en EE.UU., módulo a módulo.",
+    context:
+      "El producto existía como aplicación de escritorio en Visual Basic, con una base de datos por cliente y volumen alto. El equipo recibió ese código y lo migró por partes a una plataforma web.",
+    scope: [
+      "Migración de módulos financieros: Invoices, AR Payments, AP Payments, Notifications y Reports.",
+      "Módulo nuevo de notificaciones y campañas, desarrollado de principio a fin, coordinando las reglas de negocio con backend.",
+      "Definición de módulos nuevos con el equipo a partir de lo que pedían los clientes del producto.",
     ],
+    result: "Cada módulo migrado pasó a la plataforma web que usan los clientes del sistema.",
+    tech: ["React", "TypeScript", "Kendo UI", "Tailwind CSS", "React Query"],
   },
   {
     company: "Footloose",
     role: "Analista Programador",
     period: "Feb 2022 – Jun 2023",
-    location: "Remoto · Perú",
-    lines: [
-      "Ecosistema e-commerce VTEX: catálogo, promociones, storefront y componentes React en VTEX IO.",
+    type: "Empleo",
+    location: "Perú",
+    impact:
+      "Dos sistemas a la vez: el e-commerce VTEX de cara al cliente y el sistema interno sobre SQL Server que usaba el personal.",
+    context:
+      "Retail de calzado con operación comercial continua. El e-commerce estaba construido y en marcha; el trabajo era mantenerlo, extenderlo y sostener las campañas de temporada.",
+    scope: [
+      "Operación comercial en VTEX: campañas, cupones, catálogos, carga masiva de precios y formularios de promociones.",
+      "Storefront: cambios de diseño por JSONC, plantillas de correo transaccional y componentes React en VTEX IO.",
+      "Sistema interno en Scriptcase: consulta de productos por SKU, cronogramas de pago de colaboradores y generadores de PDF para contratación.",
+      "Base de datos SQL Server: tablas, procedimientos almacenados y cambios propagados de desarrollo a producción.",
     ],
+    result:
+      "El e-commerce se mantuvo operativo durante las campañas de temporada y el equipo interno trabajó a diario sobre los módulos que entregué.",
+    tech: ["VTEX IO", "React", "TypeScript", "Scriptcase (PHP)", "SQL Server"],
+  },
+  {
+    company: "BIZZPERU",
+    role: "Desarrollador web",
+    period: "Mar 2021 – Jul 2021",
+    type: "Freelance",
+    location: "Perú",
+    impact: "Sitios e interfaces web en Vue y Laravel sobre MySQL, antes del salto a producto.",
+    compact: true,
+    group: "Antes de 2022",
   },
 ];
 
@@ -277,7 +442,7 @@ export const stack = {
   },
   growing: {
     label: "En crecimiento",
-    items: ["Go", "Kotlin / Compose", "NestJS", "GCS", "Cloudflare R2"],
+    items: ["Go", "NestJS", "GCS", "Cloudflare R2"],
   },
 };
 
@@ -295,4 +460,15 @@ export const aiWorkflow = {
   pipeline: ["webhook", "validación", "contexto", "subagentes", "dos etapas", "comentario único"],
   pipelineNote:
     "Todo el análisis termina en un solo comentario consolidado — un bot que comenta cinco veces es ruido.",
+  lead: "La calidad y el flujo de trabajo son parte del producto, no un paso posterior.",
+  kicker: "Flujo asistido por IA",
+  quality: {
+    kicker: "Calidad como práctica",
+    items: [
+      "Tests E2E con Playwright para los flujos que no pueden fallar.",
+      "Accesibilidad verificada automáticamente (axe, jest-axe) en cada componente y página.",
+      "Reglas de negocio en la base de datos (RLS default-deny), repetidas en la aplicación.",
+      "“Lo que dejaría mejor” escrito al cierre de cada proyecto.",
+    ],
+  },
 };

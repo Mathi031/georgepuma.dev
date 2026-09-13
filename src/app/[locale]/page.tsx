@@ -1,17 +1,78 @@
+import type { Metadata } from "next";
 import { setRequestLocale } from "next-intl/server";
-import { Evidence } from "@/components/Evidence";
+import { ActiveSection } from "@/components/ActiveSection";
+import { Brand } from "@/components/Brand";
+import { JsonLd } from "@/components/JsonLd";
 import { LocaleSwitcher } from "@/components/LocaleSwitcher";
 import { ScreenshotFrame } from "@/components/ScreenshotFrame";
 import { SectionHeading } from "@/components/SectionHeading";
-import { ThemeToggle } from "@/components/ThemeToggle";
+import { SocialIcon } from "@/components/SocialIcon";
 import { SchemaFigure } from "@/components/figures/SchemaFigure";
-import { content, identity, type Locale } from "@/content/site";
+import { Badge } from "@/components/ui/Badge";
+import { ButtonLink, buttonLinkClass } from "@/components/ui/Button";
+import { Card } from "@/components/ui/Card";
+import { MetricList, MetricWithContext } from "@/components/ui/MetricWithContext";
+import { TagList } from "@/components/ui/Tag";
+import {
+  content,
+  identity,
+  sectionIds,
+  type ExperienceItem,
+  type Locale,
+} from "@/content/site";
 import { Link } from "@/i18n/navigation";
+import { pageMetadata, personJsonLd } from "@/lib/seo";
 
-const container = "mx-auto max-w-[880px] px-5 sm:px-9";
+const container = "mx-auto max-w-(--container-page) px-5 sm:px-9 xl:px-10";
 const sectionGap = "pt-24 sm:pt-32";
-const cardLink =
-  "mt-4 inline-block text-small font-medium underline decoration-line underline-offset-[5px] transition-colors hover:text-copper hover:decoration-copper";
+/**
+ * Nombre accesible de un enlace que repite etiqueta: tres cards dicen "Leer el
+ * mini-caso →" y el CV aparece en el hero y en Contacto, así que se añade el
+ * proyecto o la sección. El texto visible va primero (WCAG 2.5.3) y la flecha
+ * se omite: es visual, no se lee.
+ */
+const linkName = (label: string, name: string) => `${label.replace(/\s*[→↗↓]$/u, "")}: ${name}`;
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const { ui } = content[locale as Locale];
+  return pageMetadata({
+    locale: locale as Locale,
+    href: "/",
+    title: ui.meta.title,
+    description: ui.meta.description,
+    ownTitle: false, // el título de la home es el `default` del layout
+  });
+}
+
+/**
+ * Cabecera de un puesto: meta, titular e impacto. La comparten el <summary>
+ * de los expandibles y el <div> del compacto, por eso los textos van en
+ * <span class="block">: el modelo de contenido de <summary> es phrasing más
+ * un encabezado, y un <p> ahí no es marcado válido.
+ */
+function JobHeader({ job }: { job: ExperienceItem }) {
+  return (
+    <div className="min-w-0">
+      <span className="relative block font-mono text-metadata uppercase text-muted md:before:absolute md:before:top-[0.55em] md:before:-left-[36px] md:before:size-[7px] md:before:rounded-full md:before:bg-text">
+        {/* nbsp solo antes de cada separador: el punto no abre línea, pero
+            la meta puede partir tras él. Con nbsp a ambos lados la cadena
+            entera era irrompible y a 360 desbordaba el viewport en Linux. */}
+        <span className="nowrap-token">{job.period}</span>&nbsp;· {job.type}&nbsp;· {job.location}
+      </span>
+      <h3 className="mt-step-8 text-h3 font-semibold">
+        {job.company} — {job.role}
+      </h3>
+      {/* La jerarquía va por peso y color, no por tamaño: a 390 el
+          20/17 anterior no se distinguía. */}
+      <span className="mt-step-16 block max-w-[66ch] text-body font-medium">{job.impact}</span>
+    </div>
+  );
+}
 
 export default async function HomePage({
   params,
@@ -20,275 +81,530 @@ export default async function HomePage({
 }) {
   const { locale } = await params;
   setRequestLocale(locale);
-  const { ui, hero, anchorProject, gridProjects, schemaFigure, experience, stack, aiWorkflow } =
-    content[locale as Locale];
+  const {
+    ui,
+    hero,
+    anchorProject,
+    cleoSpa,
+    gridProjects,
+    schemaFigure,
+    experience,
+    stack,
+    aiWorkflow,
+  } = content[locale as Locale];
+
+  // Cleo Spa queda fuera: es la destacada secundaria y se renderiza aparte.
+  const minorProjects = gridProjects
+    .filter((p) => p.slug !== "cleo-spa")
+    .map((p) => ({ ...p, capture: p.crop ?? p.image }));
 
   return (
     <>
-      <header className={`${container} flex flex-wrap items-baseline justify-between gap-x-5 gap-y-2 pt-6`}>
-        <p className="font-mono text-micro font-medium">georgepuma.dev</p>
-        <div className="flex flex-wrap items-baseline gap-x-5 gap-y-2">
-          <nav aria-label={ui.sectionsAria} className="flex flex-wrap gap-x-4 gap-y-2 text-small font-medium">
-            {Object.values(ui.sections).map((s) => (
-              <a key={s} href={`#${s}`} className="text-muted transition-colors hover:text-copper">
-                {s}
-              </a>
-            ))}
-          </nav>
-          <LocaleSwitcher locale={locale as Locale} href="/" aria={ui.langAria} />
-          <ThemeToggle aria={ui.themeAria} />
-        </div>
+      <JsonLd data={personJsonLd(locale as Locale)} />
+      <header
+        className={`${container} flex flex-wrap items-center justify-between gap-y-step-16 pt-step-24 [@media(min-width:361px)]:gap-y-step-24 md:flex-nowrap`}
+      >
+        <Brand aria={ui.brandAria} />
+        <nav
+          aria-label={ui.sectionsAria}
+          data-section-nav
+          className="order-3 flex w-full flex-wrap gap-x-step-16 [@media(min-width:361px)]:gap-x-step-24 md:order-none md:ml-auto md:w-auto md:pr-step-24"
+        >
+          {(
+            [
+              [sectionIds.work, ui.nav.work],
+              [sectionIds.method, ui.nav.method],
+              [sectionIds.experience, ui.nav.experience],
+              [sectionIds.contact, ui.nav.contact],
+            ] as const
+          ).map(([id, label]) => (
+            <a
+              key={id}
+              href={`#${id}`}
+              // min-w-11: "Work" en inglés mide 38 de ancho; el resto ya
+              // pasa de 44 y no cambia.
+              className="inline-flex min-h-11 min-w-11 items-center border-b border-transparent text-body-small font-medium motion-link hover:text-primary aria-[current=location]:border-ink"
+            >
+              {label}
+            </a>
+          ))}
+        </nav>
+        <LocaleSwitcher locale={locale as Locale} href="/" aria={ui.langAria} />
+        <ActiveSection />
       </header>
 
       <main id="contenido">
-        {/* ── Hero ───────────────────────────────────────────── */}
+        {/* A ancho completo del contenedor: la regla y la fila de pruebas
+            alinean con las secciones de abajo; solo H1 y lead llevan límite
+            de lectura. */}
         <section className={`${container} pt-16 sm:pt-24`}>
-          <p className="mb-6 font-mono text-micro tracking-[0.03em] text-muted">
-            {identity.fullName} <span aria-hidden="true" className="text-copper">·</span>{" "}
-            {ui.metaLine[0]} <span aria-hidden="true" className="text-copper">·</span> {ui.metaLine[1]}{" "}
-            <span aria-hidden="true" className="text-copper">·</span> {ui.metaLine[2]}
-          </p>
-          <h1 className="display max-w-[17ch] text-balance text-display font-bold">
-            {hero.headline.replace(/\.$/, "")}
-            <span aria-hidden="true" className="text-copper">.</span>{" "}
-            <span className="inline-block underline decoration-copper decoration-2 underline-offset-8">
-              {hero.thesis}
-            </span>
-          </h1>
-          <p className="mt-6 max-w-[54ch] text-body">
-            <strong className="font-medium">{hero.positioning.lead}</strong>{" "}
-            {hero.positioning.rest}
-          </p>
-          <ul className="mt-7 flex flex-wrap gap-2.5" aria-label={ui.evidenceAria}>
-            {hero.evidence.map((e) => (
-              <li key={e.value}>
-                <Evidence value={e.value} source={e.source} />
+          <div>
+            <p className="font-mono text-metadata uppercase text-muted">{hero.status}</p>
+            <Badge variant="accent" className="mt-step-16">
+              {ui.availability}
+            </Badge>
+            <h1 className="mt-step-32 max-w-[680px] font-display text-h1 font-semibold">
+              {hero.headline}
+            </h1>
+            <p className="mt-step-32 max-w-[66ch] text-lead">{hero.lead}</p>
+            <hr className="mt-step-48 border-rule" />
+            <ul
+              aria-label={ui.evidenceAria}
+              className="mt-step-32 grid grid-safe gap-x-step-24 gap-y-step-32 md:grid-cols-3"
+            >
+              {hero.evidence.map((e) => (
+                <li key={e.value} className="min-w-0">
+                  <MetricWithContext value={e.value} context={e.source} size="hero" />
+                </li>
+              ))}
+            </ul>
+            <nav
+              aria-label={ui.linksAria}
+              className="mt-step-48 flex flex-col gap-step-16 md:flex-row md:flex-wrap md:items-center"
+            >
+              <ButtonLink href={`#${sectionIds.work}`} className="w-full md:w-auto">
+                {hero.ctas.work}
+              </ButtonLink>
+              <ButtonLink
+                variant="secondary"
+                href={hero.ctas.cvUrl}
+                download
+                className="w-full md:w-auto"
+              >
+                {hero.ctas.cv}
+              </ButtonLink>
+              <ul className="mt-step-16 flex gap-step-16 md:mt-0 md:ml-auto">
+                {identity.social.map((s) => (
+                  <li key={s.name}>
+                    <a
+                      href={s.href}
+                      rel="noopener"
+                      className="inline-flex h-11 w-11 items-center justify-center motion-link hover:text-primary"
+                    >
+                      <SocialIcon name={s.name} />
+                      <span className="sr-only">{s.name}</span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          </div>
+        </section>
+
+        <section
+          aria-labelledby={`${sectionIds.work}-h`}
+          className={`${container} ${sectionGap} scroll-mt-6`}
+          id={sectionIds.work}
+        >
+          <SectionHeading id={`${sectionIds.work}-h`} label={ui.headings.work} index="01" />
+
+          <Card
+            as="article"
+            data-level="destacado"
+            className="mt-step-32 grid grid-safe gap-x-step-48 gap-y-step-32 xl:grid-cols-[7fr_5fr]"
+          >
+            <div className="min-w-0 pt-step-16">
+              <p className="font-mono text-metadata uppercase text-muted">{anchorProject.meta}</p>
+              <h3 className="mt-step-8 text-h3-featured font-semibold">{anchorProject.name}</h3>
+              <p className="mt-step-16 max-w-[62ch] text-body">{anchorProject.summary}</p>
+              {anchorProject.decision ? (
+                <p className="mt-step-16 max-w-[62ch] text-body">{anchorProject.decision}</p>
+              ) : null}
+              <hr className="mt-step-32 border-rule" />
+              <MetricList layout="row" items={anchorProject.proofs} className="mt-step-24" />
+              <TagList items={anchorProject.stack} className="mt-step-24" />
+              {!anchorProject.link.external && (
+                <Link
+                  href={anchorProject.link.href}
+                  aria-label={linkName(anchorProject.link.label, anchorProject.name)}
+                  className={`${buttonLinkClass("tertiary")} mt-step-24`}
+                >
+                  {anchorProject.link.label}
+                </Link>
+              )}
+            </div>
+            <SchemaFigure id="schema-home" vertical className="pt-step-16" {...schemaFigure} />
+          </Card>
+
+          <Card
+            as="article"
+            data-level="destacado-secundario"
+            className="mt-step-32 grid grid-safe gap-x-step-48 gap-y-step-24 xl:grid-cols-2"
+          >
+            <div className="min-w-0">
+              <Badge variant="outline">{cleoSpa.badge}</Badge>
+              <h3 className="mt-step-16 text-h3 font-semibold">{cleoSpa.name}</h3>
+              <p className="mt-step-8 font-mono text-metadata uppercase text-muted">{cleoSpa.meta}</p>
+              <p className="mt-step-16 max-w-[62ch] text-body-small">{cleoSpa.summary}</p>
+              <MetricList layout="row" items={cleoSpa.proofs} className="mt-step-24" />
+              <TagList items={cleoSpa.stack} className="mt-step-24" />
+              {!cleoSpa.link.external && (
+                <Link
+                  href={cleoSpa.link.href}
+                  aria-label={linkName(cleoSpa.link.label, cleoSpa.name)}
+                  className={`${buttonLinkClass("tertiary")} mt-step-24`}
+                >
+                  {cleoSpa.link.label}
+                </Link>
+              )}
+            </div>
+            {cleoSpa.image ? (
+              <ScreenshotFrame
+                image={cleoSpa.image}
+                sizes="(min-width: 1280px) 536px, (min-width: 640px) calc(100vw - 72px), calc(100vw - 40px)"
+              />
+            ) : null}
+          </Card>
+
+          <ul className="mt-step-32 grid grid-safe grid-cols-1 gap-step-24 sm:grid-cols-2 xl:grid-cols-3">
+            {minorProjects.map((p) => (
+              <li key={p.slug} className="min-w-0">
+                <Card
+                  as="article"
+                  data-level="menor"
+                  variant={p.capture ? "surface" : "rule"}
+                  interactive
+                  className="h-full"
+                >
+                  {p.capture ? (
+                    <ScreenshotFrame
+                      image={p.capture}
+                      sizes="(min-width: 1280px) 324px, (min-width: 640px) calc(50vw - 82px), calc(100vw - 74px)"
+                    />
+                  ) : null}
+                  <div className={p.capture ? "mt-step-16" : ""}>
+                    <Badge variant="outline">{p.badge}</Badge>
+                    <h3 className="mt-step-16 text-h3 font-semibold">{p.name}</h3>
+                    <p className="mt-step-8 font-mono text-metadata uppercase text-muted">{p.meta}</p>
+                    <p className="mt-step-16 text-body-small">{p.summary}</p>
+                    {p.proofs[0] ? (
+                      <MetricWithContext
+                        value={p.proofs[0].value}
+                        context={p.proofs[0].context}
+                        size="row"
+                        className="mt-step-24"
+                      />
+                    ) : null}
+                    <TagList items={p.stack} className="mt-step-24" />
+                    {p.link.external ? (
+                      <a
+                        href={p.link.href}
+                        rel="noopener"
+                        aria-label={linkName(p.link.label, p.name)}
+                        className={`${buttonLinkClass("tertiary")} mt-step-24`}
+                      >
+                        {p.link.label}
+                      </a>
+                    ) : (
+                      <Link
+                        href={p.link.href}
+                        aria-label={linkName(p.link.label, p.name)}
+                        className={`${buttonLinkClass("tertiary")} mt-step-24`}
+                      >
+                        {p.link.label}
+                      </Link>
+                    )}
+                  </div>
+                </Card>
               </li>
             ))}
           </ul>
-          <nav aria-label={ui.linksAria} className="mt-8 flex flex-wrap items-center gap-x-5 gap-y-3">
-            <a
-              href={`mailto:${identity.email}`}
-              className="bg-ink px-5 py-2.5 text-small font-medium text-paper transition-colors hover:bg-copper"
-            >
-              {ui.writeMe}
-            </a>
-            {[
-              { href: identity.github, label: "GitHub ↗" },
-              { href: identity.linkedin, label: "LinkedIn ↗" },
-              { href: identity.cvUrl, label: ui.cvLabel },
-            ].map((l) => (
-              <a
-                key={l.label}
-                href={l.href}
-                rel="noopener"
-                className="text-small font-medium underline decoration-line underline-offset-[5px] transition-colors hover:text-copper hover:decoration-copper"
-              >
-                {l.label}
-              </a>
-            ))}
-          </nav>
         </section>
 
-        {/* ── Proyectos ──────────────────────────────────────── */}
-        <section aria-labelledby={ui.sections.projects} className={`${container} ${sectionGap} scroll-mt-6`} id={ui.sections.projects}>
-          <SectionHeading id={`${ui.sections.projects}-h`} label={ui.sections.projects} />
+        <section
+          aria-labelledby={`${sectionIds.method}-h`}
+          className={`${container} ${sectionGap} scroll-mt-6`}
+          id={sectionIds.method}
+        >
+          <SectionHeading
+            id={`${sectionIds.method}-h`}
+            label={ui.headings.method}
+            kicker={ui.nav.method}
+            index="02"
+            lead={aiWorkflow.lead}
+          />
 
-          {/* Ancla: Notable Learning ordena la lectura de la sección — y es
-              el momento cobre del home. */}
-          <article className="calibrated bg-copper-surface px-6 py-8 [--corner-size:18px] sm:px-10 sm:py-10">
-            <h3 className="display text-display-md font-bold">{anchorProject.name}</h3>
-            <p className="mt-1.5 font-mono text-micro text-muted">{anchorProject.role}</p>
-            <p className="mt-4 max-w-[62ch] text-body">{anchorProject.summary}</p>
-            <div className="mt-5 flex flex-wrap gap-2.5">
-              {anchorProject.evidence.map((e) => (
-                <Evidence key={e.value} value={e.value} source={e.source} />
+          <div className="grid grid-safe gap-x-step-48 gap-y-step-24 border-t border-rule pt-step-48 lg:grid-cols-[288px_1fr]">
+            <p className="font-mono text-metadata uppercase text-muted">{aiWorkflow.kicker}</p>
+            <div className="min-w-0">
+              <div className="max-w-[66ch] space-y-step-24 text-body">
+                <p>
+                  <strong className="font-medium">{aiWorkflow.intro.lead}</strong>{" "}
+                  {aiWorkflow.intro.rest}
+                </p>
+                <p>{aiWorkflow.highlight}</p>
+                <p>{aiWorkflow.honestyIntro}</p>
+              </div>
+
+              <blockquote className="mt-step-32 max-w-[60ch] border-l border-text pl-step-32">
+                <p className="text-h3-featured font-normal">{aiWorkflow.honestyQuote}</p>
+              </blockquote>
+
+              {/* En HTML y no con PipelineFigure: aquí el texto es texto. */}
+              <figure className="mt-step-48">
+                <ol aria-label={ui.pipelineKicker} className="flex flex-col md:flex-row md:items-stretch">
+                  {aiWorkflow.pipeline.map((step, i) => {
+                    const last = i === aiWorkflow.pipeline.length - 1;
+                    return (
+                      <li key={step} className="flex min-w-0 flex-col md:flex-auto md:flex-row">
+                        {i > 0 && (
+                          <span aria-hidden="true" className="flex flex-none items-center justify-center self-center md:w-step-16">
+                            <svg
+                              width="24"
+                              height="24"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              className="rotate-90 md:rotate-0"
+                            >
+                              <path d="M0 12h23M18 7l5 5-5 5" />
+                            </svg>
+                          </span>
+                        )}
+                        <span
+                          className={`flex min-w-0 items-center px-step-12 py-step-12 font-mono text-metadata uppercase md:flex-auto md:justify-center md:text-center ${last
+                              ? "border-[1.25px] border-primary bg-accent-muted text-primary"
+                              : "border-[1.25px] border-text bg-surface"
+                            }`}
+                        >
+                          {step}
+                        </span>
+                      </li>
+                    );
+                  })}
+                </ol>
+                <figcaption className="mt-step-16 text-caption text-muted">{aiWorkflow.pipelineNote}</figcaption>
+              </figure>
+            </div>
+          </div>
+
+          <div className="mt-step-48 grid grid-safe gap-x-step-48 gap-y-step-24 border-t border-rule pt-step-48 lg:grid-cols-[288px_1fr]">
+            <p className="font-mono text-metadata uppercase text-muted">{aiWorkflow.quality.kicker}</p>
+            <ol className="min-w-0 space-y-step-16">
+              {aiWorkflow.quality.items.map((item, i) => (
+                <li key={item} className="grid grid-cols-[48px_1fr] gap-x-step-8 text-body">
+                  <span aria-hidden="true" className="font-mono text-numeral-list font-medium leading-[1.65] text-primary">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <span className="max-w-[66ch]">{item}</span>
+                </li>
+              ))}
+            </ol>
+          </div>
+        </section>
+
+        <section
+          aria-labelledby={`${sectionIds.experience}-h`}
+          className={`${container} ${sectionGap} scroll-mt-6`}
+          id={sectionIds.experience}
+        >
+          <SectionHeading
+            id={`${sectionIds.experience}-h`}
+            label={ui.headings.experience}
+            kicker={ui.headings.experienceKicker}
+            index="03"
+          />
+
+          {/* Accordion nativo: <details> por puesto, sin JS ni estado. El
+              primero abre por defecto y abrir uno no cierra los demás, que es
+              el comportamiento por defecto de <details> sin atributo name. */}
+          <div className="grid grid-safe gap-x-step-48 gap-y-step-48 xl:grid-cols-[8fr_4fr]">
+            <div className="min-w-0">
+            <ol className="min-w-0 md:border-l md:border-text">
+              {experience.filter((job) => !job.group).map((job, i) => (
+                <li
+                  key={job.company}
+                  className="border-t border-rule md:ml-step-32 md:first:border-t-0"
+                >
+                  {job.compact ? (
+                    <div className="py-step-24">
+                      <JobHeader job={job} />
+                    </div>
+                  ) : (
+                    <details className="group" open={i === 0}>
+                      {/* list-none más el pseudo-elemento de WebKit: el
+                          triángulo nativo se retira en los dos motores. La
+                          retícula deja el indicador a la derecha y el resto
+                          de la cabecera en la primera columna. */}
+                      <summary className="grid cursor-pointer list-none grid-cols-[1fr_auto] items-start gap-x-step-16 py-step-24 [&::-webkit-details-marker]:hidden">
+                        <JobHeader job={job} />
+                        <span
+                          aria-hidden="true"
+                          className="font-mono text-h3 leading-[1.2] text-muted"
+                        >
+                          <span className="group-open:hidden">+</span>
+                          <span className="hidden group-open:inline">−</span>
+                        </span>
+                      </summary>
+                      <dl className="motion-accordion pb-step-32">
+                        {[
+                          { label: ui.experience.context, body: <p className="max-w-[66ch] text-body-small">{job.context}</p> },
+                          {
+                            label: ui.experience.scope,
+                            body: (
+                              <ol className="grid gap-y-step-8">
+                                {(job.scope ?? []).map((item, n) => (
+                                  <li key={item} className="grid grid-cols-[32px_1fr] gap-x-step-8 text-body-small">
+                                    <span
+                                      aria-hidden="true"
+                                      className="font-mono text-numeral-list font-medium leading-[1.6] text-primary"
+                                    >
+                                      {String(n + 1).padStart(2, "0")}
+                                    </span>
+                                    <span className="max-w-[66ch]">{item}</span>
+                                  </li>
+                                ))}
+                              </ol>
+                            ),
+                          },
+                          {
+                            label: ui.experience.result,
+                            body: (
+                              <>
+                                <p className="max-w-[66ch] text-body-small">{job.result}</p>
+                                {job.resultLink ? (
+                                  <Link
+                                    href={job.resultLink.href}
+                                    className={`${buttonLinkClass("tertiary")} mt-step-8`}
+                                  >
+                                    {job.resultLink.label}
+                                  </Link>
+                                ) : null}
+                              </>
+                            ),
+                          },
+                          { label: ui.experience.tech, body: <TagList items={job.tech ?? []} /> },
+                        ].map(({ label, body }) => (
+                          <div
+                            key={label}
+                            className="grid gap-y-step-8 border-t border-rule py-step-16 lg:grid-cols-[3fr_9fr] lg:gap-x-step-24"
+                          >
+                            <dt className="font-mono text-metadata uppercase text-muted">{label}</dt>
+                            <dd className="min-w-0">{body}</dd>
+                          </div>
+                        ))}
+                      </dl>
+                    </details>
+                  )}
+                </li>
+              ))}
+            </ol>
+
+            {/* La etiqueta de grupo divide la trayectoria: no pertenece al
+                puesto que le sigue, así que va fuera de la lista y el grupo
+                abre su propia lista. */}
+            {experience
+              .filter((job) => job.group)
+              .map((job) => (
+                <div key={job.company}>
+                  <p className="border-t border-rule pt-step-32 font-mono text-metadata uppercase text-muted md:ml-step-32">
+                    {job.group}
+                  </p>
+                  <ol className="min-w-0 md:border-l md:border-text">
+                    <li className="md:ml-step-32">
+                      <div className="py-step-24">
+                        <JobHeader job={job} />
+                      </div>
+                    </li>
+                  </ol>
+                </div>
               ))}
             </div>
-            <SchemaFigure id="schema-home" className="mt-8" {...schemaFigure} />
-            {anchorProject.image ? (
-              <div className="mt-8">
-                <ScreenshotFrame image={anchorProject.image} />
-              </div>
-            ) : null}
-            <p className="mt-6 font-mono text-micro leading-[1.8] text-muted">
-              {anchorProject.stack.join(" · ")}
-            </p>
-            <Link
-              href="/proyectos/notable-learning"
-              className="mt-6 inline-block bg-ink px-5 py-2.5 text-small font-medium text-paper transition-colors hover:bg-copper"
-            >
-              <span aria-hidden="true">→</span> {anchorProject.link.label}
-            </Link>
-          </article>
 
-          <ul className="mt-2 grid gap-x-10 sm:grid-cols-2">
-            {gridProjects.map((p) => (
-              <li key={p.slug} className="border-t border-line py-8">
-                {p.image ? (
-                  <div className="mb-5">
-                    <ScreenshotFrame image={p.image} />
+            <div id={sectionIds.stack} className="min-w-0 self-start border-t border-rule pt-10 scroll-mt-6">
+              <h3 className="font-mono text-metadata uppercase text-muted">{ui.headings.stack}</h3>
+              <dl className="mt-step-24 space-y-step-24">
+                {[stack.primary, stack.solid, stack.growing].map((group) => (
+                  <div key={group.label}>
+                    <dt className="font-mono text-metadata uppercase text-muted">{group.label}</dt>
+                    <dd className="mt-step-8 font-mono text-body-small">{group.items.join(" · ")}</dd>
                   </div>
-                ) : null}
-                <h3 className="display-md text-title font-semibold">{p.name}</h3>
-                <p className="mt-1 font-mono text-micro text-muted">{p.role}</p>
-                <p className="mt-3 max-w-[62ch] text-small">{p.summary}</p>
-                <div className="mt-4 flex flex-wrap gap-2.5">
-                  {p.evidence.map((e) => (
-                    <Evidence key={e.value} value={e.value} source={e.source} />
-                  ))}
-                </div>
-                <p className="mt-4 font-mono text-micro leading-[1.8] text-muted">
-                  {p.stack.join(" · ")}
-                </p>
-                {/* La flecha distingue el destino sin depender del color:
-                    ↗ sale del sitio, → se queda dentro. */}
-                {p.link.external ? (
-                  <a
-                    href={p.link.href}
-                    rel="noopener"
-                    className={cardLink}
-                  >
-                    <span aria-hidden="true" className="text-copper">↗</span> {p.link.label}
-                  </a>
-                ) : (
-                  <Link href={p.link.href} className={cardLink}>
-                    <span aria-hidden="true" className="text-copper">→</span> {p.link.label}
-                  </Link>
-                )}
-              </li>
-            ))}
-          </ul>
-        </section>
-
-        {/* ── IA ─────────────────────────────────────────────── */}
-        <section aria-labelledby={ui.sections.ai} className={`${container} ${sectionGap} scroll-mt-6`} id={ui.sections.ai}>
-          <SectionHeading id={`${ui.sections.ai}-h`} label={ui.sections.ai} />
-          <div className="max-w-[65ch] space-y-5 text-body leading-[1.75]">
-            <p>
-              <strong className="font-medium">{aiWorkflow.intro.lead}</strong>{" "}
-              {aiWorkflow.intro.rest}
-            </p>
-            <p>{aiWorkflow.highlight}</p>
-            <p>{aiWorkflow.honestyIntro}</p>
-          </div>
-
-          {/* La pull quote es el segundo momento tipográfico del sitio — y el
-              único pico visual de la página: papel sobre tinta. bg-paper y
-              text-ink son obligatorios aquí: dentro de .inverted resuelven al
-              tema opuesto; lo heredado del body no se re-resuelve. */}
-          <div className="inverted mt-10 bg-paper px-6 py-8 text-ink sm:mt-12 sm:px-10 sm:py-10">
-            <blockquote className="max-w-[36rem]">
-              <span aria-hidden="true" className="mb-5 block h-0.5 w-9 bg-copper" />
-              <p className="display-md text-display-md font-medium leading-[1.45]">
-                {aiWorkflow.honestyQuote}
-              </p>
-            </blockquote>
-          </div>
-
-          <div className="mt-10 sm:mt-12">
-            <p className="mb-3.5 font-mono text-micro tracking-[0.04em] text-muted">
-              {ui.pipelineKicker}
-            </p>
-            <p className="flex flex-wrap items-center gap-x-2.5 gap-y-2 font-mono text-micro">
-              {aiWorkflow.pipeline.map((step, i) => (
-                <span key={step} className="contents">
-                  {i > 0 && (
-                    <span aria-hidden="true" className="text-copper">
-                      →
-                    </span>
-                  )}
-                  <span
-                    className={
-                      i === aiWorkflow.pipeline.length - 1
-                        ? "border border-copper px-2.5 py-1.5 text-copper"
-                        : "border border-line px-2.5 py-1.5"
-                    }
-                  >
-                    {step}
-                  </span>
-                </span>
-              ))}
-            </p>
-            <p className="mt-3.5 max-w-[58ch] text-small leading-[1.6] text-muted">
-              {aiWorkflow.pipelineNote}
-            </p>
+                ))}
+              </dl>
+            </div>
           </div>
         </section>
 
-        {/* ── Experiencia ────────────────────────────────────── */}
-        <section aria-labelledby={ui.sections.experience} className={`${container} ${sectionGap} scroll-mt-6`} id={ui.sections.experience}>
-          <SectionHeading id={`${ui.sections.experience}-h`} label={ui.sections.experience} />
-          <ol>
-            {experience.map((job, i) => (
-              <li
-                key={job.company}
-                className={`grid gap-1 border-line py-7 sm:grid-cols-[10.5rem_1fr] sm:gap-6 ${i > 0 ? "border-t" : ""}`}
-              >
-                <p className="font-mono text-micro leading-[1.7] text-muted">{job.period}</p>
-                <div>
-                  <h3 className="text-title font-semibold">
-                    {job.company} <span className="font-normal text-muted">— {job.role}</span>
-                  </h3>
-                  <p className="mt-0.5 font-mono text-micro text-muted">{job.location}</p>
-                  {job.lines.map((line) => (
-                    <p key={line} className="mt-2 max-w-[56ch] text-small">
-                      {line}
-                    </p>
-                  ))}
-                </div>
-              </li>
-            ))}
-          </ol>
-        </section>
-
-        {/* ── Stack ──────────────────────────────────────────── */}
-        <section aria-labelledby={ui.sections.stack} className={`${container} ${sectionGap} scroll-mt-6`} id={ui.sections.stack}>
-          <SectionHeading id={`${ui.sections.stack}-h`} label={ui.sections.stack} />
-          <dl>
-            {[stack.primary, stack.solid, stack.growing].map((group, i) => (
-              <div
-                key={group.label}
-                className={`grid gap-1 border-line py-5 sm:grid-cols-[10.5rem_1fr] sm:gap-6 ${i > 0 ? "border-t" : ""}`}
-              >
-                <dt className="font-mono text-micro leading-[1.7] text-muted">{group.label}</dt>
-                <dd className="font-mono text-small leading-[1.9]">{group.items.join(" · ")}</dd>
-              </div>
-            ))}
-          </dl>
-        </section>
-
-        {/* ── Contacto ───────────────────────────────────────── */}
-        <section aria-labelledby={ui.sections.contact} className={`${container} ${sectionGap} scroll-mt-6 pb-20 sm:pb-24`} id={ui.sections.contact}>
-          <SectionHeading id={`${ui.sections.contact}-h`} label={ui.sections.contact} />
-          <p className="mb-7 max-w-[55ch] text-body">
-            {ui.contact}
+        <section
+          aria-labelledby={`${sectionIds.contact}-h`}
+          className={`${container} ${sectionGap} scroll-mt-6 pb-20 sm:pb-24`}
+          id={sectionIds.contact}
+        >
+          <SectionHeading id={`${sectionIds.contact}-h`} label={ui.headings.contact} index="04" />
+          <p className="max-w-[66ch] text-body">{ui.contact.body}</p>
+          {/* La meta sale de hero.status: un solo origen para el mismo dato.
+              Apilada por debajo de 431, donde el separador sobra. */}
+          <p className="mt-step-24 flex flex-col items-start gap-step-8 font-mono text-metadata uppercase text-muted [@media(min-width:431px)]:flex-row [@media(min-width:431px)]:flex-wrap [@media(min-width:431px)]:items-center">
+            <Badge variant="accent">{ui.availability}</Badge>
+            <span aria-hidden="true" className="hidden [@media(min-width:431px)]:inline">
+              ·
+            </span>
+            <span>{hero.status}</span>
           </p>
+          {/* 24 px en móvil es del contrato de este cambio y queda fuera de la
+              escala: el h2 baja a 28 por debajo de 768. */}
           <a
             href={`mailto:${identity.email}`}
-            className="display inline-block break-all text-display-md font-bold underline decoration-line decoration-2 underline-offset-8 transition-colors hover:text-copper hover:decoration-copper"
+            className="mt-step-24 inline-flex min-h-11 items-center break-all font-display text-[1.5rem] font-semibold leading-[1.2] tracking-[-0.015em] underline decoration-rule decoration-2 underline-offset-8 motion-link hover:text-primary hover:decoration-primary md:text-h2"
           >
             {identity.email}
           </a>
+          {/* nav etiquetado, como los enlaces del hero: son un conjunto, no prosa. */}
+          <nav
+            aria-label={ui.contact.linksAria}
+            className="mt-step-24 flex flex-wrap items-center gap-x-step-8"
+          >
+            <ButtonLink variant="tertiary" href={identity.linkedin} rel="noopener">
+              {ui.contact.linkedin}
+            </ButtonLink>
+            <span aria-hidden="true" className="text-metadata text-muted">
+              ·
+            </span>
+            <ButtonLink variant="tertiary" href={identity.github} rel="noopener">
+              {ui.contact.github}
+            </ButtonLink>
+            <span aria-hidden="true" className="text-metadata text-muted">
+              ·
+            </span>
+            {/* El hero enlaza al mismo PDF: sin esto, dos enlaces distintos
+                comparten nombre accesible. Mismo helper que las cards. */}
+            <ButtonLink
+              variant="tertiary"
+              href={hero.ctas.cvUrl}
+              aria-label={linkName(hero.ctas.cv, ui.headings.contact)}
+              download
+            >
+              {hero.ctas.cv}
+            </ButtonLink>
+          </nav>
         </section>
       </main>
 
-      <footer className={`${container} border-t border-line pb-10 pt-6`}>
-        <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2 font-mono text-micro text-muted">
-          <p>
-            © {new Date().getFullYear()} {identity.fullName}
-          </p>
-          <p>
-            Next.js · TypeScript · Vercel ·{" "}
-            <a
-              href={identity.repo}
-              rel="noopener"
-              className="underline underline-offset-4 transition-colors hover:text-copper"
-            >
-              {ui.footerSource}
-            </a>
-          </p>
-        </div>
+      <footer
+        className={`${container} flex flex-col gap-step-8 border-t border-rule pb-step-64 pt-step-24 font-mono text-metadata text-muted sm:flex-row sm:justify-between`}
+      >
+        <p>
+          © {new Date().getFullYear()} {identity.fullName}
+        </p>
+        <p>
+          {/* min-h-11 con margen negativo: área táctil de 44 sin que el
+              footer crezca. */}
+          <a
+            href={identity.repo}
+            rel="noopener"
+            className="-my-3.5 inline-flex min-h-11 items-center motion-link hover:text-primary"
+          >
+            {ui.footer.source}
+          </a>{" "}
+          ·{" "}
+          <a
+            href={identity.ci}
+            rel="noopener"
+            className="-my-3.5 inline-flex min-h-11 items-center motion-link hover:text-primary"
+          >
+            {ui.footer.ci}
+          </a>
+        </p>
       </footer>
     </>
   );

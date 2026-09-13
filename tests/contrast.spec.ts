@@ -1,34 +1,49 @@
 import { expect, test } from "@playwright/test";
 
 /**
- * Matriz de pares AA del sistema de color (la que promete el comentario de
- * globals.css). Los tokens se leen resueltos en runtime con una sonda —
- * getPropertyValue devolvería light-dark()/el polyfill del build sin
- * resolver — y el ratio WCAG se calcula aquí. Al correr bajo los projects
- * light y dark, cada par queda verificado en ambos temas.
+ * Matriz de pares del sistema de color. Los tokens se leen resueltos en
+ * runtime con una sonda y el ratio WCAG se calcula aquí, así que el test
+ * verifica el color que el navegador pinta de verdad, no el hex escrito en el
+ * CSS.
+ *
+ * El mínimo de cada par es el ratio documentado en /sistema, con un margen de
+ * una centésima: si alguien retoca un hex "un poco", el par deja de cumplir
+ * su promesa documentada y no solo el umbral genérico de AA.
+ *
+ * El margen existe porque los ratios documentados van a dos decimales y el
+ * cálculo real no:
+ * success/bg da 6.0078 y la tabla dice 6.01, blanco/primary da 11.6256 y la
+ * tabla dice 11.63. Comparar contra el valor impreso fallaría por redondeo, no
+ * por contraste.
  */
+const TOLERANCE = 0.01;
 
 type Pair = {
   fg: string;
   bg: string;
-  /** Selector del scope donde vive el par (por defecto, body). */
-  scope?: string;
   min: number;
 };
 
 // El array es data a propósito: los pares nuevos del sistema se añaden aquí.
 const pairs: Pair[] = [
-  { fg: "--color-ink", bg: "--color-paper", min: 4.5 },
-  { fg: "--color-muted", bg: "--color-paper", min: 4.5 },
-  { fg: "--color-copper", bg: "--color-paper", min: 4.5 },
-  { fg: "--color-ink", bg: "--color-copper-surface", min: 4.5 },
-  { fg: "--color-muted", bg: "--color-copper-surface", min: 4.5 },
-  { fg: "--color-copper", bg: "--color-copper-surface", min: 4.5 },
-  // Hover del CTA y ::selection: papel sobre cobre.
-  { fg: "--color-paper", bg: "--color-copper", min: 4.5 },
-  // Bloque invertido de #ia: papel sobre tinta con el cobre del tema opuesto.
-  { fg: "--color-ink", bg: "--color-paper", scope: ".inverted", min: 4.5 },
-  { fg: "--color-copper", bg: "--color-paper", scope: ".inverted", min: 4.5 },
+  // Pares documentados con su ratio declarado.
+  { fg: "--color-text", bg: "--color-bg", min: 16.39 },
+  { fg: "--color-text-secondary", bg: "--color-bg", min: 6.25 },
+  { fg: "--color-primary", bg: "--color-bg", min: 10.74 },
+  { fg: "--color-primary-hover", bg: "--color-bg", min: 6.59 },
+  { fg: "--color-primary", bg: "--color-accent-muted", min: 9.67 },
+  { fg: "--color-success", bg: "--color-bg", min: 6.01 },
+  { fg: "--color-warning", bg: "--color-bg", min: 6.18 },
+  { fg: "--color-error", bg: "--color-bg", min: 6.04 },
+  // Blanco sobre primary y primary-hover: el texto del botón primario.
+  { fg: "--color-surface", bg: "--color-primary", min: 11.63 },
+  { fg: "--color-surface", bg: "--color-primary-hover", min: 7.13 },
+  // Pares sin ratio documentado que las primitivas necesitan: texto sobre
+  // las dos superficies (cards y bloques de código).
+  { fg: "--color-text", bg: "--color-surface", min: 4.5 },
+  { fg: "--color-text", bg: "--color-surface-muted", min: 4.5 },
+  { fg: "--color-text-secondary", bg: "--color-surface", min: 4.5 },
+  { fg: "--color-text-secondary", bg: "--color-surface-muted", min: 4.5 },
 ];
 
 function luminance(rgb: readonly [number, number, number]): number {
@@ -60,33 +75,28 @@ test("todos los pares de tokens cumplen AA en el tema activo", async ({ page }) 
   await page.goto("/");
   for (const pair of pairs) {
     const probe = await page.evaluate(
-      ({ fg, bg, scope }) => {
-        const host = document.querySelector(scope ?? "body");
-        if (!host) throw new Error(`scope no encontrado: ${scope}`);
+      ({ fg, bg }) => {
         const el = document.createElement("span");
         el.style.color = `var(${fg})`;
         el.style.backgroundColor = `var(${bg})`;
-        host.appendChild(el);
+        document.body.appendChild(el);
         const s = getComputedStyle(el);
         const out = { color: s.color, background: s.backgroundColor };
         el.remove();
         return out;
       },
-      { fg: pair.fg, bg: pair.bg, scope: pair.scope ?? null },
+      { fg: pair.fg, bg: pair.bg },
     );
     const ratio = contrastRatio(parseRgb(probe.color), parseRgb(probe.background));
     expect
-      .soft(
-        ratio,
-        `${pair.fg} sobre ${pair.bg}${pair.scope ? ` en ${pair.scope}` : ""} → ${ratio.toFixed(2)}:1`,
-      )
-      .toBeGreaterThanOrEqual(pair.min);
+      .soft(ratio, `${pair.fg} sobre ${pair.bg} → ${ratio.toFixed(2)}:1`)
+      .toBeGreaterThanOrEqual(pair.min - TOLERANCE);
   }
-  // line/paper es decorativo (sin requisito de texto): solo informativo.
+  // border/bg es decorativo (sin requisito de texto): solo informativo.
   const line = await page.evaluate(() => {
     const el = document.createElement("span");
-    el.style.color = "var(--color-line)";
-    el.style.backgroundColor = "var(--color-paper)";
+    el.style.color = "var(--color-border)";
+    el.style.backgroundColor = "var(--color-bg)";
     document.body.appendChild(el);
     const s = getComputedStyle(el);
     const out = { color: s.color, background: s.backgroundColor };
@@ -94,6 +104,6 @@ test("todos los pares de tokens cumplen AA en el tema activo", async ({ page }) 
     return out;
   });
   console.log(
-    `line/paper (decorativo): ${contrastRatio(parseRgb(line.color), parseRgb(line.background)).toFixed(2)}:1`,
+    `border/bg (decorativo): ${contrastRatio(parseRgb(line.color), parseRgb(line.background)).toFixed(2)}:1`,
   );
 });

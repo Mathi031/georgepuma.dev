@@ -12,13 +12,15 @@
     "test:a11y": "playwright test",
     "og": "node scripts/og.mjs",
     "icons": "node scripts/icons.mjs",
-    "images": "node scripts/images.mjs"
+    "images": "node scripts/images.mjs",
+    "images:crops": "node scripts/images.mjs --crops"
   },
   "dependencies": {
-    "@fontsource-variable/archivo": "^5.3.0",
-    "@fontsource/ibm-plex-mono": "^5.3.0",
+    "@fontsource-variable/hanken-grotesk": "^5.3.0",
+    "@fontsource-variable/inter": "^5.3.0",
+    "@fontsource-variable/jetbrains-mono": "^5.3.0",
     "@vercel/analytics": "^2.0.1",
-    "next": "^16",
+    "next": "^16.3.5",
     "next-intl": "^4",
     "react": "^19",
     "react-dom": "^19"
@@ -31,10 +33,16 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
-    "eslint-config-next": "^16",
+    "eslint-config-next": "^16.3.5",
     "png-to-ico": "^3.0.2",
-    "sharp": "^0.35.3",
+    "sharp": "^0.35.4",
     "tailwindcss": "^4",
     "typescript": "^5"
+  },
+  "pnpm": {
+    "overrides": {
+      "nanoid": ">=3.3.18",
+      "js-yaml": ">=4.3.2"
+    }
   }
 }

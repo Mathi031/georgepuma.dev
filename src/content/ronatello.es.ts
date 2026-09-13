@@ -9,9 +9,8 @@ import type { MiniCase } from "./mini-case";
 
 export const miniCase: MiniCase = {
   meta: {
-    title: "Ronatello — mini-caso",
     description:
-      "Sitio de producción para una licorería en Arequipa: promociones con vigencia, reservas con cupo y panel propio — del brief al despliegue en 12 días con las reglas en Postgres (RLS).",
+      "Sitio de producción para una licorería en Arequipa: promociones con vigencia, reservas con cupo y panel propio. Del brief al despliegue en 12 días.",
   },
   route: "/proyectos/ronatello",
   kicker: "Mini-caso · Cliente directo · 12 días a producción",
@@ -96,9 +95,12 @@ export const miniCase: MiniCase = {
     id: "cierre",
     heading: "Lo que dejó",
     body: "La prueba de que el starter kit extraído de Cleo Spa funciona: el mismo esqueleto de roles, RLS y CI, del brief a producción en 12 días. Lo que allá fue una extracción, aquí fue plazo.",
+    pending:
+      "La regla más delicada del sistema — que una reserva vencida devuelva su cupo — tiene " +
+      "un test en pgTAP que la cubre entera, y el CI todavía no lo ejecuta: un verde que no " +
+      "comprueba lo que más importa. Es un paso de workflow, y es el siguiente.",
     liveHref: "https://ronatello.pe",
     liveLabel: "Ver el sitio en vivo",
-    backHref: "/#proyectos",
     backLabel: "Volver a proyectos",
   },
 };

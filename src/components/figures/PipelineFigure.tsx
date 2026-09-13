@@ -1,5 +1,5 @@
 type PipelineFigureProps = {
-  /** Prefijo de ids aria: la figura podría repetirse en una misma página. */
+  /** Prefijo de los ids de title/desc. */
   id: string;
   title: string;
   desc: string;
@@ -9,11 +9,8 @@ type PipelineFigureProps = {
 };
 
 /**
- * Figura del pipeline de diagnóstico (la "guerra" del caso): capas apiladas
- * que se destapan en orden y desembocan en la resolución, en cobre — la voz
- * de lo verificado. Misma filosofía que SchemaFigure: SVG inline a mano con
- * los tokens del sitio, title/desc accesibles, sin motion, y viewBox angosto
- * (360) para que el texto nunca baje del paso micro en mobile.
+ * SVG inline con los tokens del sitio, como SchemaFigure. ViewBox angosto (360)
+ * para que el texto no baje de 12 px en móvil.
  */
 export function PipelineFigure({
   id,
@@ -44,13 +41,13 @@ export function PipelineFigure({
         const y = 2 + i * (stepH + gap);
         return (
           <g key={step.label}>
-            <rect x="20" y={y} width="320" height={stepH} stroke="var(--color-line)" />
+            <rect x="20" y={y} width="320" height={stepH} stroke="var(--color-border)" />
             <text
               x="34"
               y={y + 19}
               fontFamily="var(--font-mono)"
               fontSize="12.5"
-              fill="var(--color-copper)"
+              fill="var(--color-primary)"
             >
               {step.label}
             </text>
@@ -68,17 +65,17 @@ export function PipelineFigure({
               y1={y + stepH}
               x2="180"
               y2={y + stepH + gap - 4}
-              stroke="var(--color-line)"
+              stroke="var(--color-border)"
             />
             <path
               d={`M175 ${y + stepH + gap - 5}l5 5 5-5`}
-              stroke="var(--color-line)"
+              stroke="var(--color-border)"
             />
           </g>
         );
       })}
 
-      <rect x="20" y={resY} width="320" height="34" stroke="var(--color-copper)" />
+      <rect x="20" y={resY} width="320" height="34" stroke="var(--color-primary)" />
       <text
         x="180"
         y={resY + 21}
@@ -86,7 +83,7 @@ export function PipelineFigure({
         fontFamily="var(--font-mono)"
         fontSize="12.5"
         fontWeight="500"
-        fill="var(--color-copper)"
+        fill="var(--color-primary)"
       >
         {resolution}
       </text>

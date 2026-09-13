@@ -1,14 +1,16 @@
 import type { Metadata } from "next";
-import { headers } from "next/headers";
 import { notFound } from "next/navigation";
 import { Analytics } from "@vercel/analytics/next";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { setRequestLocale } from "next-intl/server";
-import { routing } from "@/i18n/routing";
+import { enContentReady, routing } from "@/i18n/routing";
 import { content, identity, type Locale } from "@/content/site";
-import "@fontsource-variable/archivo/wdth.css";
-import "@fontsource/ibm-plex-mono/400.css";
-import "@fontsource/ibm-plex-mono/500.css";
+import { robotsFor, siteUrl } from "@/lib/seo";
+// JetBrains Mono viene de Fontsource: un archivo por subset cubre todos los
+// pesos y el unicode-range hace que solo se descargue el latino. Hanken
+// Grotesk e Inter no se importan aquí: se declaran en globals.css contra
+// /public para poder precargarlas (ver el comentario del @font-face).
+import "@fontsource-variable/jetbrains-mono/wght.css";
 import "../globals.css";
 
 export async function generateMetadata({
@@ -16,31 +18,27 @@ export async function generateMetadata({
 }: {
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
-  const { locale } = await params;
-  const { ui } = content[hasLocale(routing.locales, locale) ? locale : routing.defaultLocale];
+  const { locale: raw } = await params;
+  const locale = hasLocale(routing.locales, raw) ? raw : routing.defaultLocale;
+  const { ui } = content[locale];
+
+  // Solo lo común al locale; las imágenes las declara cada página, la home
+  // incluida: si lo hiciera el layout, opengraph-image.tsx (mismo segmento)
+  // las pisaría con una URL que redirige.
   return {
-    metadataBase: new URL("https://georgepuma.dev"),
+    metadataBase: new URL(siteUrl),
     title: {
-      default: `${identity.name} — ${identity.title}`,
-      template: `%s — ${identity.name}`,
+      default: ui.meta.title,
+      template: `%s · ${identity.name}`,
     },
     description: ui.meta.description,
-    alternates: {
-      canonical: locale === "en" ? "/en" : "/",
-      languages: { es: "/", en: "/en", "x-default": "/" },
-    },
+    robots: robotsFor(locale),
     openGraph: {
       type: "website",
+      siteName: identity.siteName,
       locale: ui.meta.ogLocale,
-      siteName: "georgepuma.dev",
     },
-    // Sin `images` aquí ni en openGraph: Next solo aplica la imagen de convención
-    // de archivo (opengraph-image.tsx) si el metadata no declara `images` propio.
-    twitter: {
-      card: "summary_large_image",
-      title: `${identity.name} — ${identity.title}`,
-      description: ui.meta.description,
-    },
+    twitter: { card: "summary_large_image" },
   };
 }
 
@@ -56,27 +54,36 @@ export default async function LocaleLayout({
     notFound();
   }
   setRequestLocale(locale);
-  // La CSP usa un nonce por request (middleware): el HTML no puede
-  // prerenderizarse, y el script inline del tema debe llevar ese nonce.
-  const nonce = (await headers()).get("x-nonce") ?? undefined;
+
+  // El idioma del texto, no el de la ruta: con enContentReady en false, /en
+  // sirve español, y declararlo `en` haría que un lector de pantalla lo
+  // pronunciara con fonética inglesa (WCAG 3.1.1).
+  const contentLang = enContentReady ? locale : routing.defaultLocale;
 
   return (
-    // suppressHydrationWarning: el script del tema añade data-theme a <html>
-    // antes de que React hidrate; el atributo no viene del servidor.
-    <html lang={locale} suppressHydrationWarning>
-      <body className="font-sans antialiased">
-        {/* Aplica la elección guardada antes del primer paint (sin FOUC).
-            Sin elección guardada no fija nada: manda prefers-color-scheme. */}
-        <script
-          nonce={nonce}
-          dangerouslySetInnerHTML={{
-            __html:
-              'try{var t=localStorage.getItem("theme");if(t==="light"||t==="dark")document.documentElement.dataset.theme=t}catch(e){}',
-          }}
+    <html lang={contentLang}>
+      <head>
+        {/* Dos fuentes precargadas: Hanken (H1) e Inter (lead, el elemento
+            LCP). La mono entra por CSS con font-display: swap. */}
+        <link
+          rel="preload"
+          href="/fonts/hanken-grotesk-latin-wght-normal.woff2"
+          as="font"
+          type="font/woff2"
+          crossOrigin="anonymous"
         />
+        <link
+          rel="preload"
+          href="/fonts/inter-latin-wght-normal.woff2"
+          as="font"
+          type="font/woff2"
+          crossOrigin="anonymous"
+        />
+      </head>
+      <body className="font-sans antialiased">
         <a
           href="#contenido"
-          className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:bg-paper focus:text-ink focus:px-4 focus:py-2"
+          className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:bg-surface focus:text-ink focus:px-4 focus:py-2"
         >
           {content[locale as Locale].ui.skipLink}
         </a>
