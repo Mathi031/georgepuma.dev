@@ -59,8 +59,10 @@ function JobHeader({ job }: { job: ExperienceItem }) {
   return (
     <div className="min-w-0">
       <span className="relative block font-mono text-metadata uppercase text-muted md:before:absolute md:before:top-[0.55em] md:before:-left-[36px] md:before:size-[7px] md:before:rounded-full md:before:bg-text">
-        <span className="nowrap-token">{job.period}</span>&nbsp;·&nbsp;{job.type}&nbsp;·&nbsp;
-        {job.location}
+        {/* nbsp solo antes de cada separador: el punto no abre línea, pero
+            la meta puede partir tras él. Con nbsp a ambos lados la cadena
+            entera era irrompible y a 360 desbordaba el viewport en Linux. */}
+        <span className="nowrap-token">{job.period}</span>&nbsp;· {job.type}&nbsp;· {job.location}
       </span>
       <h3 className="mt-step-8 text-h3 font-semibold">
         {job.company} — {job.role}
