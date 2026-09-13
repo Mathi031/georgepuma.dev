@@ -1,17 +1,19 @@
 /**
- * Genera el set de favicons: src/app/icon.svg (fuente de verdad),
- * favicon.ico (32px) y apple-touch-icon.png (180px).
+ * Genera el set de iconos a partir de una sola fuente: src/app/icon.svg.
  *
- * El monograma es una "G" con el punto terminal del headline
- * (src/app/[locale]/page.tsx). Los colores salen de tokens.mjs, así que ya son
- * los del sistema C2; el contorno, en cambio, sigue siendo el de Archivo.
+ *   src/app/icon.svg        monograma, viewBox 32 (Next lo emite como rel=icon)
+ *   src/app/favicon.ico     16 + 32 + 48 (rel=icon, fallback sin SVG)
+ *   src/app/apple-icon.png  180 (Next emite el rel=apple-touch-icon)
+ *   public/icon-192.png     PWA / Android, referenciado en src/app/manifest.ts
+ *   public/icon-512.png     idem
  *
- * DEUDA CONOCIDA: el path está congelado porque el navegador que pinta un
- * favicon SVG no tiene acceso a la fuente. Se extrajo una sola vez del woff2 de
- * @fontsource-variable/archivo (wawoff2 + fontkit getVariation, one-off fuera
- * del repo — Chromium no exporta contornos), y Archivo ya no es una dependencia
- * del proyecto. Redibujar la "G" en Hanken Grotesk exige repetir ese proceso
- * manual: hasta entonces el favicon lleva la letra vieja con la paleta nueva.
+ * El monograma es la "G" de Hanken Grotesk a peso 600, tinta sobre fondo, sin
+ * marco ni radio. Dos colores y nada más: `text` y `bg` de globals.css.
+ *
+ * El path está congelado porque el navegador que pinta un favicon SVG no tiene
+ * acceso a la fuente. Se extrajo con fontTools (python3) del woff2 que ya vive
+ * en public/fonts: instanciar wght=600 y volcar el glifo con SVGPathPen. Si la
+ * fuente o el peso cambian, repetir ese paso y pegar el path aquí.
  *
  * Uso: pnpm icons
  */
@@ -24,56 +26,63 @@ import { palette } from "./tokens.mjs";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const app = join(root, "src/app");
+const pub = join(root, "public");
 
-const { bg, text, primary } = palette;
+const { bg, text } = palette;
 
-// "G" de Archivo, unitsPerEm 1000, coordenadas y-up (bbox x 60..905, y -12..699).
+// "G" de Hanken Grotesk wght 600, unitsPerEm 1000, coordenadas y-up.
+// bbox x 42.8..675, y -14.4..711.4 (con overshoot); cap height 697.
 const G_PATH =
-  "M468 -12Q265 -12 162.5 75.5Q60 163 60 343Q60 461 112.5 540Q165 619 264 659Q363 699 502 699Q589 699 662.5 683.5Q736 668 790 636Q844 604 874 556.5Q904 509 904 444L738 444Q738 477 719 500.5Q700 524 668 537Q636 550 594.5 557Q553 564 508 564Q447 564 396.5 551.5Q346 539 310.5 513.5Q275 488 255 448.5Q235 409 235 357L235 332Q235 258 265.5 212.5Q296 167 353.5 145Q411 123 490 123Q572 123 627 138.5Q682 154 710 183Q738 212 738 252L738 260L482 260L482 382L905 382L905 0L801 0L785 85Q749 51 700 30Q651 9 592.5 -1.5Q534 -12 468 -12Z";
-const BBOX = { minX: 60, minY: -12, maxX: 905, maxY: 699 };
+  "M365.4 -14.4Q270.6 -14.4 197.9 31Q125.2 76.4 84 158.3Q42.8 240.2 42.8 349Q42.8 457.8 84.3 539.2Q125.8 620.6 200.1 666Q274.4 711.4 372.4 711.4Q481.4 711.4 560.8 657.2Q640.2 603 675 507.4L566.6 467.6Q543 530.8 493.2 565.9Q443.4 601 372.4 601Q307.4 601 259 570.2Q210.6 539.4 184.5 483.3Q158.4 427.2 158.4 349Q158.4 270.8 184.5 214.2Q210.6 157.6 259 126.8Q307.4 96 372.4 96Q406 96 441.2 105.4Q476.4 114.8 506.2 138Q536 161.2 554.3 202.5Q572.6 243.8 572.6 307.2V351L598.6 271H399.8V374.4H675V0H573L557 120.8L576.8 105.4Q558.4 65 526.6 38.4Q494.8 11.8 453.5 -1.3Q412.2 -14.4 365.4 -14.4Z";
+const BBOX = { minX: 42.8, maxX: 675 };
+const CAP = 697;
 
-// Composición en un lienzo de 32: la G domina, el punto cobre cierra en la
-// baseline. Márgenes ajustados a ojo contra el render real de 16px.
+// Lienzo de 32: la altura de caja (sin overshoot) ocupa el 66% del lado, que
+// es lo máximo que a 16px sigue dejando aire al contorno. Centrado óptico:
+// vertical sobre la altura de caja, no sobre el bbox con overshoot; horizontal
+// sobre el bbox, que en una G ya es simétrico a ojo.
 const CANVAS = 32;
-const S = 0.025; // escala font-units -> lienzo (cap height 699 -> 17.5)
-const DOT_R = 2.3;
-const GAP = 1.5; // entre borde derecho de la G y el punto
-
+const S = (CANVAS * 0.66) / CAP;
 const gW = (BBOX.maxX - BBOX.minX) * S;
-const gH = (BBOX.maxY - BBOX.minY) * S;
-const total = gW + GAP + 2 * DOT_R;
-const left = (CANVAS - total) / 2;
-const baseline = (CANVAS - gH) / 2 + BBOX.maxY * S;
-const tx = left - BBOX.minX * S;
+const tx = (CANVAS - gW) / 2 - BBOX.minX * S;
+const baseline = (CANVAS + CAP * S) / 2;
 const r2 = (n) => Math.round(n * 100) / 100;
 
 const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-  <rect width="32" height="32" fill="${text}"/>
-  <path transform="translate(${r2(tx)} ${r2(baseline)}) scale(${S} -${S})" fill="${bg}" d="${G_PATH}"/>
-  <circle cx="${r2(left + gW + GAP + DOT_R)}" cy="${r2(baseline - DOT_R)}" r="${DOT_R}" fill="${primary}"/>
+  <rect width="32" height="32" fill="${bg}"/>
+  <path transform="translate(${r2(tx)} ${r2(baseline)}) scale(${r2(S)} -${r2(S)})" fill="${text}" d="${G_PATH}"/>
 </svg>
 `;
 
 writeFileSync(join(app, "icon.svg"), svg);
-console.log("✓ src/app/icon.svg");
+console.log("src/app/icon.svg");
 
-const raster = (px) =>
-  sharp(Buffer.from(svg), { density: (72 * px) / CANVAS }).resize(px, px).png().toBuffer();
-
-// iOS enmascara esquinas y no añade padding: el glifo va a ~62% del lienzo,
-// el resto es fondo tinta (iOS además ignora la transparencia).
-const appleSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180">
-  <rect width="180" height="180" fill="${text}"/>
-  <svg x="34" y="34" width="112" height="112" viewBox="0 0 32 32">${svg.replace(/<\/?svg[^>]*>/g, "")}</svg>
-</svg>`;
-
-const apple = await sharp(Buffer.from(appleSvg), { density: 288 }).resize(180, 180).png().toBuffer();
-// "apple-icon.png" es el nombre de convención de Next; genera el
-// <link rel="apple-touch-icon"> él solo.
-writeFileSync(join(app, "apple-icon.png"), apple);
-console.log("✓ src/app/apple-icon.png");
+const raster = (px, source = svg) =>
+  sharp(Buffer.from(source), { density: (72 * px) / CANVAS }).resize(px, px).png().toBuffer();
 
 // Array explícito: con un solo PNG, png-to-ico deriva hasta 256px en BMP sin
-// comprimir (~285KB). Con 16+32 el .ico queda en ~5KB.
-writeFileSync(join(app, "favicon.ico"), await pngToIco([await raster(16), await raster(32)]));
-console.log("✓ src/app/favicon.ico");
+// comprimir (~285KB). Con 16+32+48 el .ico queda en ~15KB.
+writeFileSync(join(app, "favicon.ico"), await pngToIco([await raster(16), await raster(32), await raster(48)]));
+console.log("src/app/favicon.ico");
+
+// iOS enmascara las esquinas y no añade padding: el monograma se encoge al 80%
+// del lienzo para que la G no roce el radio del recorte.
+const inset = (size, ratio) => {
+  const inner = size * ratio;
+  const off = (size - inner) / 2;
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${size} ${size}">
+  <rect width="${size}" height="${size}" fill="${bg}"/>
+  <svg x="${off}" y="${off}" width="${inner}" height="${inner}" viewBox="0 0 32 32">${svg.replace(/<\/?svg[^>]*>/g, "")}</svg>
+</svg>`;
+};
+
+const png = (size, ratio) =>
+  sharp(Buffer.from(inset(size, ratio)), { density: 288 }).resize(size, size).png().toBuffer();
+
+writeFileSync(join(app, "apple-icon.png"), await png(180, 0.8));
+console.log("src/app/apple-icon.png");
+
+for (const size of [192, 512]) {
+  writeFileSync(join(pub, `icon-${size}.png`), await png(size, 1));
+  console.log(`public/icon-${size}.png`);
+}
