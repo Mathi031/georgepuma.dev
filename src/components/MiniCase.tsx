@@ -5,6 +5,7 @@ import { ScreenshotFrame } from "@/components/ScreenshotFrame";
 import type { MiniCase as MiniCaseContent } from "@/content/mini-case";
 import { content as site, sectionIds, type Locale, type Project } from "@/content/site";
 import { Link } from "@/i18n/navigation";
+import { buttonLinkClass } from "@/components/ui/Button";
 
 type MiniCaseProps = {
   locale: Locale;
@@ -152,9 +153,10 @@ export function MiniCase({ locale, project, c }: MiniCaseProps) {
               {/* Link de next-intl: desde /en vuelve a la home inglesa. */}
               <Link
                 href={{ pathname: "/", hash: sectionIds.work }}
-                className="text-small font-medium underline decoration-rule underline-offset-[5px] transition-colors hover:text-primary hover:decoration-primary"
+                className={buttonLinkClass("tertiary")}
               >
-                <span aria-hidden="true" className="text-primary">←</span> {c.close.backLabel}
+                <span aria-hidden="true">←</span>
+                {c.close.backLabel}
               </Link>
             </div>
           </section>

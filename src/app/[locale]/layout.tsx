@@ -6,11 +6,10 @@ import { setRequestLocale } from "next-intl/server";
 import { enContentReady, routing } from "@/i18n/routing";
 import { content, identity, type Locale } from "@/content/site";
 import { robotsFor, siteUrl } from "@/lib/seo";
-// Fuentes variables de Fontsource: un archivo por subset cubre todos los pesos,
-// y el unicode-range de cada @font-face hace que solo se descargue el latino.
-// Hanken Grotesk no se importa aquí: se declara en globals.css contra /public
-// para poder precargarla (ver el comentario del @font-face).
-import "@fontsource-variable/inter/wght.css";
+// JetBrains Mono viene de Fontsource: un archivo por subset cubre todos los
+// pesos y el unicode-range hace que solo se descargue el latino. Hanken
+// Grotesk e Inter no se importan aquí: se declaran en globals.css contra
+// /public para poder precargarlas (ver el comentario del @font-face).
 import "@fontsource-variable/jetbrains-mono/wght.css";
 import "../globals.css";
 
@@ -64,11 +63,18 @@ export default async function LocaleLayout({
   return (
     <html lang={contentLang}>
       <head>
-        {/* Única fuente precargada: la del H1, que es el elemento LCP. Las
-            otras dos entran por CSS con font-display: swap. */}
+        {/* Dos fuentes precargadas: Hanken (H1) e Inter (lead, el elemento
+            LCP). La mono entra por CSS con font-display: swap. */}
         <link
           rel="preload"
           href="/fonts/hanken-grotesk-latin-wght-normal.woff2"
+          as="font"
+          type="font/woff2"
+          crossOrigin="anonymous"
+        />
+        <link
+          rel="preload"
+          href="/fonts/inter-latin-wght-normal.woff2"
           as="font"
           type="font/woff2"
           crossOrigin="anonymous"

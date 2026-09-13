@@ -10,3 +10,7 @@ next-env.d.ts
 playwright-report/
 test-results/
 .DS_Store
+
+# Informes y capturas de QA locales, y salida del MCP de Playwright: fuera del repo
+docs/
+.playwright-mcp/

@@ -8,6 +8,7 @@ import { SchemaFigure } from "@/components/figures/SchemaFigure";
 import { JsonLd } from "@/components/JsonLd";
 import { content as site, sectionIds, type Locale } from "@/content/site";
 import { Link } from "@/i18n/navigation";
+import { buttonLinkClass } from "@/components/ui/Button";
 import { pageMetadata, techArticleJsonLd } from "@/lib/seo";
 import { caseStudy as caseEs } from "@/content/notable-learning.es";
 import { caseStudy as caseEn } from "@/content/notable-learning.en";
@@ -201,9 +202,10 @@ export default async function NotableLearningPage({
             {/* Link de next-intl: pone el prefijo del locale actual. */}
             <Link
               href={{ pathname: "/", hash: sectionIds.work }}
-              className="text-small font-medium underline decoration-rule underline-offset-[5px] transition-colors hover:text-primary hover:decoration-primary"
+              className={buttonLinkClass("tertiary")}
             >
-              <span aria-hidden="true" className="text-primary">←</span> {c.close.backLabel}
+              <span aria-hidden="true">←</span>
+              {c.close.backLabel}
             </Link>
           </section>
 
@@ -212,7 +214,15 @@ export default async function NotableLearningPage({
             <ol className="space-y-2.5">
               {c.notes.map((nota, i) => (
                 <li key={nota} id={`nota-${i + 1}`} className="flex max-w-[62ch] gap-3 text-small leading-[1.6] text-muted">
-                  <a href={`#ref-${i + 1}`} aria-label={c.backToRefAria(i + 1)} className="font-mono text-micro text-primary no-underline">
+                  {/* Caja de 44x44 sin mover el glifo: self-start para no
+                      estirarse a la altura del li, y -mr-3 absorbe solo el gap
+                      para que el texto de la nota empiece justo fuera de la
+                      caja y no le robe el tap. */}
+                  <a
+                    href={`#ref-${i + 1}`}
+                    aria-label={c.backToRefAria(i + 1)}
+                    className="-mr-3 inline-flex min-h-11 min-w-11 shrink-0 items-start self-start font-mono text-micro leading-[1.6] text-primary no-underline"
+                  >
                     {i + 1}
                   </a>
                   <span>{nota}</span>

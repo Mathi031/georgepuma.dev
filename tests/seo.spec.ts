@@ -108,8 +108,15 @@ for (const locale of locales) {
       expect(m.lang).toBe(enContentReady ? locale : "es");
       expect(m.title.trim()).not.toBe("");
       expect(m.description?.trim()).toBeTruthy();
+      // Límite de corte de Google: por encima de 155 la descripción se trunca.
+      expect(m.description!.length, `largo de la descripción de ${route}`).toBeLessThan(155);
 
       expect(sameUrl(m.canonical, base + route), `canonical de ${route}`).toBe(true);
+      // og:url es el mismo texto que el canonical: un agregador que compare
+      // cadenas no debe ver dos URLs para una página. La raíz sale sin barra
+      // final en ambos: con metadataBase, Next la reduce al origin, y solo
+      // `trailingSlash: true` (global) la añadiría.
+      expect(m.og["og:url"], `og:url de ${route}`).toBe(m.canonical);
 
       expect(sameUrl(m.hreflang.es, base + path("es", href)), "hreflang es").toBe(true);
       expect(sameUrl(m.hreflang["x-default"], base + path("es", href)), "x-default").toBe(true);

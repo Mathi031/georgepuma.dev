@@ -119,7 +119,9 @@ export default async function HomePage({
             <a
               key={id}
               href={`#${id}`}
-              className="inline-flex min-h-11 items-center border-b border-transparent text-body-small font-medium motion-link hover:text-primary aria-[current=location]:border-ink"
+              // min-w-11: "Work" en inglés mide 38 de ancho; el resto ya
+              // pasa de 44 y no cambia.
+              className="inline-flex min-h-11 min-w-11 items-center border-b border-transparent text-body-small font-medium motion-link hover:text-primary aria-[current=location]:border-ink"
             >
               {label}
             </a>
@@ -583,10 +585,21 @@ export default async function HomePage({
           © {new Date().getFullYear()} {identity.fullName}
         </p>
         <p>
-          <a href={identity.repo} rel="noopener" className="motion-link hover:text-primary">
+          {/* min-h-11 con margen negativo: área táctil de 44 sin que el
+              footer crezca. */}
+          <a
+            href={identity.repo}
+            rel="noopener"
+            className="-my-3.5 inline-flex min-h-11 items-center motion-link hover:text-primary"
+          >
             {ui.footer.source}
           </a>{" "}
-          · <a href={identity.ci} rel="noopener" className="motion-link hover:text-primary">
+          ·{" "}
+          <a
+            href={identity.ci}
+            rel="noopener"
+            className="-my-3.5 inline-flex min-h-11 items-center motion-link hover:text-primary"
+          >
             {ui.footer.ci}
           </a>
         </p>

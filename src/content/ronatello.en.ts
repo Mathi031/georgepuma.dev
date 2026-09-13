@@ -8,7 +8,7 @@ import type { MiniCase } from "./mini-case";
 export const miniCase: MiniCase = {
   meta: {
     description:
-      "Production site for a liquor store in Arequipa: promotions with validity dates, bookings with capacity limits and its own admin panel. From brief to deployment in 12 days.",
+      "Production site for a liquor store in Arequipa: dated promotions, capacity-limited bookings and its own admin panel. From brief to deploy in 12 days.",
   },
   route: "/proyectos/ronatello",
   kicker: "Mini-case · Direct client · 12 days to production",

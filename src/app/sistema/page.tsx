@@ -75,7 +75,7 @@ function Row({ title, children }: { title: string; children: React.ReactNode }) 
 
 export default function SistemaPage() {
   return (
-    <div className="mx-auto max-w-page px-5 py-step-48 md:px-8 lg:px-10">
+    <main className="mx-auto max-w-page px-5 py-step-48 md:px-8 lg:px-10">
       <header className="mb-step-64">
         <p className="font-mono text-metadata uppercase text-muted">Referencia interna</p>
         <h1 className="mt-step-8 font-display text-h1 font-semibold">Design system C2</h1>
@@ -223,7 +223,7 @@ export default function SistemaPage() {
         </Row>
 
         <Row title="Bloque de código — línea destacada">
-          <CodeBlock code={SAMPLE} highlight={[2]} />
+          <CodeBlock code={SAMPLE} highlight={[2]} label="Ejemplo de bloque de código" />
         </Row>
 
         <Row title="No ruptura — nowrap solo en tres tokens">
@@ -238,6 +238,6 @@ export default function SistemaPage() {
       <footer className="border-t border-rule py-step-24 font-mono text-metadata uppercase text-muted">
         Referencia interna — no indexada
       </footer>
-    </div>
+    </main>
   );
 }
